@@ -814,7 +814,7 @@
 
         async function fetchChartData() {
           try {
-            var res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=30m&limit=48');
+            var res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=15m&limit=96');
             var data = await res.json();
             prices = data.map(function(k) { return parseFloat(k[4]); }); 
             drawChart();
