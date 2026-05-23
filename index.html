@@ -677,7 +677,6 @@
         .btc-dot.live { background: #4ade80; box-shadow: 0 0 6px #4ade80; animation: btcPulse 2s infinite; }
         @keyframes btcPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
         
-        /* Fonte do "Ao vivo" atualizada para verde claro */
         .btc-status-txt { font-size: 0.72rem; color: #4ade80; font-weight: 500; }
         
         .btc-ticker-price {
@@ -714,7 +713,6 @@
         .btc-change.up { background: rgba(74,222,128,0.12); color: #4ade80; }
         .btc-change.down { background: rgba(248,113,113,0.12); color: #f87171; }
         
-        /* Preço em BRL atualizado para Laranja */
         .btc-price-brl {
           font-size: 0.82rem;
           font-weight: 600;
@@ -724,17 +722,16 @@
           border-radius: 4px;
         }
 
-        /* Estilo para a cotação do Dólar */
+        /* USD BRL agora na cor Laranja */
         .btc-price-usd-brl {
           font-size: 0.82rem;
-          font-weight: 500;
-          color: #a3a3a3;
+          font-weight: 600;
+          color: var(--orange);
           background: #1a1a1a;
           padding: 2px 8px;
           border-radius: 4px;
         }
         
-        /* Legenda atualizada para Azul */
         .btc-ticker-label {
           font-size: 0.7rem;
           color: #3b82f6; 
@@ -744,7 +741,7 @@
       
       <script>
       (function() {
-        var prices = [];
+        var candles = []; // Agora armazena objetos: open, high, low, close
         var lastPrice = null;
         var canvas = document.getElementById('btcMiniChart');
         var ctx = canvas ? canvas.getContext('2d') : null;
@@ -764,7 +761,7 @@
         }
 
         function drawChart() {
-          if (!ctx || prices.length < 2) return;
+          if (!ctx || candles.length < 2) return;
           var dpr = window.devicePixelRatio || 1;
           var w = canvas.offsetWidth;
           var h = 52;
@@ -772,51 +769,54 @@
           canvas.height = h * dpr;
           ctx.scale(dpr, dpr);
 
-          var min = Math.min.apply(null, prices);
-          var max = Math.max.apply(null, prices);
+          var min = Math.min.apply(null, candles.map(function(c) { return c.l; }));
+          var max = Math.max.apply(null, candles.map(function(c) { return c.h; }));
           var range = max - min || 1;
           var pad = 4;
 
-          var isUp = prices[prices.length - 1] >= prices[0];
-          var color = isUp ? '#4ade80' : '#f87171';
-
           ctx.clearRect(0, 0, w, h);
 
-          var grad = ctx.createLinearGradient(0, 0, 0, h);
-          grad.addColorStop(0, isUp ? 'rgba(74,222,128,0.18)' : 'rgba(248,113,113,0.18)');
-          grad.addColorStop(1, 'rgba(0,0,0,0)');
+          var candleWidth = (w / candles.length) * 0.65; // Largura do corpo da vela
+          var spacing = w / candles.length; // Espaço entre cada vela
 
-          ctx.beginPath();
-          for (var i = 0; i < prices.length; i++) {
-            var x = (i / (prices.length - 1)) * w;
-            var y = h - pad - ((prices[i] - min) / range) * (h - pad * 2);
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-          }
-          ctx.lineTo(w, h);
-          ctx.lineTo(0, h);
-          ctx.closePath();
-          ctx.fillStyle = grad;
-          ctx.fill();
+          for (var i = 0; i < candles.length; i++) {
+            var c = candles[i];
+            var x = i * spacing + spacing / 2; // Posição horizontal central
 
-          ctx.beginPath();
-          for (var i = 0; i < prices.length; i++) {
-            var x = (i / (prices.length - 1)) * w;
-            var y = h - pad - ((prices[i] - min) / range) * (h - pad * 2);
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
+            // Calcula posições verticais (invertido pois Y cresce para baixo no canvas)
+            var yOpen = h - pad - ((c.o - min) / range) * (h - pad * 2);
+            var yClose = h - pad - ((c.c - min) / range) * (h - pad * 2);
+            var yHigh = h - pad - ((c.h - min) / range) * (h - pad * 2);
+            var yLow = h - pad - ((c.l - min) / range) * (h - pad * 2);
+
+            var isUp = c.c >= c.o;
+            var color = isUp ? '#4ade80' : '#f87171';
+
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = 1.5; // Espessura do pavio
+
+            // Desenha o Pavio (Máxima até Mínima)
+            ctx.beginPath();
+            ctx.moveTo(x, yHigh);
+            ctx.lineTo(x, yLow);
+            ctx.stroke();
+
+            // Desenha o Corpo (Abertura até Fechamento)
+            var bodyY = Math.min(yOpen, yClose);
+            var bodyH = Math.max(Math.abs(yClose - yOpen), 1); // Mínimo de 1px de altura
+            ctx.fillRect(x - candleWidth / 2, bodyY, candleWidth, bodyH);
           }
-          ctx.strokeStyle = color;
-          ctx.lineWidth = 2;
-          ctx.lineJoin = 'round';
-          ctx.stroke();
         }
 
         async function fetchChartData() {
           try {
-            var res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=15m&limit=96');
+            // Buscando 48 velas de 15 minutos (12 horas de histórico)
+            var res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=15m&limit=48');
             var data = await res.json();
-            prices = data.map(function(k) { return parseFloat(k[4]); }); 
+            candles = data.map(function(k) { 
+              return { o: parseFloat(k[1]), h: parseFloat(k[2]), l: parseFloat(k[3]), c: parseFloat(k[4]) };
+            }); 
             drawChart();
           } catch(e) {
             console.error("Erro ao carregar gráfico histórico", e);
@@ -824,7 +824,6 @@
         }
 
         function connect() {
-          // Conectando no ticker de BTC/USD, BTC/BRL e também USDT/BRL para pegar o dólar exato
           var ws = new WebSocket('wss://stream.binance.com:9443/stream?streams=btcusdt@ticker/btcbrl@ticker/usdtbrl@ticker');
 
           ws.onopen = function() {
@@ -841,8 +840,12 @@
               var p = parseFloat(data.c); 
               var pct = parseFloat(data.P); 
               
-              if (prices.length > 0) {
-                prices[prices.length - 1] = p; 
+              // Atualiza o fechamento da última vela em tempo real
+              if (candles.length > 0) {
+                var lastCandle = candles[candles.length - 1];
+                lastCandle.c = p;
+                if (p > lastCandle.h) lastCandle.h = p; // Atualiza máxima se preço subir
+                if (p < lastCandle.l) lastCandle.l = p; // Atualiza mínima se preço cair
                 drawChart();
               }
 
