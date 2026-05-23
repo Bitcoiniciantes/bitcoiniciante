@@ -616,7 +616,7 @@
           </div>
           <span class="btc-ticker-label">variação 24h</span>
         </div>
-        <canvas id="btcMiniChart" height="52" style="width:100%;margin-top:10px;display:block;"></canvas>
+        <canvas id="btcMiniChart" height="52" style="width:100%;margin-top:14px;display:block;"></canvas>
       </div>
       
       <style>
@@ -686,7 +686,7 @@
           color: white;
           letter-spacing: -0.01em;
           line-height: 1;
-          margin-bottom: 10px;
+          margin-bottom: 12px;
           transition: color .2s;
         }
         .btc-ticker-price.up { color: #4ade80; }
@@ -700,12 +700,13 @@
         .btc-sub-left {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 6px; /* Espaço entre os itens */
+          flex-wrap: wrap; /* Permite quebrar linha em celulares muito pequenos */
         }
         .btc-change {
           font-size: 0.82rem;
           font-weight: 600;
-          padding: 2px 8px;
+          padding: 3px 8px;
           border-radius: 4px;
           background: #1a1a1a;
           color: #888;
@@ -718,17 +719,16 @@
           font-weight: 600;
           color: var(--orange);
           background: #1a1a1a;
-          padding: 2px 8px;
+          padding: 3px 8px;
           border-radius: 4px;
         }
 
-        /* USD BRL agora na cor Laranja */
         .btc-price-usd-brl {
           font-size: 0.82rem;
           font-weight: 600;
           color: var(--orange);
           background: #1a1a1a;
-          padding: 2px 8px;
+          padding: 3px 8px;
           border-radius: 4px;
         }
         
@@ -741,7 +741,7 @@
       
       <script>
       (function() {
-        var candles = []; // Agora armazena objetos: open, high, low, close
+        var candles = []; 
         var lastPrice = null;
         var canvas = document.getElementById('btcMiniChart');
         var ctx = canvas ? canvas.getContext('2d') : null;
@@ -776,14 +776,13 @@
 
           ctx.clearRect(0, 0, w, h);
 
-          var candleWidth = (w / candles.length) * 0.65; // Largura do corpo da vela
-          var spacing = w / candles.length; // Espaço entre cada vela
+          var candleWidth = (w / candles.length) * 0.7; // Velas mais largas
+          var spacing = w / candles.length; 
 
           for (var i = 0; i < candles.length; i++) {
             var c = candles[i];
-            var x = i * spacing + spacing / 2; // Posição horizontal central
+            var x = i * spacing + spacing / 2; 
 
-            // Calcula posições verticais (invertido pois Y cresce para baixo no canvas)
             var yOpen = h - pad - ((c.o - min) / range) * (h - pad * 2);
             var yClose = h - pad - ((c.c - min) / range) * (h - pad * 2);
             var yHigh = h - pad - ((c.h - min) / range) * (h - pad * 2);
@@ -794,25 +793,25 @@
 
             ctx.strokeStyle = color;
             ctx.fillStyle = color;
-            ctx.lineWidth = 1.5; // Espessura do pavio
+            ctx.lineWidth = 1.5; 
 
-            // Desenha o Pavio (Máxima até Mínima)
+            // Pavio
             ctx.beginPath();
             ctx.moveTo(x, yHigh);
             ctx.lineTo(x, yLow);
             ctx.stroke();
 
-            // Desenha o Corpo (Abertura até Fechamento)
+            // Corpo
             var bodyY = Math.min(yOpen, yClose);
-            var bodyH = Math.max(Math.abs(yClose - yOpen), 1); // Mínimo de 1px de altura
+            var bodyH = Math.max(Math.abs(yClose - yOpen), 2); // Mínimo de 2px de altura para não sumir
             ctx.fillRect(x - candleWidth / 2, bodyY, candleWidth, bodyH);
           }
         }
 
         async function fetchChartData() {
           try {
-            // Buscando 48 velas de 15 minutos (12 horas de histórico)
-            var res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=15m&limit=48');
+            // Buscando 24 velas de 1 hora (24 horas exatas) para barras mais grossas
+            var res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=24');
             var data = await res.json();
             candles = data.map(function(k) { 
               return { o: parseFloat(k[1]), h: parseFloat(k[2]), l: parseFloat(k[3]), c: parseFloat(k[4]) };
@@ -840,12 +839,11 @@
               var p = parseFloat(data.c); 
               var pct = parseFloat(data.P); 
               
-              // Atualiza o fechamento da última vela em tempo real
               if (candles.length > 0) {
                 var lastCandle = candles[candles.length - 1];
                 lastCandle.c = p;
-                if (p > lastCandle.h) lastCandle.h = p; // Atualiza máxima se preço subir
-                if (p < lastCandle.l) lastCandle.l = p; // Atualiza mínima se preço cair
+                if (p > lastCandle.h) lastCandle.h = p; 
+                if (p < lastCandle.l) lastCandle.l = p; 
                 drawChart();
               }
 
