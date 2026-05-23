@@ -613,6 +613,7 @@
             <span class="btc-change" id="btcChange">—</span>
             <span class="btc-price-brl" id="btcPriceBrl">R$ —</span>
             <span class="btc-price-usd-brl" id="btcPriceUsdBrl">USD —</span>
+            <span class="btc-price-mstr" id="btcPriceMstr">MSTR $ —</span>
           </div>
           <span class="btc-ticker-label">variação 24h</span>
         </div>
@@ -700,8 +701,8 @@
         .btc-sub-left {
           display: flex;
           align-items: center;
-          gap: 6px; /* Espaço entre os itens */
-          flex-wrap: wrap; /* Permite quebrar linha em celulares muito pequenos */
+          gap: 6px;
+          flex-wrap: wrap;
         }
         .btc-change {
           font-size: 0.82rem;
@@ -732,6 +733,16 @@
           border-radius: 4px;
         }
         
+        /* Novo estilo para a MSTR */
+        .btc-price-mstr {
+          font-size: 0.82rem;
+          font-weight: 600;
+          color: #c084fc; /* Roxo suave */
+          background: #1a1a1a;
+          padding: 3px 8px;
+          border-radius: 4px;
+        }
+        
         .btc-ticker-label {
           font-size: 0.7rem;
           color: #3b82f6; 
@@ -749,6 +760,7 @@
         var changeEl = document.getElementById('btcChange');
         var brlEl = document.getElementById('btcPriceBrl');
         var usdBrlEl = document.getElementById('btcPriceUsdBrl');
+        var mstrEl = document.getElementById('btcPriceMstr');
         var dotEl = document.getElementById('btcDot');
         var statusEl = document.getElementById('btcStatusTxt');
         var flashTimer = null;
@@ -776,7 +788,7 @@
 
           ctx.clearRect(0, 0, w, h);
 
-          var candleWidth = (w / candles.length) * 0.7; // Velas mais largas
+          var candleWidth = (w / candles.length) * 0.7; 
           var spacing = w / candles.length; 
 
           for (var i = 0; i < candles.length; i++) {
@@ -795,22 +807,19 @@
             ctx.fillStyle = color;
             ctx.lineWidth = 1.5; 
 
-            // Pavio
             ctx.beginPath();
             ctx.moveTo(x, yHigh);
             ctx.lineTo(x, yLow);
             ctx.stroke();
 
-            // Corpo
             var bodyY = Math.min(yOpen, yClose);
-            var bodyH = Math.max(Math.abs(yClose - yOpen), 2); // Mínimo de 2px de altura para não sumir
+            var bodyH = Math.max(Math.abs(yClose - yOpen), 2); 
             ctx.fillRect(x - candleWidth / 2, bodyY, candleWidth, bodyH);
           }
         }
 
         async function fetchChartData() {
           try {
-            // Buscando 24 velas de 1 hora (24 horas exatas) para barras mais grossas
             var res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=24');
             var data = await res.json();
             candles = data.map(function(k) { 
@@ -819,6 +828,22 @@
             drawChart();
           } catch(e) {
             console.error("Erro ao carregar gráfico histórico", e);
+          }
+        }
+
+        // Nova função que busca o preço da MSTR via proxy público
+        async function fetchMSTR() {
+          try {
+            var url = encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/MSTR');
+            var res = await fetch('https://api.allorigins.win/get?url=' + url);
+            var json = await res.json();
+            var data = JSON.parse(json.contents);
+            var price = data.chart.result[0].meta.regularMarketPrice;
+            if (price) {
+              mstrEl.textContent = 'MSTR $ ' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+          } catch(e) {
+            console.error("Erro ao carregar MSTR", e);
           }
         }
 
@@ -883,7 +908,14 @@
 
         if (canvas) {
           canvas.width = canvas.offsetWidth;
+          
+          // Inicia as chamadas ao carregar a página
           fetchChartData().then(connect);
+          fetchMSTR();
+          
+          // Atualiza a cotação da MSTR a cada 5 minutos
+          setInterval(fetchMSTR, 300000); 
+          
           window.addEventListener('resize', drawChart);
         }
       })();
