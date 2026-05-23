@@ -612,6 +612,7 @@
           <div class="btc-sub-left">
             <span class="btc-change" id="btcChange">—</span>
             <span class="btc-price-brl" id="btcPriceBrl">R$ —</span>
+            <span class="btc-price-usd-brl" id="btcPriceUsdBrl">USD —</span>
           </div>
           <span class="btc-ticker-label">variação 24h</span>
         </div>
@@ -675,15 +676,16 @@
         }
         .btc-dot.live { background: #4ade80; box-shadow: 0 0 6px #4ade80; animation: btcPulse 2s infinite; }
         @keyframes btcPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-        .btc-status-txt { font-size: 0.72rem; color: #666; font-weight: 500; }
         
-        /* Fonte do Preço Atualizada */
+        /* Fonte do "Ao vivo" atualizada para verde claro */
+        .btc-status-txt { font-size: 0.72rem; color: #4ade80; font-weight: 500; }
+        
         .btc-ticker-price {
-          font-family: var(--font-body); /* Alterado de font-head para font-body (mais largo) */
-          font-size: clamp(2rem, 3.5vw, 2.6rem); /* Tamanho levemente ajustado */
+          font-family: var(--font-body);
+          font-size: clamp(2rem, 3.5vw, 2.6rem);
           font-weight: 700;
           color: white;
-          letter-spacing: -0.01em; /* Removido o esmagamento (-0.04em) */
+          letter-spacing: -0.01em;
           line-height: 1;
           margin-bottom: 10px;
           transition: color .2s;
@@ -712,8 +714,18 @@
         .btc-change.up { background: rgba(74,222,128,0.12); color: #4ade80; }
         .btc-change.down { background: rgba(248,113,113,0.12); color: #f87171; }
         
-        /* Novo estilo para o preço em BRL */
+        /* Preço em BRL atualizado para Laranja */
         .btc-price-brl {
+          font-size: 0.82rem;
+          font-weight: 600;
+          color: var(--orange);
+          background: #1a1a1a;
+          padding: 2px 8px;
+          border-radius: 4px;
+        }
+
+        /* Estilo para a cotação do Dólar */
+        .btc-price-usd-brl {
           font-size: 0.82rem;
           font-weight: 500;
           color: #a3a3a3;
@@ -722,10 +734,11 @@
           border-radius: 4px;
         }
         
+        /* Legenda atualizada para Azul */
         .btc-ticker-label {
           font-size: 0.7rem;
-          color: #444;
-          font-weight: 400;
+          color: #3b82f6; 
+          font-weight: 500;
         }
       </style>
       
@@ -738,6 +751,7 @@
         var priceEl = document.getElementById('btcPrice');
         var changeEl = document.getElementById('btcChange');
         var brlEl = document.getElementById('btcPriceBrl');
+        var usdBrlEl = document.getElementById('btcPriceUsdBrl');
         var dotEl = document.getElementById('btcDot');
         var statusEl = document.getElementById('btcStatusTxt');
         var flashTimer = null;
@@ -768,7 +782,6 @@
 
           ctx.clearRect(0, 0, w, h);
 
-          // Gradiente
           var grad = ctx.createLinearGradient(0, 0, 0, h);
           grad.addColorStop(0, isUp ? 'rgba(74,222,128,0.18)' : 'rgba(248,113,113,0.18)');
           grad.addColorStop(1, 'rgba(0,0,0,0)');
@@ -786,7 +799,6 @@
           ctx.fillStyle = grad;
           ctx.fill();
 
-          // Linha
           ctx.beginPath();
           for (var i = 0; i < prices.length; i++) {
             var x = (i / (prices.length - 1)) * w;
@@ -800,22 +812,20 @@
           ctx.stroke();
         }
 
-        // Busca dados das últimas 24h (48 candles de 30 minutos)
         async function fetchChartData() {
           try {
             var res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=30m&limit=48');
             var data = await res.json();
-            prices = data.map(function(k) { return parseFloat(k[4]); }); // Pega o preço de fechamento
+            prices = data.map(function(k) { return parseFloat(k[4]); }); 
             drawChart();
           } catch(e) {
             console.error("Erro ao carregar gráfico histórico", e);
           }
         }
 
-        // Conecta ao WebSocket para atualizar preço e variação 24h
         function connect() {
-          // Conectando simultaneamente no ticker de USD e BRL
-          var ws = new WebSocket('wss://stream.binance.com:9443/stream?streams=btcusdt@ticker/btcbrl@ticker');
+          // Conectando no ticker de BTC/USD, BTC/BRL e também USDT/BRL para pegar o dólar exato
+          var ws = new WebSocket('wss://stream.binance.com:9443/stream?streams=btcusdt@ticker/btcbrl@ticker/usdtbrl@ticker');
 
           ws.onopen = function() {
             dotEl.className = 'btc-dot live';
@@ -828,11 +838,11 @@
             var data = payload.data;
 
             if (stream === 'btcusdt@ticker') {
-              var p = parseFloat(data.c); // Último preço
-              var pct = parseFloat(data.P); // Variação % em 24h
+              var p = parseFloat(data.c); 
+              var pct = parseFloat(data.P); 
               
               if (prices.length > 0) {
-                prices[prices.length - 1] = p; // Atualiza o último ponto do gráfico
+                prices[prices.length - 1] = p; 
                 drawChart();
               }
 
@@ -855,6 +865,10 @@
               var pBrl = parseFloat(data.c);
               brlEl.textContent = formatBRL(pBrl);
             }
+            else if (stream === 'usdtbrl@ticker') {
+              var pUsdBrl = parseFloat(data.c);
+              usdBrlEl.textContent = 'USD ' + pUsdBrl.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
           };
 
           ws.onclose = function() {
@@ -868,7 +882,6 @@
 
         if (canvas) {
           canvas.width = canvas.offsetWidth;
-          // Inicia buscando o histórico e depois conecta o WebSocket
           fetchChartData().then(connect);
           window.addEventListener('resize', drawChart);
         }
