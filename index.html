@@ -593,7 +593,7 @@
     </div>
     <div class="hero-visual">
       <!-- Widget Cotação BTC/USD em Tempo Real -->
-      <div class="btc-ticker-card" id="btcTickerCard">
+<div class="btc-ticker-card" id="btcTickerCard">
         <div class="btc-ticker-top">
           <div class="btc-ticker-coin">
             <div class="btc-ticker-icon">₿</div>
@@ -609,11 +609,15 @@
         </div>
         <div class="btc-ticker-price" id="btcPrice">$ —</div>
         <div class="btc-ticker-sub">
-          <span class="btc-change" id="btcChange">—</span>
-          <span class="btc-ticker-label">última negociação ao vivo</span>
+          <div class="btc-sub-left">
+            <span class="btc-change" id="btcChange">—</span>
+            <span class="btc-price-brl" id="btcPriceBrl">R$ —</span>
+          </div>
+          <span class="btc-ticker-label">variação 24h</span>
         </div>
         <canvas id="btcMiniChart" height="52" style="width:100%;margin-top:10px;display:block;"></canvas>
       </div>
+      
       <style>
         .btc-ticker-card {
           background: var(--black);
@@ -672,22 +676,30 @@
         .btc-dot.live { background: #4ade80; box-shadow: 0 0 6px #4ade80; animation: btcPulse 2s infinite; }
         @keyframes btcPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
         .btc-status-txt { font-size: 0.72rem; color: #666; font-weight: 500; }
+        
+        /* Fonte do Preço Atualizada */
         .btc-ticker-price {
-          font-family: var(--font-head);
-          font-size: clamp(1.8rem, 3.5vw, 2.4rem);
-          font-weight: 800;
+          font-family: var(--font-body); /* Alterado de font-head para font-body (mais largo) */
+          font-size: clamp(2rem, 3.5vw, 2.6rem); /* Tamanho levemente ajustado */
+          font-weight: 700;
           color: white;
-          letter-spacing: -0.04em;
+          letter-spacing: -0.01em; /* Removido o esmagamento (-0.04em) */
           line-height: 1;
-          margin-bottom: 6px;
+          margin-bottom: 10px;
           transition: color .2s;
         }
         .btc-ticker-price.up { color: #4ade80; }
         .btc-ticker-price.down { color: #f87171; }
+        
         .btc-ticker-sub {
           display: flex;
           align-items: center;
           justify-content: space-between;
+        }
+        .btc-sub-left {
+          display: flex;
+          align-items: center;
+          gap: 8px;
         }
         .btc-change {
           font-size: 0.82rem;
@@ -699,27 +711,42 @@
         }
         .btc-change.up { background: rgba(74,222,128,0.12); color: #4ade80; }
         .btc-change.down { background: rgba(248,113,113,0.12); color: #f87171; }
+        
+        /* Novo estilo para o preço em BRL */
+        .btc-price-brl {
+          font-size: 0.82rem;
+          font-weight: 500;
+          color: #a3a3a3;
+          background: #1a1a1a;
+          padding: 2px 8px;
+          border-radius: 4px;
+        }
+        
         .btc-ticker-label {
           font-size: 0.7rem;
           color: #444;
           font-weight: 400;
         }
       </style>
+      
       <script>
       (function() {
         var prices = [];
         var lastPrice = null;
-        var sessionOpen = null;
         var canvas = document.getElementById('btcMiniChart');
         var ctx = canvas ? canvas.getContext('2d') : null;
         var priceEl = document.getElementById('btcPrice');
         var changeEl = document.getElementById('btcChange');
+        var brlEl = document.getElementById('btcPriceBrl');
         var dotEl = document.getElementById('btcDot');
         var statusEl = document.getElementById('btcStatusTxt');
         var flashTimer = null;
 
-        function formatPrice(p) {
+        function formatUSD(p) {
           return '$ ' + p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        function formatBRL(p) {
+          return 'R$ ' + p.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
         function drawChart() {
@@ -741,7 +768,7 @@
 
           ctx.clearRect(0, 0, w, h);
 
-          // gradient fill
+          // Gradiente
           var grad = ctx.createLinearGradient(0, 0, 0, h);
           grad.addColorStop(0, isUp ? 'rgba(74,222,128,0.18)' : 'rgba(248,113,113,0.18)');
           grad.addColorStop(1, 'rgba(0,0,0,0)');
@@ -759,7 +786,7 @@
           ctx.fillStyle = grad;
           ctx.fill();
 
-          // line
+          // Linha
           ctx.beginPath();
           for (var i = 0; i < prices.length; i++) {
             var x = (i / (prices.length - 1)) * w;
@@ -773,8 +800,22 @@
           ctx.stroke();
         }
 
+        // Busca dados das últimas 24h (48 candles de 30 minutos)
+        async function fetchChartData() {
+          try {
+            var res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=30m&limit=48');
+            var data = await res.json();
+            prices = data.map(function(k) { return parseFloat(k[4]); }); // Pega o preço de fechamento
+            drawChart();
+          } catch(e) {
+            console.error("Erro ao carregar gráfico histórico", e);
+          }
+        }
+
+        // Conecta ao WebSocket para atualizar preço e variação 24h
         function connect() {
-          var ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@trade');
+          // Conectando simultaneamente no ticker de USD e BRL
+          var ws = new WebSocket('wss://stream.binance.com:9443/stream?streams=btcusdt@ticker/btcbrl@ticker');
 
           ws.onopen = function() {
             dotEl.className = 'btc-dot live';
@@ -782,32 +823,38 @@
           };
 
           ws.onmessage = function(e) {
-            var data = JSON.parse(e.data);
-            var p = parseFloat(data.p);
-            if (!p) return;
+            var payload = JSON.parse(e.data);
+            var stream = payload.stream;
+            var data = payload.data;
 
-            if (sessionOpen === null) sessionOpen = p;
-            prices.push(p);
-            if (prices.length > 80) prices.shift();
+            if (stream === 'btcusdt@ticker') {
+              var p = parseFloat(data.c); // Último preço
+              var pct = parseFloat(data.P); // Variação % em 24h
+              
+              if (prices.length > 0) {
+                prices[prices.length - 1] = p; // Atualiza o último ponto do gráfico
+                drawChart();
+              }
 
-            var dir = lastPrice === null ? 0 : (p > lastPrice ? 1 : p < lastPrice ? -1 : 0);
-            lastPrice = p;
+              var dir = lastPrice === null ? 0 : (p > lastPrice ? 1 : p < lastPrice ? -1 : 0);
+              lastPrice = p;
 
-            priceEl.textContent = formatPrice(p);
-            priceEl.className = 'btc-ticker-price' + (dir === 1 ? ' up' : dir === -1 ? ' down' : '');
+              priceEl.textContent = formatUSD(p);
+              priceEl.className = 'btc-ticker-price' + (dir === 1 ? ' up' : dir === -1 ? ' down' : '');
 
-            if (flashTimer) clearTimeout(flashTimer);
-            flashTimer = setTimeout(function() {
-              priceEl.className = 'btc-ticker-price';
-            }, 600);
+              if (flashTimer) clearTimeout(flashTimer);
+              flashTimer = setTimeout(function() {
+                priceEl.className = 'btc-ticker-price';
+              }, 600);
 
-            var diff = p - sessionOpen;
-            var pct = (diff / sessionOpen) * 100;
-            var sign = diff >= 0 ? '+' : '';
-            changeEl.textContent = sign + pct.toFixed(2) + '%  ' + sign + formatPrice(Math.abs(diff));
-            changeEl.className = 'btc-change ' + (diff >= 0 ? 'up' : 'down');
-
-            drawChart();
+              var sign = pct >= 0 ? '+' : '';
+              changeEl.textContent = sign + pct.toFixed(2) + '%';
+              changeEl.className = 'btc-change ' + (pct >= 0 ? 'up' : 'down');
+            } 
+            else if (stream === 'btcbrl@ticker') {
+              var pBrl = parseFloat(data.c);
+              brlEl.textContent = formatBRL(pBrl);
+            }
           };
 
           ws.onclose = function() {
@@ -821,7 +868,8 @@
 
         if (canvas) {
           canvas.width = canvas.offsetWidth;
-          connect();
+          // Inicia buscando o histórico e depois conecta o WebSocket
+          fetchChartData().then(connect);
           window.addEventListener('resize', drawChart);
         }
       })();
