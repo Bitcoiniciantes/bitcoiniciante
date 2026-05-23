@@ -592,10 +592,240 @@
       </div>
     </div>
     <div class="hero-visual">
-      <div class="stat-card accent">
-        <div class="stat-value">₿ Bitcoin</div>
-        <div class="stat-label">A única reserva de valor sem controle central</div>
+      <!-- Widget Cotação BTC/USD em Tempo Real -->
+      <div class="btc-ticker-card" id="btcTickerCard">
+        <div class="btc-ticker-top">
+          <div class="btc-ticker-coin">
+            <div class="btc-ticker-icon">₿</div>
+            <div>
+              <div class="btc-ticker-name">Bitcoin</div>
+              <div class="btc-ticker-pair">BTC / USD</div>
+            </div>
+          </div>
+          <div class="btc-ticker-status">
+            <span class="btc-dot" id="btcDot"></span>
+            <span class="btc-status-txt" id="btcStatusTxt">Conectando…</span>
+          </div>
+        </div>
+        <div class="btc-ticker-price" id="btcPrice">$ —</div>
+        <div class="btc-ticker-sub">
+          <span class="btc-change" id="btcChange">—</span>
+          <span class="btc-ticker-label">última negociação ao vivo</span>
+        </div>
+        <canvas id="btcMiniChart" height="52" style="width:100%;margin-top:10px;display:block;"></canvas>
       </div>
+      <style>
+        .btc-ticker-card {
+          background: var(--black);
+          border-radius: 14px;
+          padding: 20px 24px 16px;
+          border: 1px solid #222;
+          position: relative;
+          overflow: hidden;
+        }
+        .btc-ticker-top {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 12px;
+        }
+        .btc-ticker-coin {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .btc-ticker-icon {
+          width: 36px; height: 36px;
+          background: var(--orange);
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 1.1rem;
+          font-weight: 800;
+          color: white;
+          flex-shrink: 0;
+        }
+        .btc-ticker-name {
+          font-family: var(--font-head);
+          font-weight: 700;
+          font-size: 0.95rem;
+          color: white;
+          line-height: 1.2;
+        }
+        .btc-ticker-pair {
+          font-size: 0.72rem;
+          color: #666;
+          font-weight: 500;
+          letter-spacing: 0.05em;
+        }
+        .btc-ticker-status {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .btc-dot {
+          width: 7px; height: 7px;
+          border-radius: 50%;
+          background: #555;
+          display: inline-block;
+          transition: background .3s;
+        }
+        .btc-dot.live { background: #4ade80; box-shadow: 0 0 6px #4ade80; animation: btcPulse 2s infinite; }
+        @keyframes btcPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        .btc-status-txt { font-size: 0.72rem; color: #666; font-weight: 500; }
+        .btc-ticker-price {
+          font-family: var(--font-head);
+          font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+          font-weight: 800;
+          color: white;
+          letter-spacing: -0.04em;
+          line-height: 1;
+          margin-bottom: 6px;
+          transition: color .2s;
+        }
+        .btc-ticker-price.up { color: #4ade80; }
+        .btc-ticker-price.down { color: #f87171; }
+        .btc-ticker-sub {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        .btc-change {
+          font-size: 0.82rem;
+          font-weight: 600;
+          padding: 2px 8px;
+          border-radius: 4px;
+          background: #1a1a1a;
+          color: #888;
+        }
+        .btc-change.up { background: rgba(74,222,128,0.12); color: #4ade80; }
+        .btc-change.down { background: rgba(248,113,113,0.12); color: #f87171; }
+        .btc-ticker-label {
+          font-size: 0.7rem;
+          color: #444;
+          font-weight: 400;
+        }
+      </style>
+      <script>
+      (function() {
+        var prices = [];
+        var lastPrice = null;
+        var sessionOpen = null;
+        var canvas = document.getElementById('btcMiniChart');
+        var ctx = canvas ? canvas.getContext('2d') : null;
+        var priceEl = document.getElementById('btcPrice');
+        var changeEl = document.getElementById('btcChange');
+        var dotEl = document.getElementById('btcDot');
+        var statusEl = document.getElementById('btcStatusTxt');
+        var flashTimer = null;
+
+        function formatPrice(p) {
+          return '$ ' + p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function drawChart() {
+          if (!ctx || prices.length < 2) return;
+          var dpr = window.devicePixelRatio || 1;
+          var w = canvas.offsetWidth;
+          var h = 52;
+          canvas.width = w * dpr;
+          canvas.height = h * dpr;
+          ctx.scale(dpr, dpr);
+
+          var min = Math.min.apply(null, prices);
+          var max = Math.max.apply(null, prices);
+          var range = max - min || 1;
+          var pad = 4;
+
+          var isUp = prices[prices.length - 1] >= prices[0];
+          var color = isUp ? '#4ade80' : '#f87171';
+
+          ctx.clearRect(0, 0, w, h);
+
+          // gradient fill
+          var grad = ctx.createLinearGradient(0, 0, 0, h);
+          grad.addColorStop(0, isUp ? 'rgba(74,222,128,0.18)' : 'rgba(248,113,113,0.18)');
+          grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+          ctx.beginPath();
+          for (var i = 0; i < prices.length; i++) {
+            var x = (i / (prices.length - 1)) * w;
+            var y = h - pad - ((prices[i] - min) / range) * (h - pad * 2);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.lineTo(w, h);
+          ctx.lineTo(0, h);
+          ctx.closePath();
+          ctx.fillStyle = grad;
+          ctx.fill();
+
+          // line
+          ctx.beginPath();
+          for (var i = 0; i < prices.length; i++) {
+            var x = (i / (prices.length - 1)) * w;
+            var y = h - pad - ((prices[i] - min) / range) * (h - pad * 2);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+          ctx.lineJoin = 'round';
+          ctx.stroke();
+        }
+
+        function connect() {
+          var ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@trade');
+
+          ws.onopen = function() {
+            dotEl.className = 'btc-dot live';
+            statusEl.textContent = 'Ao vivo';
+          };
+
+          ws.onmessage = function(e) {
+            var data = JSON.parse(e.data);
+            var p = parseFloat(data.p);
+            if (!p) return;
+
+            if (sessionOpen === null) sessionOpen = p;
+            prices.push(p);
+            if (prices.length > 80) prices.shift();
+
+            var dir = lastPrice === null ? 0 : (p > lastPrice ? 1 : p < lastPrice ? -1 : 0);
+            lastPrice = p;
+
+            priceEl.textContent = formatPrice(p);
+            priceEl.className = 'btc-ticker-price' + (dir === 1 ? ' up' : dir === -1 ? ' down' : '');
+
+            if (flashTimer) clearTimeout(flashTimer);
+            flashTimer = setTimeout(function() {
+              priceEl.className = 'btc-ticker-price';
+            }, 600);
+
+            var diff = p - sessionOpen;
+            var pct = (diff / sessionOpen) * 100;
+            var sign = diff >= 0 ? '+' : '';
+            changeEl.textContent = sign + pct.toFixed(2) + '%  ' + sign + formatPrice(Math.abs(diff));
+            changeEl.className = 'btc-change ' + (diff >= 0 ? 'up' : 'down');
+
+            drawChart();
+          };
+
+          ws.onclose = function() {
+            dotEl.className = 'btc-dot';
+            statusEl.textContent = 'Reconectando…';
+            setTimeout(connect, 3000);
+          };
+
+          ws.onerror = function() { ws.close(); };
+        }
+
+        if (canvas) {
+          canvas.width = canvas.offsetWidth;
+          connect();
+          window.addEventListener('resize', drawChart);
+        }
+      })();
+      </script>
       <div class="stat-row">
         <div class="stat-card">
           <div class="stat-value">Especialistas</div>
