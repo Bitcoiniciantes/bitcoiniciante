@@ -1017,10 +1017,15 @@
 
 .btc-col-item{
   flex: 1;
-  padding: 18px 20px 16px;
+  padding: 18px 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+/* BTC/BRL precisa de mais espaço — número maior */
+.btc-col-item:first-child{
+  flex: 1.5;
 }
 
 .btc-col-divider{
@@ -1038,11 +1043,12 @@
 }
 
 .bci-price{
-  font-size: 1.18rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -.02em;
-  line-height: 1.1;
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 .bci-change{
