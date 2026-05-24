@@ -593,333 +593,761 @@
     </div>
     <div class="hero-visual">
       <!-- Widget Cotação BTC/USD em Tempo Real -->
-<div class="btc-ticker-card" id="btcTickerCard">
-        <div class="btc-ticker-top">
-          <div class="btc-ticker-coin">
-            <div class="btc-ticker-icon">₿</div>
-            <div>
-              <div class="btc-ticker-name">Bitcoin</div>
-              <div class="btc-ticker-pair">BTC / USD</div>
-            </div>
-          </div>
-          <div class="btc-ticker-status">
-            <span class="btc-dot" id="btcDot"></span>
-            <span class="btc-status-txt" id="btcStatusTxt">Conectando…</span>
-          </div>
-        </div>
-        <div class="btc-ticker-price" id="btcPrice">$ —</div>
-        <div class="btc-ticker-sub">
-          <div class="btc-sub-left">
-            <span class="btc-change" id="btcChange">—</span>
-            <span class="btc-price-brl" id="btcPriceBrl">R$ —</span>
-            <span class="btc-price-usd-brl" id="btcPriceUsdBrl">USD —</span>
-            <span class="btc-price-mstr" id="btcPriceMstr">MSTR $ —</span>
-          </div>
-          <span class="btc-ticker-label">variação 24h</span>
-        </div>
-        <canvas id="btcMiniChart" height="52" style="width:100%;margin-top:14px;display:block;"></canvas>
+<div class="btc-ultra-card" id="btcTickerCard">
+
+  <!-- Glow decor -->
+  <div class="btc-bg-glow btc-glow-1"></div>
+  <div class="btc-bg-glow btc-glow-2"></div>
+
+  <!-- Header -->
+  <div class="btc-top">
+    <div class="btc-coin">
+      <div class="btc-icon-wrap">
+        <div class="btc-icon">₿</div>
       </div>
-      
-      <style>
-        .btc-ticker-card {
-          background: var(--black);
-          border-radius: 14px;
-          padding: 20px 24px 16px;
-          border: 1px solid #222;
-          position: relative;
-          overflow: hidden;
-        }
-        .btc-ticker-top {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 12px;
-        }
-        .btc-ticker-coin {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-        .btc-ticker-icon {
-          width: 36px; height: 36px;
-          background: var(--orange);
-          border-radius: 50%;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 1.1rem;
-          font-weight: 800;
-          color: white;
-          flex-shrink: 0;
-        }
-        .btc-ticker-name {
-          font-family: var(--font-head);
-          font-weight: 700;
-          font-size: 0.95rem;
-          color: white;
-          line-height: 1.2;
-        }
-        .btc-ticker-pair {
-          font-size: 0.72rem;
-          color: #666;
-          font-weight: 500;
-          letter-spacing: 0.05em;
-        }
-        .btc-ticker-status {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
-        .btc-dot {
-          width: 7px; height: 7px;
-          border-radius: 50%;
-          background: #555;
-          display: inline-block;
-          transition: background .3s;
-        }
-        .btc-dot.live { background: #4ade80; box-shadow: 0 0 6px #4ade80; animation: btcPulse 2s infinite; }
-        @keyframes btcPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-        
-        .btc-status-txt { font-size: 0.72rem; color: #4ade80; font-weight: 500; }
-        
-        .btc-ticker-price {
-          font-family: var(--font-body);
-          font-size: clamp(2rem, 3.5vw, 2.6rem);
-          font-weight: 700;
-          color: white;
-          letter-spacing: -0.01em;
-          line-height: 1;
-          margin-bottom: 12px;
-          transition: color .2s;
-        }
-        .btc-ticker-price.up { color: #4ade80; }
-        .btc-ticker-price.down { color: #f87171; }
-        
-        .btc-ticker-sub {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-        .btc-sub-left {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          flex-wrap: wrap;
-        }
-        .btc-change {
-          font-size: 0.82rem;
-          font-weight: 600;
-          padding: 3px 8px;
-          border-radius: 4px;
-          background: #1a1a1a;
-          color: #888;
-        }
-        .btc-change.up { background: rgba(74,222,128,0.12); color: #4ade80; }
-        .btc-change.down { background: rgba(248,113,113,0.12); color: #f87171; }
-        
-        .btc-price-brl {
-          font-size: 0.82rem;
-          font-weight: 600;
-          color: var(--orange);
-          background: #1a1a1a;
-          padding: 3px 8px;
-          border-radius: 4px;
+
+      <div>
+        <div class="btc-name">Bitcoin Live Market</div>
+        <div class="btc-pair">BTC / USD • REAL TIME</div>
+      </div>
+    </div>
+
+    <div class="btc-status">
+      <span class="btc-live-dot" id="btcDot"></span>
+      <span class="btc-status-text" id="btcStatusTxt">Conectando...</span>
+    </div>
+  </div>
+
+  <!-- Main price -->
+  <div class="btc-price-area">
+    <div class="btc-price" id="btcPrice">$ —</div>
+    <div class="btc-price-shadow"></div>
+  </div>
+
+  <!-- Stats -->
+  <div class="btc-stats-grid">
+
+    <div class="btc-stat-card change-card">
+      <div class="btc-stat-label">Variação 1H</div>
+      <div class="btc-change" id="btcChange">—</div>
+    </div>
+
+    <div class="btc-stat-card">
+      <div class="btc-stat-label">Bitcoin em BRL</div>
+      <div class="btc-stat-value" id="btcPriceBrl">R$ —</div>
+    </div>
+
+    <div class="btc-stat-card">
+      <div class="btc-stat-label">USD/BRL</div>
+      <div class="btc-stat-value" id="btcPriceUsdBrl">USD —</div>
+    </div>
+
+    <div class="btc-stat-card mstr-card">
+      <div class="btc-stat-label">MicroStrategy</div>
+      <div class="btc-stat-value mstr" id="btcPriceMstr">MSTR $ —</div>
+    </div>
+
+  </div>
+
+  <!-- Chart -->
+  <div class="btc-chart-box">
+    <canvas id="btcMiniChart" height="90"></canvas>
+  </div>
+
+  <!-- Footer -->
+  <div class="btc-footer">
+    <div class="btc-footer-left">
+      <span class="btc-pulse"></span>
+      <span>LIVE STREAM</span>
+    </div>
+
+    <div class="btc-footer-right">
+      TIMEFRAME • 1H
+    </div>
+  </div>
+
+</div>
+
+<style>
+
+:root{
+  --btc-orange: #ff8a00;
+  --btc-yellow: #ffcf33;
+  --btc-green: #00ffae;
+  --btc-red: #ff4d6d;
+  --btc-blue: #00c6ff;
+  --btc-purple: #8b5cf6;
+  --btc-bg: #090909;
+  --btc-card: rgba(18,18,18,.82);
+  --btc-border: rgba(255,255,255,.08);
+}
+
+/* CARD */
+
+.btc-ultra-card{
+  position: relative;
+  overflow: hidden;
+
+  width: 100%;
+  max-width: 560px;
+  margin: auto;
+
+  padding: 26px;
+
+  border-radius: 28px;
+
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,.04),
+      rgba(255,255,255,.01)
+    ),
+    #070707;
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.55),
+    inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+/* BACKGROUND GLOW */
+
+.btc-bg-glow{
+  position:absolute;
+  border-radius:50%;
+  filter: blur(90px);
+  opacity:.22;
+  pointer-events:none;
+}
+
+.btc-glow-1{
+  width:240px;
+  height:240px;
+  background: var(--btc-orange);
+  top:-120px;
+  right:-80px;
+}
+
+.btc-glow-2{
+  width:200px;
+  height:200px;
+  background: var(--btc-blue);
+  bottom:-90px;
+  left:-60px;
+}
+
+/* TOP */
+
+.btc-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:24px;
+}
+
+.btc-coin{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.btc-icon-wrap{
+  padding:2px;
+  border-radius:50%;
+  background: linear-gradient(135deg,var(--btc-yellow),var(--btc-orange));
+}
+
+.btc-icon{
+  width:52px;
+  height:52px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  background:#111;
+
+  color:white;
+  font-size:1.4rem;
+  font-weight:900;
+
+  box-shadow:
+    0 0 20px rgba(255,138,0,.35);
+}
+
+.btc-name{
+  color:white;
+  font-size:1.1rem;
+  font-weight:800;
+  letter-spacing:.02em;
+}
+
+.btc-pair{
+  margin-top:3px;
+  color:#8b8b8b;
+  font-size:.72rem;
+  letter-spacing:.18em;
+}
+
+/* STATUS */
+
+.btc-status{
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  padding:8px 14px;
+
+  border-radius:999px;
+
+  background: rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.06);
+}
+
+.btc-live-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#666;
+}
+
+.btc-live-dot.live{
+  background: var(--btc-green);
+
+  box-shadow:
+    0 0 10px var(--btc-green),
+    0 0 20px var(--btc-green);
+
+  animation: livePulse 1.5s infinite;
+}
+
+@keyframes livePulse{
+  0%,100%{ transform:scale(1); opacity:1; }
+  50%{ transform:scale(1.25); opacity:.6; }
+}
+
+.btc-status-text{
+  color:#d6d6d6;
+  font-size:.75rem;
+  font-weight:700;
+}
+
+/* PRICE */
+
+.btc-price-area{
+  position:relative;
+  margin-bottom:24px;
+}
+
+.btc-price{
+  position:relative;
+  z-index:2;
+
+  font-size: clamp(2.8rem, 5vw, 4.3rem);
+  line-height:1;
+  font-weight:900;
+
+  color:white;
+
+  letter-spacing:-0.04em;
+
+  transition:.25s ease;
+}
+
+.btc-price.up{
+  color: var(--btc-green);
+  text-shadow: 0 0 25px rgba(0,255,174,.35);
+}
+
+.btc-price.down{
+  color: var(--btc-red);
+  text-shadow: 0 0 25px rgba(255,77,109,.35);
+}
+
+.btc-price-shadow{
+  position:absolute;
+  inset:auto 0 -18px 0;
+  height:50px;
+
+  background: radial-gradient(circle,
+    rgba(255,138,0,.22),
+    transparent 70%);
+
+  filter: blur(25px);
+}
+
+/* GRID */
+
+.btc-stats-grid{
+  display:grid;
+  grid-template-columns: repeat(2,1fr);
+  gap:12px;
+
+  margin-bottom:20px;
+}
+
+.btc-stat-card{
+  position:relative;
+
+  padding:14px;
+
+  border-radius:18px;
+
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,.05),
+      rgba(255,255,255,.02)
+    );
+
+  border:1px solid rgba(255,255,255,.06);
+
+  overflow:hidden;
+}
+
+.btc-stat-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,.06),
+    transparent
+  );
+
+  transform: translateX(-100%);
+  transition: .8s;
+}
+
+.btc-stat-card:hover::before{
+  transform: translateX(100%);
+}
+
+.btc-stat-label{
+  color:#8c8c8c;
+  font-size:.7rem;
+  letter-spacing:.08em;
+  margin-bottom:8px;
+  text-transform:uppercase;
+}
+
+.btc-stat-value{
+  color:white;
+  font-size:1rem;
+  font-weight:800;
+}
+
+.change-card{
+  background:
+    linear-gradient(135deg,
+      rgba(0,255,174,.08),
+      rgba(0,198,255,.04)
+    );
+}
+
+.btc-change{
+  font-size:1.2rem;
+  font-weight:900;
+}
+
+.btc-change.up{
+  color: var(--btc-green);
+}
+
+.btc-change.down{
+  color: var(--btc-red);
+}
+
+.mstr{
+  color:#c084fc;
+}
+
+/* CHART */
+
+.btc-chart-box{
+  position:relative;
+
+  padding:14px;
+
+  border-radius:22px;
+
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,.03),
+      rgba(255,255,255,.015)
+    );
+
+  border:1px solid rgba(255,255,255,.06);
+
+  margin-bottom:18px;
+}
+
+#btcMiniChart{
+  width:100%;
+  display:block;
+}
+
+/* FOOTER */
+
+.btc-footer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  font-size:.7rem;
+  letter-spacing:.14em;
+
+  color:#8c8c8c;
+}
+
+.btc-footer-left{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.btc-pulse{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--btc-green);
+
+  box-shadow:0 0 12px var(--btc-green);
+
+  animation: livePulse 1.5s infinite;
+}
+
+.btc-footer-right{
+  color: var(--btc-blue);
+  font-weight:700;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:640px){
+
+  .btc-ultra-card{
+    padding:20px;
+    border-radius:24px;
+  }
+
+  .btc-stats-grid{
+    grid-template-columns:1fr;
+  }
+
+  .btc-price{
+    font-size:2.8rem;
+  }
+
+}
+
+</style>
+
+<script>
+(function() {
+
+  var candles = [];
+  var lastPrice = null;
+
+  var canvas = document.getElementById('btcMiniChart');
+  var ctx = canvas ? canvas.getContext('2d') : null;
+
+  var priceEl = document.getElementById('btcPrice');
+  var changeEl = document.getElementById('btcChange');
+
+  var brlEl = document.getElementById('btcPriceBrl');
+  var usdBrlEl = document.getElementById('btcPriceUsdBrl');
+  var mstrEl = document.getElementById('btcPriceMstr');
+
+  var dotEl = document.getElementById('btcDot');
+  var statusEl = document.getElementById('btcStatusTxt');
+
+  var flashTimer = null;
+
+  function formatUSD(p){
+    return '$ ' + p.toLocaleString('en-US',{
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    });
+  }
+
+  function formatBRL(p){
+    return 'R$ ' + p.toLocaleString('pt-BR',{
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    });
+  }
+
+  function drawChart(){
+
+    if(!ctx || candles.length < 2) return;
+
+    var dpr = window.devicePixelRatio || 1;
+
+    var w = canvas.offsetWidth;
+    var h = 90;
+
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+
+    ctx.scale(dpr,dpr);
+
+    ctx.clearRect(0,0,w,h);
+
+    var min = Math.min(...candles.map(c => c.l));
+    var max = Math.max(...candles.map(c => c.h));
+
+    var range = max - min || 1;
+
+    var spacing = w / candles.length;
+    var candleWidth = spacing * .62;
+
+    for(var i=0;i<candles.length;i++){
+
+      var c = candles[i];
+
+      var x = i * spacing + spacing/2;
+
+      var yOpen  = h - ((c.o - min)/range)*h;
+      var yClose = h - ((c.c - min)/range)*h;
+      var yHigh  = h - ((c.h - min)/range)*h;
+      var yLow   = h - ((c.l - min)/range)*h;
+
+      var isUp = c.c >= c.o;
+
+      var color = isUp ? '#00ffae' : '#ff4d6d';
+
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 12;
+
+      /* Wick */
+
+      ctx.beginPath();
+      ctx.lineWidth = 1.4;
+      ctx.moveTo(x,yHigh);
+      ctx.lineTo(x,yLow);
+      ctx.stroke();
+
+      /* Body */
+
+      var bodyY = Math.min(yOpen,yClose);
+      var bodyH = Math.max(Math.abs(yClose-yOpen),2);
+
+      ctx.fillRect(
+        x - candleWidth/2,
+        bodyY,
+        candleWidth,
+        bodyH
+      );
+
+    }
+  }
+
+  async function fetchChartData(){
+
+    try{
+
+      var res = await fetch(
+        'https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=24'
+      );
+
+      var data = await res.json();
+
+      candles = data.map(function(k){
+
+        return {
+          o: parseFloat(k[1]),
+          h: parseFloat(k[2]),
+          l: parseFloat(k[3]),
+          c: parseFloat(k[4])
+        };
+
+      });
+
+      drawChart();
+
+    } catch(e){
+      console.error(e);
+    }
+  }
+
+  async function fetchMSTR(){
+
+    try{
+
+      var url = encodeURIComponent(
+        'https://query1.finance.yahoo.com/v8/finance/chart/MSTR'
+      );
+
+      var res = await fetch(
+        'https://api.allorigins.win/get?url=' + url
+      );
+
+      var json = await res.json();
+
+      var data = JSON.parse(json.contents);
+
+      var price =
+        data.chart.result[0].meta.regularMarketPrice;
+
+      if(price){
+
+        mstrEl.textContent =
+          'MSTR $ ' + price.toLocaleString('en-US',{
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+          });
+
+      }
+
+    }catch(e){
+      console.error(e);
+    }
+  }
+
+  function connect(){
+
+    var ws = new WebSocket(
+      'wss://stream.binance.com:9443/stream?streams=btcusdt@ticker/btcbrl@ticker/usdtbrl@ticker'
+    );
+
+    ws.onopen = function(){
+
+      dotEl.className = 'btc-live-dot live';
+      statusEl.textContent = 'AO VIVO';
+
+    };
+
+    ws.onmessage = function(e){
+
+      var payload = JSON.parse(e.data);
+
+      var stream = payload.stream;
+      var data = payload.data;
+
+      if(stream === 'btcusdt@ticker'){
+
+        var p = parseFloat(data.c);
+        var pct = parseFloat(data.P);
+
+        if(candles.length > 0){
+
+          var lastCandle =
+            candles[candles.length - 1];
+
+          lastCandle.c = p;
+
+          if(p > lastCandle.h)
+            lastCandle.h = p;
+
+          if(p < lastCandle.l)
+            lastCandle.l = p;
+
+          drawChart();
         }
 
-        .btc-price-usd-brl {
-          font-size: 0.82rem;
-          font-weight: 600;
-          color: var(--orange);
-          background: #1a1a1a;
-          padding: 3px 8px;
-          border-radius: 4px;
-        }
-        
-        /* Novo estilo para a MSTR */
-        .btc-price-mstr {
-          font-size: 0.82rem;
-          font-weight: 600;
-          color: #c084fc; /* Roxo suave */
-          background: #1a1a1a;
-          padding: 3px 8px;
-          border-radius: 4px;
-        }
-        
-        .btc-ticker-label {
-          font-size: 0.7rem;
-          color: #3b82f6; 
-          font-weight: 500;
-        }
-      </style>
-      
-      <script>
-      (function() {
-        var candles = []; 
-        var lastPrice = null;
-        var canvas = document.getElementById('btcMiniChart');
-        var ctx = canvas ? canvas.getContext('2d') : null;
-        var priceEl = document.getElementById('btcPrice');
-        var changeEl = document.getElementById('btcChange');
-        var brlEl = document.getElementById('btcPriceBrl');
-        var usdBrlEl = document.getElementById('btcPriceUsdBrl');
-        var mstrEl = document.getElementById('btcPriceMstr');
-        var dotEl = document.getElementById('btcDot');
-        var statusEl = document.getElementById('btcStatusTxt');
-        var flashTimer = null;
+        var dir =
+          lastPrice === null
+            ? 0
+            : p > lastPrice
+              ? 1
+              : p < lastPrice
+                ? -1
+                : 0;
 
-        function formatUSD(p) {
-          return '$ ' + p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-        function formatBRL(p) {
-          return 'R$ ' + p.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
+        lastPrice = p;
 
-        function drawChart() {
-          if (!ctx || candles.length < 2) return;
-          var dpr = window.devicePixelRatio || 1;
-          var w = canvas.offsetWidth;
-          var h = 52;
-          canvas.width = w * dpr;
-          canvas.height = h * dpr;
-          ctx.scale(dpr, dpr);
+        priceEl.textContent = formatUSD(p);
 
-          var min = Math.min.apply(null, candles.map(function(c) { return c.l; }));
-          var max = Math.max.apply(null, candles.map(function(c) { return c.h; }));
-          var range = max - min || 1;
-          var pad = 4;
+        priceEl.className =
+          'btc-price ' +
+          (dir === 1
+            ? 'up'
+            : dir === -1
+              ? 'down'
+              : '');
 
-          ctx.clearRect(0, 0, w, h);
+        if(flashTimer)
+          clearTimeout(flashTimer);
 
-          var candleWidth = (w / candles.length) * 0.7; 
-          var spacing = w / candles.length; 
+        flashTimer = setTimeout(function(){
 
-          for (var i = 0; i < candles.length; i++) {
-            var c = candles[i];
-            var x = i * spacing + spacing / 2; 
+          priceEl.className = 'btc-price';
 
-            var yOpen = h - pad - ((c.o - min) / range) * (h - pad * 2);
-            var yClose = h - pad - ((c.c - min) / range) * (h - pad * 2);
-            var yHigh = h - pad - ((c.h - min) / range) * (h - pad * 2);
-            var yLow = h - pad - ((c.l - min) / range) * (h - pad * 2);
+        },700);
 
-            var isUp = c.c >= c.o;
-            var color = isUp ? '#4ade80' : '#f87171';
+        changeEl.textContent =
+          (pct >= 0 ? '+' : '') +
+          pct.toFixed(2) + '%';
 
-            ctx.strokeStyle = color;
-            ctx.fillStyle = color;
-            ctx.lineWidth = 1.5; 
+        changeEl.className =
+          'btc-change ' +
+          (pct >= 0 ? 'up' : 'down');
 
-            ctx.beginPath();
-            ctx.moveTo(x, yHigh);
-            ctx.lineTo(x, yLow);
-            ctx.stroke();
+      }
 
-            var bodyY = Math.min(yOpen, yClose);
-            var bodyH = Math.max(Math.abs(yClose - yOpen), 2); 
-            ctx.fillRect(x - candleWidth / 2, bodyY, candleWidth, bodyH);
-          }
-        }
+      else if(stream === 'btcbrl@ticker'){
 
-        async function fetchChartData() {
-          try {
-            var res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=24');
-            var data = await res.json();
-            candles = data.map(function(k) { 
-              return { o: parseFloat(k[1]), h: parseFloat(k[2]), l: parseFloat(k[3]), c: parseFloat(k[4]) };
-            }); 
-            drawChart();
-          } catch(e) {
-            console.error("Erro ao carregar gráfico histórico", e);
-          }
-        }
+        brlEl.textContent =
+          formatBRL(parseFloat(data.c));
 
-        // Nova função que busca o preço da MSTR via proxy público
-        async function fetchMSTR() {
-          try {
-            var url = encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/MSTR');
-            var res = await fetch('https://api.allorigins.win/get?url=' + url);
-            var json = await res.json();
-            var data = JSON.parse(json.contents);
-            var price = data.chart.result[0].meta.regularMarketPrice;
-            if (price) {
-              mstrEl.textContent = 'MSTR $ ' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      else if(stream === 'usdtbrl@ticker'){
+
+        usdBrlEl.textContent =
+          'USD ' +
+          parseFloat(data.c).toLocaleString(
+            'pt-BR',
+            {
+              minimumFractionDigits:2,
+              maximumFractionDigits:2
             }
-          } catch(e) {
-            console.error("Erro ao carregar MSTR", e);
-          }
-        }
+          );
+      }
 
-        function connect() {
-          var ws = new WebSocket('wss://stream.binance.com:9443/stream?streams=btcusdt@ticker/btcbrl@ticker/usdtbrl@ticker');
+    };
 
-          ws.onopen = function() {
-            dotEl.className = 'btc-dot live';
-            statusEl.textContent = 'Ao vivo';
-          };
+    ws.onclose = function(){
 
-          ws.onmessage = function(e) {
-            var payload = JSON.parse(e.data);
-            var stream = payload.stream;
-            var data = payload.data;
+      dotEl.className = 'btc-live-dot';
+      statusEl.textContent = 'RECONECTANDO';
 
-            if (stream === 'btcusdt@ticker') {
-              var p = parseFloat(data.c); 
-              var pct = parseFloat(data.P); 
-              
-              if (candles.length > 0) {
-                var lastCandle = candles[candles.length - 1];
-                lastCandle.c = p;
-                if (p > lastCandle.h) lastCandle.h = p; 
-                if (p < lastCandle.l) lastCandle.l = p; 
-                drawChart();
-              }
+      setTimeout(connect,3000);
 
-              var dir = lastPrice === null ? 0 : (p > lastPrice ? 1 : p < lastPrice ? -1 : 0);
-              lastPrice = p;
+    };
 
-              priceEl.textContent = formatUSD(p);
-              priceEl.className = 'btc-ticker-price' + (dir === 1 ? ' up' : dir === -1 ? ' down' : '');
+    ws.onerror = function(){
+      ws.close();
+    };
 
-              if (flashTimer) clearTimeout(flashTimer);
-              flashTimer = setTimeout(function() {
-                priceEl.className = 'btc-ticker-price';
-              }, 600);
+  }
 
-              var sign = pct >= 0 ? '+' : '';
-              changeEl.textContent = sign + pct.toFixed(2) + '%';
-              changeEl.className = 'btc-change ' + (pct >= 0 ? 'up' : 'down');
-            } 
-            else if (stream === 'btcbrl@ticker') {
-              var pBrl = parseFloat(data.c);
-              brlEl.textContent = formatBRL(pBrl);
-            }
-            else if (stream === 'usdtbrl@ticker') {
-              var pUsdBrl = parseFloat(data.c);
-              usdBrlEl.textContent = 'USD ' + pUsdBrl.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
-          };
+  if(canvas){
 
-          ws.onclose = function() {
-            dotEl.className = 'btc-dot';
-            statusEl.textContent = 'Reconectando…';
-            setTimeout(connect, 3000);
-          };
+    canvas.width = canvas.offsetWidth;
 
-          ws.onerror = function() { ws.close(); };
-        }
+    fetchChartData().then(connect);
 
-        if (canvas) {
-          canvas.width = canvas.offsetWidth;
-          
-          // Inicia as chamadas ao carregar a página
-          fetchChartData().then(connect);
-          fetchMSTR();
-          
-          // Atualiza a cotação da MSTR a cada 5 minutos
-          setInterval(fetchMSTR, 300000); 
-          
-          window.addEventListener('resize', drawChart);
-        }
-      })();
-      </script>
+    fetchMSTR();
+
+    setInterval(fetchMSTR,300000);
+
+    window.addEventListener('resize',drawChart);
+
+  }
+
+})();
+</script>
       <div class="stat-row">
         <div class="stat-card">
           <div class="stat-value">Especialistas</div>
