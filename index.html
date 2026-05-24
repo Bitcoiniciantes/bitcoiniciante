@@ -645,6 +645,8 @@
       $ —
     </div>
 
+    <div class="btc-change-badge" id="btcChange24h">—</div>
+
   </div>
 
   <!-- GRID 3 COLUNAS — estilo imagem referência -->
@@ -979,8 +981,37 @@
 
   margin-bottom:14px;
 
-  /* ↓ CENTRALIZA */
-  text-align:center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btc-change-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 8px;
+  letter-spacing: 0.01em;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.5);
+  transition: .3s ease;
+  white-space: nowrap;
+  align-self: center;
+  margin-top: 4px;
+}
+
+.btc-change-badge.up{
+  background: rgba(0,255,174,0.15);
+  color: var(--btc-green);
+}
+
+.btc-change-badge.down{
+  background: rgba(255,77,109,0.15);
+  color: var(--btc-red);
 }
 
 .btc-price{
@@ -1201,6 +1232,7 @@
 
   var priceEl = document.getElementById('btcPrice');
   var changeEl = document.getElementById('btcChange');
+  var change24hEl = document.getElementById('btcChange24h');
 
   var brlEl = document.getElementById('btcPriceBrl');
   var brlChangeEl = document.getElementById('btcChangeBrl');
@@ -1463,6 +1495,11 @@
               ? 'down'
               : ''
           );
+
+        if(change24hEl){
+          change24hEl.textContent = (pct >= 0 ? '▲ +' : '▼ ') + pct.toFixed(2) + '% 24h';
+          change24hEl.className = 'btc-change-badge ' + (pct >= 0 ? 'up' : 'down');
+        }
 
         if(flashTimer)
           clearTimeout(flashTimer);
