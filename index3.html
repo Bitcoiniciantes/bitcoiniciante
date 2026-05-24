@@ -593,6 +593,628 @@
     </div>
     <div class="hero-visual">
       <!-- Widget Cotação BTC/USD em Tempo Real -->
+<div class="btc-ultra-card" id="btcTickerCard">
+
+  <!-- GLOW -->
+  <div class="btc-bg-glow btc-glow-1"></div>
+  <div class="btc-bg-glow btc-glow-2"></div>
+
+  <!-- TOPO -->
+  <div class="btc-top">
+
+    <div class="btc-coin">
+
+      <div class="btc-icon-wrap">
+        <div class="btc-icon">₿</div>
+      </div>
+
+      <div>
+        <div class="btc-name">Bitcoin Live Market</div>
+        <div class="btc-pair">BTC / USD • REAL TIME</div>
+      </div>
+
+    </div>
+
+    <div class="btc-status">
+      <span class="btc-live-dot" id="btcDot"></span>
+      <span class="btc-status-text" id="btcStatusTxt">
+        AO VIVO
+      </span>
+    </div>
+
+  </div>
+
+  <!-- PREÇO -->
+  <div class="btc-price-area">
+
+    <div class="btc-price" id="btcPrice">
+      $ —
+    </div>
+
+  </div>
+
+  <!-- GRID -->
+  <div class="btc-stats-grid">
+
+    <!-- VARIAÇÃO -->
+    <div class="btc-stat-card change-card">
+
+      <div class="btc-stat-label">
+        VARIAÇÃO 24HS
+      </div>
+
+      <div class="btc-change" id="btcChange">
+        —
+      </div>
+
+    </div>
+
+    <!-- BTC BRL -->
+    <div class="btc-stat-card">
+
+      <div class="btc-stat-label">
+        BITCOIN EM BRL
+      </div>
+
+      <div class="btc-stat-value orange" id="btcPriceBrl">
+        R$ —
+      </div>
+
+    </div>
+
+    <!-- USD -->
+    <div class="btc-stat-card">
+
+      <div class="btc-stat-label">
+        USD/BRL
+      </div>
+
+      <div class="btc-stat-value orange" id="btcPriceUsdBrl">
+        USD —
+      </div>
+
+    </div>
+
+    <!-- MSTR -->
+    <div class="btc-stat-card">
+
+      <div class="btc-stat-label">
+        MICROSTRATEGY
+      </div>
+
+      <div class="btc-stat-value purple" id="btcPriceMstr">
+        MSTR $ —
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- CHART -->
+  <div class="btc-chart-box">
+
+    <canvas id="btcMiniChart" height="54"></canvas>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="btc-footer">
+
+    <div class="btc-footer-left">
+      <span class="btc-pulse"></span>
+      <span>LIVE STREAM</span>
+    </div>
+
+    <div class="btc-footer-right">
+      TIMEFRAME • 1H
+    </div>
+
+  </div>
+
+</div>
+
+<style>
+
+/* =====================================
+   BASE
+===================================== */
+
+:root{
+
+  --btc-orange: #ff9f1a;
+  --btc-yellow: #ffcc00;
+
+  --btc-green: #00ffae;
+  --btc-red: #ff4d6d;
+
+  --btc-blue: #00c6ff;
+
+  --btc-purple: #c084fc;
+}
+
+/* =====================================
+   CARD PRINCIPAL
+===================================== */
+
+.btc-ultra-card{
+
+  position: relative;
+  overflow: hidden;
+
+  width: 100%;
+
+  /* ↓ ESTREITADO */
+  max-width: 500px;
+
+  /* ↓ CENTRALIZA */
+  margin: 32px auto;
+
+  /* ↓ MENOS ALTURA */
+  padding: 16px 16px 12px;
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.05),
+      rgba(255,255,255,.015)
+    ),
+    #070707;
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.04);
+
+  backdrop-filter: blur(14px);
+}
+
+/* =====================================
+   GLOW
+===================================== */
+
+.btc-bg-glow{
+
+  position:absolute;
+
+  border-radius:50%;
+
+  filter: blur(90px);
+
+  opacity:.15;
+
+  pointer-events:none;
+}
+
+.btc-glow-1{
+
+  width:220px;
+  height:220px;
+
+  background: var(--btc-orange);
+
+  top:-120px;
+  right:-80px;
+}
+
+.btc-glow-2{
+
+  width:180px;
+  height:180px;
+
+  background: var(--btc-blue);
+
+  bottom:-90px;
+  left:-60px;
+}
+
+/* =====================================
+   TOPO
+===================================== */
+
+.btc-top{
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  margin-bottom:14px;
+}
+
+.btc-coin{
+
+  display:flex;
+  align-items:center;
+
+  gap:12px;
+}
+
+/* =====================================
+   ÍCONE
+===================================== */
+
+.btc-icon-wrap{
+
+  padding:2px;
+
+  border-radius:50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--btc-yellow),
+      var(--btc-orange)
+    );
+}
+
+.btc-icon{
+
+  width:44px;
+  height:44px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  background:#0d0d0d;
+
+  color:#fff;
+
+  font-size:1.15rem;
+  font-weight:900;
+
+  box-shadow:
+    0 0 20px rgba(255,159,26,.22);
+}
+
+/* =====================================
+   TEXTOS
+===================================== */
+
+.btc-name{
+
+  color:#fff;
+
+  font-size:1rem;
+  font-weight:800;
+}
+
+.btc-pair{
+
+  color:#8d8d8d;
+
+  font-size:.66rem;
+
+  letter-spacing:.16em;
+
+  margin-top:2px;
+}
+
+/* =====================================
+   STATUS
+===================================== */
+
+.btc-status{
+
+  display:flex;
+  align-items:center;
+
+  gap:8px;
+
+  padding:7px 12px;
+
+  border-radius:999px;
+
+  background: rgba(255,255,255,.04);
+
+  border:1px solid rgba(255,255,255,.05);
+}
+
+.btc-live-dot{
+
+  width:8px;
+  height:8px;
+
+  border-radius:50%;
+
+  background:#666;
+}
+
+.btc-live-dot.live{
+
+  background: var(--btc-green);
+
+  box-shadow:
+    0 0 10px var(--btc-green),
+    0 0 20px var(--btc-green);
+
+  animation: pulse 1.4s infinite;
+}
+
+@keyframes pulse{
+
+  0%,100%{
+    transform:scale(1);
+    opacity:1;
+  }
+
+  50%{
+    transform:scale(1.2);
+    opacity:.6;
+  }
+}
+
+.btc-status-text{
+
+  color:#fff;
+
+  font-size:.72rem;
+  font-weight:700;
+}
+
+/* =====================================
+   PREÇO PRINCIPAL
+===================================== */
+
+.btc-price-area{
+
+  margin-bottom:14px;
+
+  /* ↓ CENTRALIZA */
+  text-align:center;
+}
+
+.btc-price{
+
+  font-size: clamp(2.6rem,4vw,4rem);
+
+  line-height:1;
+
+  font-weight:900;
+
+  letter-spacing:-0.05em;
+
+  color:#fff;
+
+  transition:.25s ease;
+}
+
+.btc-price.up{
+
+  color: var(--btc-green);
+
+  text-shadow:
+    0 0 20px rgba(0,255,174,.30);
+}
+
+.btc-price.down{
+
+  color: var(--btc-red);
+
+  text-shadow:
+    0 0 20px rgba(255,77,109,.30);
+}
+
+/* =====================================
+   GRID
+===================================== */
+
+.btc-stats-grid{
+
+  display:grid;
+
+  grid-template-columns:repeat(2,1fr);
+
+  gap:10px;
+
+  margin-bottom:12px;
+}
+
+/* =====================================
+   CARDS INTERNOS
+===================================== */
+
+.btc-stat-card{
+
+  /* ↓ MAIS ESTREITOS */
+  min-height:68px;
+
+  padding:10px 12px;
+
+  border-radius:16px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.04),
+      rgba(255,255,255,.015)
+    );
+
+  border:1px solid rgba(255,255,255,.06);
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+
+  /* ↓ CENTRALIZA */
+  text-align:center;
+}
+
+/* =====================================
+   LABELS
+===================================== */
+
+.btc-stat-label{
+
+  color:#8d8d8d;
+
+  font-size:.63rem;
+
+  letter-spacing:.12em;
+
+  text-transform:uppercase;
+
+  margin-bottom:7px;
+}
+
+/* =====================================
+   VALORES
+===================================== */
+
+.btc-stat-value{
+
+  color:#fff;
+
+  font-size:1rem;
+
+  font-weight:800;
+}
+
+.orange{
+
+  color: var(--btc-orange);
+
+  text-shadow:
+    0 0 12px rgba(255,159,26,.18);
+}
+
+.purple{
+  color: var(--btc-purple);
+}
+
+/* =====================================
+   VARIAÇÃO
+===================================== */
+
+.change-card{
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(0,255,174,.08),
+      rgba(0,198,255,.04)
+    );
+}
+
+.btc-change{
+
+  font-size:1.35rem;
+  font-weight:900;
+}
+
+.btc-change.up{
+  color: var(--btc-green);
+}
+
+.btc-change.down{
+  color: var(--btc-red);
+}
+
+/* =====================================
+   CHART
+===================================== */
+
+.btc-chart-box{
+
+  padding:8px 10px;
+
+  border-radius:18px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,255,174,.03),
+      rgba(255,255,255,.01)
+    );
+
+  border:1px solid rgba(255,255,255,.05);
+
+  margin-bottom:10px;
+}
+
+#btcMiniChart{
+
+  width:100%;
+  display:block;
+}
+
+/* =====================================
+   FOOTER
+===================================== */
+
+.btc-footer{
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  font-size:.66rem;
+
+  letter-spacing:.14em;
+
+  color:#8d8d8d;
+}
+
+.btc-footer-left{
+
+  display:flex;
+  align-items:center;
+
+  gap:8px;
+}
+
+.btc-pulse{
+
+  width:8px;
+  height:8px;
+
+  border-radius:50%;
+
+  background: var(--btc-green);
+
+  box-shadow:
+    0 0 12px var(--btc-green);
+
+  animation: pulse 1.4s infinite;
+}
+
+.btc-footer-right{
+
+  color: var(--btc-blue);
+
+  font-weight:700;
+}
+
+/* =====================================
+   RESPONSIVO
+===================================== */
+
+@media(max-width:640px){
+
+  .btc-ultra-card{
+
+    max-width:100%;
+
+    padding:14px;
+
+    border-radius:18px;
+  }
+
+  .btc-stats-grid{
+    grid-template-columns:1fr;
+  }
+
+  .btc-price{
+    font-size:2.7rem;
+  }
+}
+
+</style>
+
 <script>
 
 (function() {
@@ -752,34 +1374,35 @@
   }
 
   /* =====================================
-     MSTR (FONTE ALTERADA: YAHOO FINANCE)
+     MSTR (YAHOO FINANCE)
   ===================================== */
 
   async function fetchMSTR(){
 
     try{
-      // Nova fonte: Yahoo Finance
-      const res = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/MSTR?interval=1m&range=1d');
+      // Usando o endpoint oficial do Yahoo Finance via proxy para contornar CORS
+      const yahooUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/MSTR?region=US&lang=en-US&interval=1m&range=1d';
+      const proxy = 'https://api.allorigins.win/get?url=';
+      
+      const res = await fetch(proxy + encodeURIComponent(yahooUrl));
       const data = await res.json();
+      
+      if(data && data.contents) {
+        const json = JSON.parse(data.contents);
+        const price = json.chart.result[0].meta.regularMarketPrice;
 
-      if(data && data.chart && data.chart.result && data.chart.result[0].meta.regularMarketPrice){
-
-        const price = data.chart.result[0].meta.regularMarketPrice;
-
-        mstrEl.textContent =
-          'MSTR $ ' +
-          price.toLocaleString(
-            'en-US',
-            {
-              minimumFractionDigits:2,
-              maximumFractionDigits:2
-            }
-          );
+        if(price) {
+          mstrEl.textContent = 'MSTR $ ' + price.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          });
+        }
       }
 
     } catch(e){
 
-      console.error('MSTR erro:',e);
+      console.error('Erro ao buscar MSTR no Yahoo Finance:', e);
+      mstrEl.textContent = 'MSTR $ Erro';
     }
   }
 
@@ -937,7 +1560,7 @@
 
     fetchMSTR();
 
-    /* ↓ AGORA ATUALIZA */
+    /* ↓ ATUALIZA MSTR A CADA 60s */
     setInterval(fetchMSTR,60000);
 
     window.addEventListener(
