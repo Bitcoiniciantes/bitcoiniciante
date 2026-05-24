@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BITCOIN INICIANTES – Assessoria Técnica em Bitcoin para Indivíduos.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --orange: #F7931A;
+      --orange-dark: #C97310;
+      --orange-light: #FFF4E6;
+      --black: #0A0A0A;
+      --gray-900: #111111;
+      --gray-700: #3A3A3A;
+      --gray-500: #6B6B6B;
+      --gray-200: #E8E8E8;
+      --gray-100: #F5F5F5;
+      --white: #FFFFFF;
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--white);
+      color: var(--black);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gray-200);
+      z-index: 100;
+      padding: 0 5%;
+      height: 70px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--orange);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+    .logo span { color: var(--orange); }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--gray-700);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: color .2s;
+    }
+    nav ul a:hover { color: var(--orange); }
+    .nav-cta {
+      background: var(--orange);
+      color: white !important;
+      padding: 9px 20px;
+      border-radius: 6px;
+      font-weight: 600 !important;
+      transition: background .2s !important;
+    }
+    .nav-cta:hover { background: var(--orange-dark) !important; color: white !important; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 140px 5% 100px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      min-height: 90vh;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--orange-light);
+      color: var(--orange-dark);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--black);
+      margin-bottom: 1.4rem;
+    }
+    .hero h1 em { font-style: normal; color: var(--orange); }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--gray-500);
+      margin-bottom: 2.2rem;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--orange);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: background .2s, transform .15s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--orange-dark); transform: translateY(-1px); }
+    .btn-outline {
+      border: 2px solid var(--gray-200);
+      color: var(--black);
+      padding: 13px 26px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: border-color .2s, color .2s;
+      display: inline-block;
+    }
+    .btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+
+    .hero-visual {
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .stat-card {
+      background: var(--gray-100);
+      border-radius: 14px;
+      padding: 22px 26px;
+      border: 1px solid var(--gray-200);
+    }
+    .stat-card.accent { background: var(--orange); color: white; border-color: var(--orange); }
+    .stat-card.accent .stat-label { color: rgba(255,255,255,0.75); }
+    .stat-value {
+      font-family: var(--font-head);
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label { font-size: 0.82rem; color: var(--gray-500); font-weight: 400; }
+    .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* ── SECTION BASE ── */
+    section { padding: 90px 5%; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+    }
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--gray-500);
+      font-weight: 300;
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    /* ── ABOUT ── */
+    .about { background: var(--gray-100); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .about-list { list-style: none; margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+    .about-list li {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 0.95rem;
+      color: var(--gray-700);
+      line-height: 1.5;
+    }
+    .about-list li::before {
+      content: "₿";
+      color: var(--orange);
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .about-img-block {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      border: 1px solid var(--gray-200);
+      text-align: center;
+    }
+    .btc-symbol {
+      font-family: var(--font-head);
+      font-size: 6rem;
+      color: var(--orange);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .about-quote {
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--gray-700);
+      line-height: 1.6;
+    }
+    .about-quote strong { font-style: normal; color: var(--black); font-weight: 600; }
+
+    /* ── SERVICES ── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .service-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 14px;
+      padding: 2rem;
+      transition: box-shadow .25s, transform .2s, border-color .25s;
+      background: var(--white);
+    }
+    .service-card:hover {
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      transform: translateY(-3px);
+      border-color: var(--orange);
+    }
+    .service-icon {
+      width: 48px; height: 48px;
+      background: var(--orange-light);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 1.2rem;
+    }
+    .service-card h3 {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.01em;
+    }
+    .service-card p { font-size: 0.9rem; color: var(--gray-500); line-height: 1.6; }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: var(--gray-100); }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .step {
+      background: var(--white);
+      border-radius: 14px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border: 1px solid var(--gray-200);
+    }
+    .step-num {
+      font-family: var(--font-head);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--orange);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .step h4 {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .step p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .testi-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 14px;
+      padding: 1.8rem;
+      background: var(--white);
+    }
+    .testi-stars { color: var(--orange); font-size: 0.9rem; margin-bottom: 0.8rem; }
+    .testi-text {
+      font-size: 0.9rem;
+      color: var(--gray-700);
+      line-height: 1.65;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+    .testi-author { font-size: 0.82rem; font-weight: 600; color: var(--black); }
+    .testi-handle { font-size: 0.78rem; color: var(--gray-500); }
+
+    /* ── NOT FOR EVERYONE ── */
+    .nfe { background: var(--black); color: white; }
+    .nfe .section-title { color: white; }
+    .nfe-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+    .nfe-col h4 {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 2px solid;
+    }
+    .nfe-col.yes h4 { color: #4ADE80; border-color: #4ADE80; }
+    .nfe-col.no h4 { color: #F87171; border-color: #F87171; }
+    .nfe-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+    .nfe-col ul li {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.75);
+      padding-left: 1.4rem;
+      position: relative;
+      line-height: 1.5;
+    }
+    .nfe-col.yes ul li::before { content: "✓"; position: absolute; left: 0; color: #4ADE80; font-weight: 700; }
+    .nfe-col.no ul li::before { content: "✗"; position: absolute; left: 0; color: #F87171; font-weight: 700; }
+
+    /* ── FORM ── */
+    #consultoria { background: var(--orange-light); }
+    .form-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .form-info h2 {
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+    }
+    .form-info p {
+      font-size: 0.95rem;
+      color: var(--gray-700);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+    .form-promise {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+    .form-promise-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.88rem;
+      color: var(--gray-700);
+      font-weight: 500;
+    }
+    .form-promise-item::before {
+      content: "✓";
+      width: 22px; height: 22px;
+      background: var(--orange);
+      color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    form {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 2.5rem;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.06);
+    }
+    form h3 {
+      font-family: var(--font-head);
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1.8rem;
+      letter-spacing: -0.02em;
+    }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+    input, select, textarea {
+      width: 100%;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--black);
+      background: var(--white);
+      transition: border-color .2s;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--orange); }
+    textarea { resize: vertical; min-height: 100px; }
+    select { cursor: pointer; }
+    .form-submit {
+      width: 100%;
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+      margin-top: 0.5rem;
+      letter-spacing: 0.01em;
+    }
+    .form-submit:hover { background: var(--orange-dark); transform: translateY(-1px); }
+    .form-note {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--gray-500);
+      margin-top: 0.8rem;
+    }
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+    .form-success .success-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .form-success h4 {
+      font-family: var(--font-head);
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    .form-success p { color: var(--gray-500); font-size: 0.9rem; }
+
+    /* ── FAQ ── */
+    .faq-list { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1rem; max-width: 700px; }
+    .faq-item {
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 1.1rem 1.4rem;
+      font-family: var(--font-head);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--black);
+    }
+    .faq-q::after { content: "+"; font-size: 1.3rem; color: var(--orange); font-weight: 400; transition: transform .25s; }
+    .faq-item.open .faq-q::after { transform: rotate(45deg); }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease, padding .35s;
+      padding: 0 1.4rem;
+      font-size: 0.9rem;
+      color: var(--gray-700);
+      line-height: 1.6;
+    }
+    .faq-item.open .faq-a { max-height: 300px; padding: 0 1.4rem 1.2rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--gray-900);
+      color: rgba(255,255,255,0.6);
+      padding: 3rem 5%;
+      text-align: center;
+    }
+    footer .footer-logo {
+      font-family: var(--font-head);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+    footer .footer-logo span { color: var(--orange); }
+    footer p { font-size: 0.82rem; line-height: 1.7; }
+    footer a { color: var(--orange); text-decoration: none; }
+    .footer-divider { width: 40px; height: 2px; background: var(--orange); margin: 1.2rem auto; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; padding: 110px 5% 60px; }
+      .about-grid, .nfe-grid, .form-wrap { grid-template-columns: 1fr; gap: 2.5rem; }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr 1fr; }
+      nav ul { display: none; }
+    }
+    @media (max-width: 600px) {
+      .services-grid, .steps, .testimonials-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      section { padding: 60px 5%; }
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-text > * { animation: fadeUp .65s ease both; }
+    .hero-text > *:nth-child(2) { animation-delay: .1s; }
+    .hero-text > *:nth-child(3) { animation-delay: .2s; }
+    .hero-text > *:nth-child(4) { animation-delay: .3s; }
+  </style>
+</head>
+
+<body>
+
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">₿</div>
+    BITCOIN&nbsp;<span>INICIANTES</span>
+  </a>
+  <ul>
+    <li><a href="#sobre">Nossa Abordagem</a></li>
+    <li><a href="#servicos">Soluções</a></li>
+    <li><a href="#Independenciafinanceira">Independência Financeira</a></li>
+    <li><a href="#faq">Dúvidas</a></li>
+    <li><a href="#consultoria" class="nav-cta">Agendar Consultoria</a></li>
+  </ul>
+</nav>
+
+<div style="max-width:1100px;margin:0 auto;">
+  <div class="hero">
+    <div class="hero-text">
+      <span class="hero-badge">Apoio Técnico em Bitcoin para o Investidor Individual</span>
+      <h1>Blindagem patrimonial com <em>Bitcoin soberano</em></h1>
+      <p>A BITCOIN INICIANTES orienta você do primeiro contato até a posse definitiva, priorizando a segurança e a autonomia total sobre seus bens.</p>
+      <div class="hero-btns">
+        <a href="#consultoria" class="btn-primary">Solicitar Avaliação Cortesia</a>
+        <a href="#servicos" class="btn-outline">Ver Diferenciais</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <!-- Widget Cotação BTC/USD em Tempo Real -->
+<div class="btc-ticker-card" id="btcTickerCard">
+        <div class="btc-ticker-top">
+          <div class="btc-ticker-coin">
+            <div class="btc-ticker-icon">₿</div>
+            <div>
+              <div class="btc-ticker-name">Bitcoin</div>
+              <div class="btc-ticker-pair">BTC / USD</div>
+            </div>
+          </div>
+          <div class="btc-ticker-status">
+            <span class="btc-dot" id="btcDot"></span>
+            <span class="btc-status-txt" id="btcStatusTxt">Conectando…</span>
+          </div>
+        </div>
+        <div class="btc-ticker-price" id="btcPrice">$ —</div>
+        <div class="btc-ticker-sub">
+          <div class="btc-sub-left">
+            <span class="btc-change" id="btcChange">—</span>
+            <span class="btc-price-brl" id="btcPriceBrl">R$ —</span>
+            <span class="btc-price-usd-brl" id="btcPriceUsdBrl">USD —</span>
+            <span class="btc-price-mstr" id="btcPriceMstr">MSTR $ —</span>
+          </div>
+          <span class="btc-ticker-label">variação 1h</span>
+        </div>
+        
+        <canvas id="btcMiniChart" height="80" style="width:100%;margin-top:14px;display:block;"></canvas>
+        
+        <div class="btc-chart-info">Time: 1 H</div>
+      </div>
+      
+      <style>
+        .btc-ticker-card {
+          background: var(--black);
+          border-radius: 14px;
+          padding: 20px 24px 16px;
+          border: 1px solid #222;
+          position: relative;
+          overflow: hidden;
+          width: 100%;
+          max-width: 490px; 
+          margin: 0 auto; 
+        }
+        .btc-ticker-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .btc-ticker-coin { display: flex; align-items: center; gap: 10px; }
+        .btc-ticker-icon { width: 36px; height: 36px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; color: white; flex-shrink: 0; }
+        .btc-ticker-name { font-family: var(--font-head); font-weight: 700; font-size: 0.95rem; color: white; line-height: 1.2; }
+        .btc-ticker-pair { font-size: 0.72rem; color: #666; font-weight: 500; letter-spacing: 0.05em; }
+        .btc-ticker-status { display: flex; align-items: center; gap: 6px; }
+        .btc-dot { width: 7px; height: 7px; border-radius: 50%; background: #555; display: inline-block; transition: background .3s; }
+        .btc-dot.live { background: #4ade80; box-shadow: 0 0 6px #4ade80; animation: btcPulse 2s infinite; }
+        @keyframes btcPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        .btc-status-txt { font-size: 0.72rem; color: #4ade80; font-weight: 500; }
+        
+        .btc-ticker-price { font-family: var(--font-body); font-size: clamp(2rem, 3.5vw, 2.6rem); font-weight: 700; color: white; letter-spacing: -0.01em; line-height: 1; margin-bottom: 12px; transition: color .2s; }
+        .btc-ticker-price.up { color: #4ade80; }
+        .btc-ticker-price.down { color: #f87171; }
+        
+        .btc-ticker-sub { display: flex; align-items: center; justify-content: space-between; }
+        .btc-sub-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .btc-change { font-size: 0.82rem; font-weight: 600; padding: 3px 8px; border-radius: 4px; background: #1a1a1a; color: #888; }
+        .btc-change.up { background: rgba(74,222,128,0.12); color: #4ade80; }
+        .btc-change.down { background: rgba(248,113,113,0.12); color: #f87171; }
+        
+        .btc-price-brl, .btc-price-usd-brl, .btc-price-mstr { font-size: 0.82rem; font-weight: 600; color: var(--orange); background: #1a1a1a; padding: 3px 8px; border-radius: 4px; }
+        .btc-price-mstr { color: #c084fc; }
+        .btc-ticker-label { font-size: 0.7rem; color: #3b82f6; font-weight: 500; }
+        
+        /* ⬅️ NOVO: Estilo da legenda */
+        .btc-chart-info { font-size: 0.65rem; color: #3b82f6; text-align: right; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+      </style>
+      
+      <script>
+      (function() {
+        var candles = []; var lastPrice = null;
+        var canvas = document.getElementById('btcMiniChart');
+        var ctx = canvas ? canvas.getContext('2d') : null;
+        var priceEl = document.getElementById('btcPrice');
+        var changeEl = document.getElementById('btcChange');
+        var brlEl = document.getElementById('btcPriceBrl');
+        var usdBrlEl = document.getElementById('btcPriceUsdBrl');
+        var mstrEl = document.getElementById('btcPriceMstr');
+        var dotEl = document.getElementById('btcDot');
+        var statusEl = document.getElementById('btcStatusTxt');
+        var flashTimer = null;
+
+        function formatUSD(p) { return '$ ' + p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+        function formatBRL(p) { return 'R$ ' + p.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+        function drawChart() {
+          if (!ctx || candles.length < 2) return;
+          var dpr = window.devicePixelRatio || 1;
+          var w = canvas.offsetWidth;
+          var h = 80; 
+          canvas.width = w * dpr;
+          canvas.height = h * dpr;
+          ctx.scale(dpr, dpr);
+          var min = Math.min.apply(null, candles.map(function(c) { return c.l; }));
+          var max = Math.max.apply(null, candles.map(function(c) { return c.h; }));
+          var range = max - min || 1;
+          var pad = 4;
+          ctx.clearRect(0, 0, w, h);
+          var candleWidth = (w / candles.length) * 0.7; 
+          var spacing = w / candles.length; 
+          for (var i = 0; i < candles.length; i++) {
+            var c = candles[i];
+            var x = i * spacing + spacing / 2; 
+            var yOpen = h - pad - ((c.o - min) / range) * (h - pad * 2);
+            var yClose = h - pad - ((c.c - min) / range) * (h - pad * 2);
+            var yHigh = h - pad - ((c.h - min) / range) * (h - pad * 2);
+            var yLow = h - pad - ((c.l - min) / range) * (h - pad * 2);
+            var isUp = c.c >= c.o;
+            var color = isUp ? '#4ade80' : '#f87171';
+            ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 1.5; 
+            ctx.beginPath(); ctx.moveTo(x, yHigh); ctx.lineTo(x, yLow); ctx.stroke();
+            var bodyY = Math.min(yOpen, yClose);
+            var bodyH = Math.max(Math.abs(yClose - yOpen), 2); 
+            ctx.fillRect(x - candleWidth / 2, bodyY, candleWidth, bodyH);
+          }
+        }
+        async function fetchChartData() {
+          try {
+            var res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=24');
+            var data = await res.json();
+            candles = data.map(function(k) { return { o: parseFloat(k[1]), h: parseFloat(k[2]), l: parseFloat(k[3]), c: parseFloat(k[4]) }; }); 
+            drawChart();
+          } catch(e) { console.error(e); }
+        }
+        async function fetchMSTR() {
+          try {
+            var url = encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/MSTR');
+            var res = await fetch('https://api.allorigins.win/get?url=' + url);
+            var json = await res.json();
+            var data = JSON.parse(json.contents);
+            var price = data.chart.result[0].meta.regularMarketPrice;
+            if (price) mstrEl.textContent = 'MSTR $ ' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          } catch(e) { console.error(e); }
+        }
+        function connect() {
+          var ws = new WebSocket('wss://stream.binance.com:9443/stream?streams=btcusdt@ticker/btcbrl@ticker/usdtbrl@ticker');
+          ws.onopen = function() { dotEl.className = 'btc-dot live'; statusEl.textContent = 'Ao vivo'; };
+          ws.onmessage = function(e) {
+            var payload = JSON.parse(e.data);
+            var stream = payload.stream;
+            var data = payload.data;
+            if (stream === 'btcusdt@ticker') {
+              var p = parseFloat(data.c); var pct = parseFloat(data.P); 
+              if (candles.length > 0) {
+                var lastCandle = candles[candles.length - 1];
+                lastCandle.c = p; if (p > lastCandle.h) lastCandle.h = p; if (p < lastCandle.l) lastCandle.l = p; 
+                drawChart();
+              }
+              var dir = lastPrice === null ? 0 : (p > lastPrice ? 1 : p < lastPrice ? -1 : 0);
+              lastPrice = p;
+              priceEl.textContent = formatUSD(p);
+              priceEl.className = 'btc-ticker-price' + (dir === 1 ? ' up' : dir === -1 ? ' down' : '');
+              if (flashTimer) clearTimeout(flashTimer);
+              flashTimer = setTimeout(function() { priceEl.className = 'btc-ticker-price'; }, 600);
+              changeEl.textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
+              changeEl.className = 'btc-change ' + (pct >= 0 ? 'up' : 'down');
+            } 
+            else if (stream === 'btcbrl@ticker') { brlEl.textContent = formatBRL(parseFloat(data.c)); }
+            else if (stream === 'usdtbrl@ticker') { usdBrlEl.textContent = 'USD ' + parseFloat(data.c).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+          };
+          ws.onclose = function() { dotEl.className = 'btc-dot'; statusEl.textContent = 'Reconectando…'; setTimeout(connect, 3000); };
+          ws.onerror = function() { ws.close(); };
+        }
+        if (canvas) { canvas.width = canvas.offsetWidth; fetchChartData().then(connect); fetchMSTR(); setInterval(fetchMSTR, 300000); window.addEventListener('resize', drawChart); }
+      })();
+      </script>
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-value">Especialistas</div>
+          <div class="stat-label">Dedicados exclusivamente à Rede Bitcoin</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Direto</div>
+          <div class="stat-label">Sem custodiantes entre você e seu capital</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">Posse Soberana</div>
+        <div class="stat-label">O controle é seu. Chaves privadas sob sua gestão.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="about" id="sobre">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div>
+        <div class="section-tag">Quem Somos</div>
+        <h2 class="section-title">Não operamos como corretora.<br>Atuamos como sua assessoria privada.</h2>
+        <p class="section-sub">Capacitamos indivíduos a compreender, adquirir e armazenar Bitcoin com métodos rigorosos de segurança — sem dependência de plataformas ou promessas vazias.</p>
+        <ul class="about-list">
+          <li>Foco integral no ecossistema Bitcoin e tecnologia Blockchain</li>
+          <li>Execução técnica de custódia própria (Hardware Wallets e Multisig)</li>
+          <li>Estratégias de sucessão familiar e proteção de longo prazo</li>
+          <li>Educação técnica: da teoria monetária à prática operacional</li>
+          <li>Suporte individualizado — focado no seu perfil e privacidade</li>
+        </ul>
+      </div>
+      <div class="about-img-block">
+        <div class="btc-symbol">₿</div>
+        <p class="about-quote">
+          "Nossa missão é transformar iniciantes em detentores soberanos através do conhecimento prático."
+          <br><br>
+          <strong>— Time BITCOIN INICIANTES</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="servicos">
+  <div class="section-inner">
+    <div class="section-tag">O que entregamos</div>
+    <h2 class="section-title">Serviços de alto nível<br>para sua jornada Bitcoin</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🔐</div>
+        <h3>Gestão de Carteiras Físicas</h3>
+        <p>Configuração guiada do seu dispositivo de segurança. Domine o uso em poucas horas e elimine o risco de exchanges.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🛡️</div>
+        <h3>Segurança Multi-assinatura</h3>
+        <p>Desenvolvimento de esquemas Multisig para garantir a máxima resiliência do seu capital contra roubos ou perdas.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📋</div>
+        <h3>Protocolo de Sucessão</h3>
+        <p>Estruturamos planos claros para que seus herdeiros acessem o patrimônio com segurança na sua ausência.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">⚡</div>
+        <h3>Uso da Lightning Network</h3>
+        <p>Descubra como realizar pagamentos instantâneos e com taxas mínimas utilizando a segunda camada do Bitcoin.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📚</div>
+        <h3>Imersão Educacional</h3>
+        <p>Entenda o Bitcoin de verdade. Sem ruído de mercado, focamos na robustez tecnológica e fundamentos econômicos.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔍</div>
+        <h3>Auditoria de Segurança</h3>
+        <p>Analisamos sua configuração atual para identificar vulnerabilidades e otimizar seus métodos de armazenamento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how">
+  <div class="section-inner">
+    <div class="section-tag">Metodologia</div>
+    <h2 class="section-title">Processo ágil, seguro e transparente</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h4>Cadastro de Interesse</h4>
+        <p>Conte-nos brevemente sobre sua situação atual e quais são suas metas.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h4>Análise Cortesia</h4>
+        <p>Nossos especialistas avaliam seu caso e propõem a estratégia mais eficiente.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h4>Execução Assistida</h4>
+        <p>Realizamos as configurações em conjunto, respeitando seu ritmo e privacidade.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h4>Independência Total</h4>
+        <p>Você finaliza o processo com documentação, backups e total confiança operacional.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="Independenciafinanceira">
+  <div class="section-inner">
+    <div class="section-tag">Independência Financeira</div>
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de Independência Financeira</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Estilos Base */
+.sif__wrap * { box-sizing: border-box; margin: 0; padding: 0; }
+.sif__wrap { font-family: 'DM Sans', sans-serif; background: #ffffff; border: 1px solid #e2e4e9; border-radius: 16px; padding: 24px; max-width: 520px; width: 100%; color: #1a1d23; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin: auto; }
+.sif__header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 8px; }
+.sif__title { font-size: 15px; font-weight: 600; color: #1a1d23; }
+.sif__metrics { display: flex; gap: 20px; flex-wrap: wrap; }
+.sif__metric-item { text-align: right; }
+.sif__metric-label { font-size: 9px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #8a8f9e; display: block; margin-bottom: 2px; }
+.sif__metric-value { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; color: #1565c0; }
+
+/* Seção do Alvo e Progresso */
+.sif__gauge-section { background: #f7f8fa; border-radius: 12px; padding: 24px 16px; margin-bottom: 20px; text-align: center; position: relative; }
+.sif__gauge-container { position: relative; width: 240px; margin: 0 auto 8px; }
+.sif__gauge-svg { width: 100%; display: block; }
+.sif__gauge-badge { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #e8f5e9; border: 1.5px solid #4caf50; color: #2e7d32; font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 20px; white-space: nowrap; letter-spacing: 0.03em; }
+.sif__gauge-label { font-size: 11px; font-weight: 500; color: #8a8f9e; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 4px; }
+.sif__gauge-value { font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 600; color: #1a1d23; letter-spacing: -0.5px; margin-bottom: 16px; }
+
+/* Nova Barra de Progresso */
+.sif__progress-container { max-width: 320px; margin: 0 auto; text-align: left; }
+.sif__progress-texts { display: flex; justify-content: space-between; font-size: 12px; color: #5a5f6e; margin-bottom: 6px; font-weight: 500; }
+.sif__progress-bar { height: 8px; background: #e2e4e9; border-radius: 4px; overflow: hidden; }
+.sif__progress-fill { height: 100%; background: #4caf50; width: 0%; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+
+/* Gráficos de Barras */
+.sif__chart-section { border: 1px solid #e2e4e9; border-radius: 12px; padding: 16px; margin-bottom: 20px; }
+.sif__chart-row { display: flex; align-items: center; margin-bottom: 10px; gap: 8px; }
+.sif__bar-label { font-size: 11px; color: #5a5f6e; width: 110px; flex-shrink: 0; text-align: right; }
+.sif__bar-track { flex: 1; height: 22px; background: #f0f1f4; border-radius: 4px; overflow: hidden; position: relative; }
+.sif__bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; transition: width 0.5s cubic-bezier(.4,0,.2,1); min-width: 40px; }
+.sif__bar-fill span { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: #fff; white-space: nowrap; }
+.sif__bar-desp { background: #c62828; }
+.sif__bar-renda { background: #2e7d32; }
+.sif__bar-passiva { background: #00897b; } /* Cor nova para renda passiva atual */
+.sif__bar-juros { background: #1565c0; }
+.sif__chart-axis { display: flex; justify-content: space-between; padding-left: 118px; margin-top: 8px; }
+.sif__chart-axis span { font-size: 10px; color: #9aa0b0; font-family: 'DM Mono', monospace; }
+
+/* Controles */
+.sif__controls { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+.sif__control-row { display: flex; flex-direction: column; gap: 6px; }
+.sif__control-row.sif__full { grid-column: 1 / -1; }
+.sif__ctrl-top { display: flex; justify-content: space-between; align-items: center; }
+.sif__ctrl-label { font-size: 12px; color: #5a5f6e; font-weight: 500; }
+.sif__ctrl-val { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: #1a1d23; background: #f0f1f4; border: 1px solid #dde0e8; border-radius: 6px; padding: 2px 8px; min-width: 54px; text-align: center; }
+.sif__slider { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px; background: #dde0e8; outline: none; cursor: pointer; }
+.sif__slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #1565c0; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="sif__wrap" id="sif-root">
+  <div class="sif__header">
+    <div class="sif__title">Simulador de Independência Financeira</div>
+    <div class="sif__metrics">
+      <div class="sif__metric-item">
+        <span class="sif__metric-label">Juro Real Anual</span>
+        <span class="sif__metric-value" id="sif-juro-anual">—</span>
+      </div>
+      <div class="sif__metric-item">
+        <span class="sif__metric-label">Custo Líquido</span>
+        <span class="sif__metric-value" id="sif-custo-liq">—</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sif__gauge-section">
+    <div class="sif__gauge-container">
+      <svg class="sif__gauge-svg" viewBox="0 0 240 130">
+        <path d="M 24 124 A 96 96 0 0 1 216 124" fill="none" stroke="#dde0e8" stroke-width="22" stroke-linecap="round"/>
+        <path id="sif-gauge-arc" d="M 24 124 A 96 96 0 0 1 216 124" fill="none" stroke="#1565c0" stroke-width="22" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="301.6" style="transition: stroke-dashoffset 0.7s;"/>
+      </svg>
+      <div class="sif__gauge-badge" id="sif-fator-badge">SEGURANÇA: —</div>
+    </div>
+    <div class="sif__gauge-label">Patrimônio Alvo Recomendado</div>
+    <div class="sif__gauge-value" id="sif-patrimonio">R$ —</div>
+    
+    <div class="sif__progress-container">
+      <div class="sif__progress-texts">
+        <span>Progresso: <strong id="sif-prog-pct" style="color: #2e7d32;">0%</strong></span>
+        <span id="sif-gap-txt">Falta Acumular: R$ 0</span>
+      </div>
+      <div class="sif__progress-bar">
+        <div class="sif__progress-fill" id="sif-prog-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sif__chart-section">
+    <div class="sif__chart-row">
+      <span class="sif__bar-label">Custo de Vida</span>
+      <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-desp" id="sif-bar-desp"><span>R$</span></div></div>
+    </div>
+    <div class="sif__chart-row">
+      <span class="sif__bar-label">Renda Extra (Ativa)</span>
+      <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-renda" id="sif-bar-renda"><span>R$</span></div></div>
+    </div>
+    <div class="sif__chart-row">
+      <span class="sif__bar-label">Sua Renda Passiva</span>
+      <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-passiva" id="sif-bar-passiva"><span>R$</span></div></div>
+    </div>
+    <div class="sif__chart-row">
+      <span class="sif__bar-label">Juros (Alvo Faltante)</span>
+      <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-juros" id="sif-bar-juros"><span>R$</span></div></div>
+    </div>
+    <div class="sif__chart-axis" id="sif-axis"></div>
+  </div>
+
+  <div class="sif__controls">
+    <div class="sif__control-row sif__full">
+      <div class="sif__ctrl-top"><span class="sif__ctrl-label">Patrimônio Atual (R$)</span><span class="sif__ctrl-val" id="sif-val-pat-atual">0</span></div>
+      <input class="sif__slider" type="range" id="sif-pat-atual" min="0" max="2000000" step="5000" value="50000">
+    </div>
+    <div class="sif__control-row">
+      <div class="sif__ctrl-top"><span class="sif__ctrl-label">Selic Nominal (%)</span><span class="sif__ctrl-val" id="sif-val-selic">14</span></div>
+      <input class="sif__slider" type="range" id="sif-selic" min="5" max="25" step="0.5" value="14">
+    </div>
+    <div class="sif__control-row">
+      <div class="sif__ctrl-top"><span class="sif__ctrl-label">Inflação IPCA (%)</span><span class="sif__ctrl-val" id="sif-val-ipca">4,5</span></div>
+      <input class="sif__slider" type="range" id="sif-ipca" min="1" max="15" step="0.5" value="4.5">
+    </div>
+    <div class="sif__control-row">
+      <div class="sif__ctrl-top"><span class="sif__ctrl-label">Dependentes</span><span class="sif__ctrl-val" id="sif-val-dep">2</span></div>
+      <input class="sif__slider" type="range" id="sif-dep" min="0" max="10" step="1" value="2">
+    </div>
+    <div class="sif__control-row">
+      <div class="sif__ctrl-top"><span class="sif__ctrl-label">Despesas (R$)</span><span class="sif__ctrl-val" id="sif-val-desp">9.000</span></div>
+      <input class="sif__slider" type="range" id="sif-desp" min="1000" max="50000" step="500" value="9000">
+    </div>
+    <div class="sif__control-row sif__full">
+      <div class="sif__ctrl-top"><span class="sif__ctrl-label">Receitas Extras (R$)</span><span class="sif__ctrl-val" id="sif-val-rec">7.000</span></div>
+      <input class="sif__slider" type="range" id="sif-rec" min="0" max="30000" step="500" value="7000">
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  function fmtFull(v) { return 'R$ ' + Math.round(v).toLocaleString('pt-BR'); }
+  function fmtBRL(v) { return v >= 1000 ? 'R$ ' + (v/1000).toFixed(1) + 'k' : 'R$ ' + Math.round(v); }
+
+  function calcular() {
+    const selic = parseFloat(document.getElementById('sif-selic').value);
+    const ipca = parseFloat(document.getElementById('sif-ipca').value);
+    const dep = parseInt(document.getElementById('sif-dep').value);
+    const desp = parseFloat(document.getElementById('sif-desp').value);
+    const rec = parseFloat(document.getElementById('sif-rec').value);
+    const patAtual = parseFloat(document.getElementById('sif-pat-atual').value);
+
+    // 1. Taxa Real (Fórmula de Fisher)
+    const taxaRealAnual = ((1 + selic/100) / (1 + ipca/100) - 1);
+    
+    // 2. Fluxo Líquido
+    const deficitMensal = Math.max(0, desp - rec);
+
+    // 3. Montante de Perpetuidade (Cálculo Base)
+    let montanteBase = taxaRealAnual > 0 ? (deficitMensal * 12) / taxaRealAnual : 0;
+
+    // 4. Margem por Dependentes (10% de capital extra por pessoa)
+    const margemSeguranca = 1 + (dep * 0.10);
+    const patrimonioFinal = montanteBase * margemSeguranca;
+
+    // 5. Cálculos de Progresso e Renda Passiva Atual
+    const gap = Math.max(0, patrimonioFinal - patAtual);
+    const progressoPct = patrimonioFinal > 0 ? Math.min(100, (patAtual / patrimonioFinal) * 100) : 100;
+    const rendaPassivaAtual = taxaRealAnual > 0 ? (patAtual * taxaRealAnual) / 12 : 0;
+    const jurosFaltante = Math.max(0, ((patrimonioFinal * taxaRealAnual) / 12) - rendaPassivaAtual);
+
+    // Atualiza Interface (Cabeçalho e Alvo)
+    document.getElementById('sif-juro-anual').textContent = (taxaRealAnual * 100).toFixed(2).replace('.',',') + '%';
+    document.getElementById('sif-custo-liq').textContent = fmtFull(deficitMensal);
+    document.getElementById('sif-patrimonio').textContent = fmtFull(patrimonioFinal);
+    document.getElementById('sif-fator-badge').textContent = 'MARGEM: +' + (dep * 10) + '%';
+
+    // Atualiza Interface (Progresso)
+    document.getElementById('sif-prog-pct').textContent = progressoPct.toFixed(1).replace('.',',') + '%';
+    document.getElementById('sif-gap-txt').textContent = 'Falta Acumular: ' + fmtFull(gap);
+    document.getElementById('sif-prog-fill').style.width = progressoPct + '%';
+
+    // Gráficos e Eixos
+    const maxVal = Math.max(desp, rec, rendaPassivaAtual + jurosFaltante, 5000);
+    const axisMax = Math.ceil(maxVal / 5000) * 5000;
+
+    const setBar = (id, val) => {
+        const pct = Math.min(100, Math.max(5, (val / axisMax) * 100));
+        document.getElementById(id).style.width = pct + '%';
+        document.getElementById(id).innerHTML = `<span>${fmtBRL(val)}</span>`;
+    };
+
+    setBar('sif-bar-desp', desp);
+    setBar('sif-bar-renda', rec);
+    setBar('sif-bar-passiva', rendaPassivaAtual);
+    setBar('sif-bar-juros', jurosFaltante);
+
+    // Gauge Arc (Arco superior baseado apenas na proporção renda passiva total vs custo de vida)
+    const rendaPassivaTotalAlvo = rendaPassivaAtual + jurosFaltante;
+    const ratio = desp > 0 ? Math.min(1, rendaPassivaTotalAlvo / desp) : 0;
+    document.getElementById('sif-gauge-arc').style.strokeDashoffset = 301.6 - (301.6 * ratio);
+
+    // Eixo X
+    const ticks = [];
+    for(let i=0; i<=4; i++) ticks.push('<span>' + fmtBRL(axisMax * i / 4) + '</span>');
+    document.getElementById('sif-axis').innerHTML = ticks.join('');
+
+    // Valores Sliders
+    document.getElementById('sif-val-pat-atual').textContent = patAtual.toLocaleString('pt-BR');
+    document.getElementById('sif-val-selic').textContent = selic.toFixed(1).replace('.',',');
+    document.getElementById('sif-val-ipca').textContent = ipca.toFixed(1).replace('.',',');
+    document.getElementById('sif-val-dep').textContent = dep;
+    document.getElementById('sif-val-desp').textContent = desp.toLocaleString('pt-BR');
+    document.getElementById('sif-val-rec').textContent = rec.toLocaleString('pt-BR');
+  }
+
+  ['sif-pat-atual', 'sif-selic', 'sif-ipca', 'sif-dep', 'sif-desp', 'sif-rec'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calcular);
+  });
+
+  calcular();
+})();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="nfe">
+  <div class="section-inner">
+    <div class="section-tag" style="color:#F97316;">Critérios de Atendimento</div>
+    <h2 class="section-title">Trabalhamos com foco exclusivo.<br>Saiba se somos para você.</h2>
+    <div class="nfe-grid">
+      <div class="nfe-col yes">
+        <h4>✓ Apoiamos quem...</h4>
+        <ul>
+          <li>Deseja profundidade no entendimento do Bitcoin</li>
+          <li>Busca autonomia e posse sem intermediários financeiros</li>
+          <li>Pretende blindar o patrimônio familiar com protocolos de elite</li>
+          <li>Deseja iniciar no caminho certo, evitando erros comuns</li>
+          <li>Precisa de uma revisão técnica em estruturas já existentes</li>
+        </ul>
+      </div>
+      <div class="nfe-col no">
+        <h4>✗ Não apoiamos quem...</h4>
+        <ul>
+          <li>Busca enriquecimento rápido através de apostas</li>
+          <li>Procura recomendações de "altcoins" ou moedas secundárias</li>
+          <li>Não tem disposição para aprender os fundamentos básicos</li>
+          <li>Deseja que terceiros guardem seus ativos</li>
+          <li>Busca apenas uma plataforma de compra e venda</li>
+          <li>Subestima os riscos de segurança cibernética</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="consultoria">
+  <div class="section-inner">
+    <div class="form-wrap">
+      <div class="form-info">
+        <div class="section-tag">Contato Direto</div>
+        <h2>Inicie sua consultoria privada</h2>
+        <p>Complete os campos abaixo e nosso time técnico responderá em até 24 horas para analisar suas necessidades e propor a melhor solução.</p>
+        <p>Prezamos pelo atendimento ético — sem scripts de venda, sem pressão e com total sigilo.</p>
+        <div class="form-promise">
+          <div class="form-promise-item">Diagnóstico inicial sem custos ou obrigações</div>
+          <div class="form-promise-item">Conexão direta com especialistas em Rede Bitcoin</div>
+          <div class="form-promise-item">Processos documentados e práticos</div>
+          <div class="form-promise-item">Privacidade absoluta dos seus dados pessoais</div>
+          <div class="form-promise-item">Canal oficial: bitcoiniciantes@proton.me</div>
+        </div>
+      </div>
+
+      <div>
+        <form id="consultForm" novalidate>
+          <h3>🔒 Solicitar Atendimento</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nome">Nome Completo *</label>
+              <input type="text" id="nome" name="nome" placeholder="Como podemos chamá-lo?" required/>
+            </div>
+            <div class="form-group">
+              <label for="email">E-mail para Contato *</label>
+              <input type="email" id="email" name="email" placeholder="seu@email.com" required/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="whatsapp">Telefone / WhatsApp</label>
+              <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000"/>
+            </div>
+            <div class="form-group">
+              <label for="cidade">Região (Cidade/UF)</label>
+              <input type="text" id="cidade" name="cidade" placeholder="Ex: Curitiba, PR"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="servico">Área de interesse principal *</label>
+            <select id="servico" name="servico" required>
+              <option value="" disabled selected>Escolha uma opção</option>
+              <option>Primeiros Passos com Bitcoin</option>
+              <option>Uso de Hardware Wallets</option>
+              <option>Protocolos de Segurança Avançada</option>
+              <option>Planejamento Sucessório</option>
+              <option>Revisão de Configuração Atual</option>
+              <option>Treinamento e Teoria Técnica</option>
+              <option>Outros Assuntos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="nivel">Nível de fluência no assunto</label>
+            <select id="nivel" name="nivel">
+              <option value="" disabled selected>Escolha seu nível</option>
+              <option>Nenhum — desejo aprender do zero</option>
+              <option>Básico — já entendo os conceitos gerais</option>
+              <option>Intermediário — possuo ativos em corretoras</option>
+              <option>Avançado — já utilizo custódia própria</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="mensagem">Descreva seus objetivos ou necessidades *</label>
+            <textarea id="mensagem" name="mensagem" placeholder="Fale um pouco sobre o que você busca resolver ou aprender..." required></textarea>
+          </div>
+          <button type="submit" class="form-submit">Enviar para Análise Técnica →</button>
+          <p class="form-note">📧 Sua mensagem será enviada com sigilo para bitcoiniciantes@proton.me</p>
+        </form>
+        <div class="form-success" id="formSuccess">
+          <div class="success-icon">✅</div>
+          <h4>Solicitação recebida!</h4>
+          <p>Nossos consultores analisarão seus dados em <strong>bitcoiniciantes@proton.me</strong> e entrarão em contato em breve. Agradecemos sua confiança!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="section-inner">
+    <div class="section-tag">Centro de Dúvidas</div>
+    <h2 class="section-title">Esclarecimentos frequentes</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">A BITCOIN INICIANTES realiza a custódia das moedas?</button>
+        <div class="faq-a">De forma alguma. Nosso objetivo é o inverso: treinamos você para ser o único guardião do seu capital, eliminando qualquer dependência de empresas ou terceiros.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Há um valor mínimo investido para ser cliente?</button>
+        <div class="faq-a">Não operamos com base em montantes. Nosso foco é a seriedade do seu projeto de proteção patrimonial, independentemente do volume financeiro envolvido.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Vocês oferecem consultoria para outras criptomoedas?</button>
+        <div class="faq-a">Não. Somos especialistas 100% focados em Bitcoin. Não trabalhamos com ativos especulativos, tokens secundários ou moedas sem fundamentos de descentralização real.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Como são realizados os atendimentos?</button>
+        <div class="faq-a">As sessões ocorrem via videochamada, permitindo suporte global com total segurança. Todo o processo é acompanhado de documentação técnica para sua futura referência.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">Qual o próximo passo após o formulário?</button>
+        <div class="faq-a">Um especialista fará a triagem e entrará em contato em até um dia útil para uma conversa inicial gratuita. Se houver alinhamento, apresentaremos um plano de ação personalizado.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">BITCOIN <span>INICIANTES</span></div>
+  <div class="footer-divider"></div>
+  <p>
+    Assessoria especializada em Bitcoin para indivíduos soberanos<br>
+    📧 <a href="mailto:bitcoiniciantes@proton.me">bitcoiniciantes@proton.me</a><br><br>
+    © 2025 BITCOIN INICIANTES — Todos os direitos reservados.<br>
+    <small>Não somos uma corretora de valores. Não custodiamos ativos de terceiros. Não realizamos aconselhamento financeiro de investimento.</small>
+  </p>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Form submission → Formspree (envia direto para bitcoiniciantes@proton.me)
+  document.getElementById('consultForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const btn = this.querySelector('.form-submit');
+    const textoOriginal = btn.textContent;
+    btn.textContent = 'Processando…';
+    btn.disabled = true;
+
+    const data = {
+      nome:     document.getElementById('nome').value,
+      email:    document.getElementById('email').value,
+      whatsapp: document.getElementById('whatsapp').value || 'não informado',
+      cidade:   document.getElementById('cidade').value   || 'não informado',
+      servico:  document.getElementById('servico').value,
+      nivel:    document.getElementById('nivel').value    || 'não informado',
+      mensagem: document.getElementById('mensagem').value,
+      _subject: '[BITCOIN INICIANTES] Nova Consulta – ' + document.getElementById('nome').value,
+      _replyto: document.getElementById('email').value,
+    };
+
+    try {
+      const FORMSPREE_ID = 'xaqvwpak'; 
+
+      const res = await fetch('https://formspree.io/f/' + FORMSPREE_ID, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        document.getElementById('consultForm').style.display = 'none';
+        document.getElementById('formSuccess').style.display = 'block';
+      } else {
+        const json = await res.json();
+        const erros = json.errors ? json.errors.map(function(e){ return e.message; }).join(', ') : 'Tente novamente.';
+        alert('Falha ao enviar: ' + erros);
+        btn.textContent = textoOriginal;
+        btn.disabled = false;
+      }
+    } catch (err) {
+      alert('Problema de conexão. Verifique seu sinal e tente novamente.');
+      btn.textContent = textoOriginal;
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
