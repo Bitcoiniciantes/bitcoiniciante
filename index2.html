@@ -640,7 +640,7 @@
     <!-- BTC / BRL -->
     <div class="btc-col-item">
       <div class="bci-label">BTC / BRL</div>
-      <div class="bci-price" id="btcPriceBrl"> —</div>
+      <div class="bci-price" id="btcPriceBrl">—</div>
       <div class="bci-change" id="btcChangeBrl">—</div>
     </div>
 
@@ -658,31 +658,34 @@
     <!-- USD / BRL -->
     <div class="btc-col-item">
       <div class="bci-label">USD / BRL</div>
-      <div class="bci-price" id="btcPriceUsdBrl"> —</div>
+      <div class="bci-price" id="btcPriceUsdBrl">—</div>
       <div class="bci-change" id="usdChange">—</div>
     </div>
 
   </div>
 
+  <!-- TIMEFRAME BUTTONS -->
+  <div class="btc-tf-bar">
+    <button class="btc-tf-btn active" data-interval="1h" data-limit="30">1M</button>
+    <button class="btc-tf-btn" data-interval="4h" data-limit="90">3M</button>
+    <button class="btc-tf-btn" data-interval="1d" data-limit="365">1Y</button>
+    <button class="btc-tf-btn" data-interval="1w" data-limit="260">5Y</button>
+  </div>
+
   <!-- CHART -->
   <div class="btc-chart-box">
-
     <canvas id="btcMiniChart" height="72"></canvas>
-
   </div>
 
   <!-- FOOTER -->
   <div class="btc-footer">
-
     <div class="btc-footer-left">
       <span class="btc-pulse"></span>
       <span>LIVE STREAM</span>
     </div>
-
-    <div class="btc-footer-right">
-      TIMEFRAME • 1H
+    <div class="btc-footer-right" id="btcTfLabel">
+      TIMEFRAME • 1M
     </div>
-
   </div>
 
 </div>
@@ -1025,7 +1028,7 @@
 
 /* BTC/BRL precisa de mais espaço — número maior */
 .btc-col-item:first-child{
-  flex: 1.9;
+  flex: 2;
 }
 
 .btc-col-divider{
@@ -1081,20 +1084,49 @@
 
   border-radius: 18px;
 
-  background:
-    linear-gradient(
-      180deg,
-      rgba(0,255,174,.05),
-      rgba(0,198,255,.02),
-      rgba(255,255,255,.01)
-    );
+  background: #2a2a2a;
 
-  border: 1px solid rgba(0,255,174,.08);
+  border: 1px solid rgba(255,255,255,.07);
 
   margin-bottom: 10px;
 
-  /* ↓ ÁREA MAIS ALTA */
   min-height: 90px;
+}
+
+/* =====================================
+   TIMEFRAME BUTTONS
+===================================== */
+
+.btc-tf-bar{
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.btc-tf-btn{
+  background: transparent;
+  border: 1.5px solid #4a5568;
+  border-radius: 8px;
+  color: #4ade80;
+  font-size: .75rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  cursor: pointer;
+  letter-spacing: .04em;
+  transition: background .18s, border-color .18s, color .18s;
+  font-family: var(--font-head, sans-serif);
+}
+
+.btc-tf-btn:hover{
+  border-color: #4ade80;
+  background: rgba(74,222,128,.08);
+}
+
+.btc-tf-btn.active{
+  background: #4ade80;
+  border-color: #4ade80;
+  color: #fff;
 }
 
 #btcMiniChart{
@@ -1215,7 +1247,7 @@
 
   function formatBRL(p){
 
-    return 'R$ ' + p.toLocaleString(
+    return p.toLocaleString(
       'pt-BR',
       {
         minimumFractionDigits:2,
@@ -1309,12 +1341,15 @@
      HISTÓRICO
   ===================================== */
 
-  async function fetchChartData(){
+  async function fetchChartData(interval, limit){
+
+    interval = interval || '1h';
+    limit    = limit    || 30;
 
     try{
 
       var res = await fetch(
-        'https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=24'
+        'https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=' + interval + '&limit=' + limit
       );
 
       var data = await res.json();
@@ -1336,6 +1371,22 @@
       console.error(e);
     }
   }
+
+  /* =====================================
+     TIMEFRAME BUTTONS
+  ===================================== */
+
+  var tfLabel = document.getElementById('btcTfLabel');
+
+  document.querySelectorAll('.btc-tf-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.btc-tf-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var label = btn.textContent;
+      if(tfLabel) tfLabel.textContent = 'TIMEFRAME • ' + label;
+      fetchChartData(btn.dataset.interval, parseInt(btn.dataset.limit));
+    });
+  });
 
   /* =====================================
      MSTR (YAHOO FINANCE)
@@ -1482,7 +1533,7 @@
       else if(stream === 'usdtbrl@ticker'){
 
         var usdVal = parseFloat(data.c);
-        usdBrlEl.textContent = 'R$ ' + usdVal.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+        usdBrlEl.textContent = usdVal.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
 
         var usdPct = parseFloat(data.P);
         usdChangeEl.textContent = (usdPct >= 0 ? '▲ +' : '▼ ') + usdPct.toFixed(2) + '%';
@@ -1737,12 +1788,12 @@
       <div class="sif__gauge-badge" id="sif-fator-badge">SEGURANÇA: —</div>
     </div>
     <div class="sif__gauge-label">Patrimônio Alvo Recomendado</div>
-    <div class="sif__gauge-value" id="sif-patrimonio">—</div>
+    <div class="sif__gauge-value" id="sif-patrimonio">R$ —</div>
     
     <div class="sif__progress-container">
       <div class="sif__progress-texts">
         <span>Progresso: <strong id="sif-prog-pct" style="color: #2e7d32;">0%</strong></span>
-        <span id="sif-gap-txt">Falta Acumular:  0</span>
+        <span id="sif-gap-txt">Falta Acumular: R$ 0</span>
       </div>
       <div class="sif__progress-bar">
         <div class="sif__progress-fill" id="sif-prog-fill"></div>
