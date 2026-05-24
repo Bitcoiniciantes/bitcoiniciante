@@ -617,7 +617,8 @@
           </div>
           <span class="btc-ticker-label">variação 24h</span>
         </div>
-        <canvas id="btcMiniChart" height="52" style="width:100%;margin-top:14px;display:block;"></canvas>
+        
+        <canvas id="btcMiniChart" height="80" style="width:100%;margin-top:14px;display:block;"></canvas>
       </div>
       
       <style>
@@ -628,6 +629,11 @@
           border: 1px solid #222;
           position: relative;
           overflow: hidden;
+          
+          /* ⬅️ ALTERE O "max-width" ABAIXO PARA DEIXAR A JANELA MAIS ESTREITA (Ex: 350px, 400px, 480px) */
+          width: 100%;
+          max-width: 480px; 
+          margin: 0 auto; 
         }
         .btc-ticker-top {
           display: flex;
@@ -733,11 +739,10 @@
           border-radius: 4px;
         }
         
-        /* Novo estilo para a MSTR */
         .btc-price-mstr {
           font-size: 0.82rem;
           font-weight: 600;
-          color: #c084fc; /* Roxo suave */
+          color: #c084fc; 
           background: #1a1a1a;
           padding: 3px 8px;
           border-radius: 4px;
@@ -776,7 +781,10 @@
           if (!ctx || candles.length < 2) return;
           var dpr = window.devicePixelRatio || 1;
           var w = canvas.offsetWidth;
-          var h = 52;
+          
+          // ⬅️ SE MUDOU A ALTURA NO HTML LÁ EM CIMA, MUDE AQUI TAMBÉM (Nesse caso, está 80)
+          var h = 80; 
+          
           canvas.width = w * dpr;
           canvas.height = h * dpr;
           ctx.scale(dpr, dpr);
@@ -831,7 +839,6 @@
           }
         }
 
-        // Nova função que busca o preço da MSTR via proxy público
         async function fetchMSTR() {
           try {
             var url = encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/MSTR');
@@ -909,11 +916,9 @@
         if (canvas) {
           canvas.width = canvas.offsetWidth;
           
-          // Inicia as chamadas ao carregar a página
           fetchChartData().then(connect);
           fetchMSTR();
           
-          // Atualiza a cotação da MSTR a cada 5 minutos
           setInterval(fetchMSTR, 300000); 
           
           window.addEventListener('resize', drawChart);
