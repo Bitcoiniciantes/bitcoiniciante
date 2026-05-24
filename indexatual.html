@@ -2,6 +2,15 @@
 <html lang="pt-BR">
 <head>
 
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFP2BB2V0B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-WFP2BB2V0B');
+</script>
 
 
   
@@ -1570,93 +1579,12 @@
           <li>Suporte individualizado — focado no seu perfil e privacidade</li>
         </ul>
       </div>
-
-
-      
-      <!-- =========================================================
-      if(price > coin.last){
-
-        coin.priceEl.classList.add('flash-up');
-        coin.priceEl.classList.remove('flash-down');
-
-      } else if(price < coin.last){
-
-        coin.priceEl.classList.add('flash-down');
-        coin.priceEl.classList.remove('flash-up');
-      }
-
-      setTimeout(function(){
-
-        coin.priceEl.classList.remove('flash-up');
-        coin.priceEl.classList.remove('flash-down');
-
-      }, 700);
-    }
-
-    coin.last = price;
-  }
-
-  function connect(){
-
-    const ws = new WebSocket(
-      'wss://stream.binance.com:9443/stream?streams=' +
-      'btcusdt@ticker/' +
-      'ethusdt@ticker/' +
-      'linkusdt@ticker/' +
-      'solusdt@ticker/' +
-      'avaxusdt@ticker'
-    );
-
-    ws.onmessage = function(event){
-
-      const payload = JSON.parse(event.data);
-
-      const stream = payload.stream;
-      const data = payload.data;
-
-      if(stream === 'btcusdt@ticker') {
-        updateTicker('btc', data);
-      }
-
-      else if(stream === 'ethusdt@ticker') {
-        updateTicker('eth', data);
-      }
-
-      else if(stream === 'linkusdt@ticker') {
-        updateTicker('link', data);
-      }
-
-      else if(stream === 'solusdt@ticker') {
-        updateTicker('sol', data);
-      }
-
-      else if(stream === 'avaxusdt@ticker') {
-        updateTicker('avax', data);
-      }
-    };
-
-    ws.onclose = function(){
-
-      setTimeout(connect, 3000);
-    };
-
-    ws.onerror = function(){
-
-      ws.close();
-    };
-  }
-
-  connect();
-
-})();
-
-</script>
-
-
-
-
-
-          
+      <div class="about-img-block">
+        <div class="btc-symbol">₿</div>
+        <p class="about-quote">
+          "Nossa missão é transformar iniciantes em detentores soberanos através do conhecimento prático."
+          <br><br>
+          <strong>— Time BITCOIN INICIANTES</strong>
         </p>
       </div>
     </div>
