@@ -595,7 +595,7 @@
       <!-- Widget Cotação BTC/USD em Tempo Real -->
 <div class="btc-ultra-card" id="btcTickerCard">
 
-  <!-- Glow Background -->
+  <!-- GLOW -->
   <div class="btc-bg-glow btc-glow-1"></div>
   <div class="btc-bg-glow btc-glow-2"></div>
 
@@ -626,12 +626,17 @@
 
   <!-- PREÇO -->
   <div class="btc-price-area">
-    <div class="btc-price" id="btcPrice">$ —</div>
+
+    <div class="btc-price" id="btcPrice">
+      $ —
+    </div>
+
   </div>
 
   <!-- GRID -->
   <div class="btc-stats-grid">
 
+    <!-- VARIAÇÃO -->
     <div class="btc-stat-card change-card">
 
       <div class="btc-stat-label">
@@ -644,37 +649,40 @@
 
     </div>
 
+    <!-- BTC BRL -->
     <div class="btc-stat-card">
 
       <div class="btc-stat-label">
         BITCOIN EM BRL
       </div>
 
-      <div class="btc-stat-value" id="btcPriceBrl">
+      <div class="btc-stat-value orange" id="btcPriceBrl">
         R$ —
       </div>
 
     </div>
 
+    <!-- USD -->
     <div class="btc-stat-card">
 
       <div class="btc-stat-label">
         USD/BRL
       </div>
 
-      <div class="btc-stat-value" id="btcPriceUsdBrl">
+      <div class="btc-stat-value orange" id="btcPriceUsdBrl">
         USD —
       </div>
 
     </div>
 
+    <!-- MSTR -->
     <div class="btc-stat-card">
 
       <div class="btc-stat-label">
         MICROSTRATEGY
       </div>
 
-      <div class="btc-stat-value mstr" id="btcPriceMstr">
+      <div class="btc-stat-value purple" id="btcPriceMstr">
         MSTR $ —
       </div>
 
@@ -682,9 +690,11 @@
 
   </div>
 
-  <!-- GRÁFICO -->
+  <!-- CHART -->
   <div class="btc-chart-box">
-    <canvas id="btcMiniChart" height="58"></canvas>
+
+    <canvas id="btcMiniChart" height="54"></canvas>
+
   </div>
 
   <!-- FOOTER -->
@@ -705,9 +715,9 @@
 
 <style>
 
-/* =========================
+/* =====================================
    BASE
-========================= */
+===================================== */
 
 :root{
 
@@ -722,9 +732,9 @@
   --btc-purple: #c084fc;
 }
 
-/* =========================
+/* =====================================
    CARD PRINCIPAL
-========================= */
+===================================== */
 
 .btc-ultra-card{
 
@@ -732,11 +742,17 @@
   overflow: hidden;
 
   width: 100%;
-  max-width: 560px;
 
-  padding: 16px 18px 12px;
+  /* ↓ ESTREITADO */
+  max-width: 500px;
 
-  border-radius: 22px;
+  /* ↓ CENTRALIZA */
+  margin: 32px auto;
+
+  /* ↓ MENOS ALTURA */
+  padding: 16px 16px 12px;
+
+  border-radius: 24px;
 
   background:
     linear-gradient(
@@ -755,9 +771,9 @@
   backdrop-filter: blur(14px);
 }
 
-/* =========================
+/* =====================================
    GLOW
-========================= */
+===================================== */
 
 .btc-bg-glow{
 
@@ -767,7 +783,7 @@
 
   filter: blur(90px);
 
-  opacity:.18;
+  opacity:.15;
 
   pointer-events:none;
 }
@@ -794,17 +810,15 @@
   left:-60px;
 }
 
-/* =========================
+/* =====================================
    TOPO
-========================= */
+===================================== */
 
 .btc-top{
 
   display:flex;
   align-items:center;
   justify-content:space-between;
-
-  gap:14px;
 
   margin-bottom:14px;
 }
@@ -817,9 +831,9 @@
   gap:12px;
 }
 
-/* =========================
+/* =====================================
    ÍCONE
-========================= */
+===================================== */
 
 .btc-icon-wrap{
 
@@ -837,8 +851,8 @@
 
 .btc-icon{
 
-  width:46px;
-  height:46px;
+  width:44px;
+  height:44px;
 
   display:flex;
   align-items:center;
@@ -846,20 +860,20 @@
 
   border-radius:50%;
 
-  background:#0c0c0c;
+  background:#0d0d0d;
 
   color:#fff;
 
-  font-size:1.2rem;
+  font-size:1.15rem;
   font-weight:900;
 
   box-shadow:
-    0 0 20px rgba(255,159,26,.20);
+    0 0 20px rgba(255,159,26,.22);
 }
 
-/* =========================
-   TEXTOS TOPO
-========================= */
+/* =====================================
+   TEXTOS
+===================================== */
 
 .btc-name{
 
@@ -873,16 +887,16 @@
 
   color:#8d8d8d;
 
-  font-size:.68rem;
+  font-size:.66rem;
 
-  letter-spacing:.14em;
+  letter-spacing:.16em;
 
   margin-top:2px;
 }
 
-/* =========================
+/* =====================================
    STATUS
-========================= */
+===================================== */
 
 .btc-status{
 
@@ -891,7 +905,7 @@
 
   gap:8px;
 
-  padding:8px 14px;
+  padding:7px 12px;
 
   border-radius:999px;
 
@@ -902,8 +916,8 @@
 
 .btc-live-dot{
 
-  width:9px;
-  height:9px;
+  width:8px;
+  height:8px;
 
   border-radius:50%;
 
@@ -938,30 +952,33 @@
 
   color:#fff;
 
-  font-size:.74rem;
+  font-size:.72rem;
   font-weight:700;
 }
 
-/* =========================
-   PREÇO
-========================= */
+/* =====================================
+   PREÇO PRINCIPAL
+===================================== */
 
 .btc-price-area{
 
   margin-bottom:14px;
+
+  /* ↓ CENTRALIZA */
+  text-align:center;
 }
 
 .btc-price{
 
-  font-size: clamp(2.5rem,4vw,4rem);
+  font-size: clamp(2.6rem,4vw,4rem);
 
   line-height:1;
 
   font-weight:900;
 
-  color:#fff;
-
   letter-spacing:-0.05em;
+
+  color:#fff;
 
   transition:.25s ease;
 }
@@ -971,7 +988,7 @@
   color: var(--btc-green);
 
   text-shadow:
-    0 0 18px rgba(0,255,174,.35);
+    0 0 20px rgba(0,255,174,.30);
 }
 
 .btc-price.down{
@@ -979,12 +996,12 @@
   color: var(--btc-red);
 
   text-shadow:
-    0 0 18px rgba(255,77,109,.35);
+    0 0 20px rgba(255,77,109,.30);
 }
 
-/* =========================
+/* =====================================
    GRID
-========================= */
+===================================== */
 
 .btc-stats-grid{
 
@@ -997,13 +1014,18 @@
   margin-bottom:12px;
 }
 
+/* =====================================
+   CARDS INTERNOS
+===================================== */
+
 .btc-stat-card{
 
-  min-height:76px;
+  /* ↓ MAIS ESTREITOS */
+  min-height:68px;
 
-  padding:12px 14px;
+  padding:10px 12px;
 
-  border-radius:18px;
+  border-radius:16px;
 
   background:
     linear-gradient(
@@ -1017,17 +1039,20 @@
   display:flex;
   flex-direction:column;
   justify-content:center;
+
+  /* ↓ CENTRALIZA */
+  text-align:center;
 }
 
-/* =========================
+/* =====================================
    LABELS
-========================= */
+===================================== */
 
 .btc-stat-label{
 
   color:#8d8d8d;
 
-  font-size:.66rem;
+  font-size:.63rem;
 
   letter-spacing:.12em;
 
@@ -1036,21 +1061,34 @@
   margin-bottom:7px;
 }
 
-/* =========================
+/* =====================================
    VALORES
-========================= */
+===================================== */
 
 .btc-stat-value{
 
   color:#fff;
 
   font-size:1rem;
+
   font-weight:800;
 }
 
-/* =========================
+.orange{
+
+  color: var(--btc-orange);
+
+  text-shadow:
+    0 0 12px rgba(255,159,26,.18);
+}
+
+.purple{
+  color: var(--btc-purple);
+}
+
+/* =====================================
    VARIAÇÃO
-========================= */
+===================================== */
 
 .change-card{
 
@@ -1064,7 +1102,7 @@
 
 .btc-change{
 
-  font-size:1.4rem;
+  font-size:1.35rem;
   font-weight:900;
 }
 
@@ -1076,36 +1114,15 @@
   color: var(--btc-red);
 }
 
-/* =========================
-   BRL E USD LARANJA
-========================= */
-
-#btcPriceBrl,
-#btcPriceUsdBrl{
-
-  color: var(--btc-orange);
-
-  text-shadow:
-    0 0 12px rgba(255,159,26,.18);
-}
-
-/* =========================
-   MSTR
-========================= */
-
-.mstr{
-  color: var(--btc-purple);
-}
-
-/* =========================
-   GRÁFICO
-========================= */
+/* =====================================
+   CHART
+===================================== */
 
 .btc-chart-box{
 
-  padding:10px 12px;
+  padding:8px 10px;
 
-  border-radius:20px;
+  border-radius:18px;
 
   background:
     linear-gradient(
@@ -1122,13 +1139,12 @@
 #btcMiniChart{
 
   width:100%;
-
   display:block;
 }
 
-/* =========================
+/* =====================================
    FOOTER
-========================= */
+===================================== */
 
 .btc-footer{
 
@@ -1136,7 +1152,7 @@
   justify-content:space-between;
   align-items:center;
 
-  font-size:.68rem;
+  font-size:.66rem;
 
   letter-spacing:.14em;
 
@@ -1173,14 +1189,18 @@
   font-weight:700;
 }
 
-/* =========================
+/* =====================================
    RESPONSIVO
-========================= */
+===================================== */
 
 @media(max-width:640px){
 
   .btc-ultra-card{
+
+    max-width:100%;
+
     padding:14px;
+
     border-radius:18px;
   }
 
@@ -1210,6 +1230,7 @@
 
   var brlEl = document.getElementById('btcPriceBrl');
   var usdBrlEl = document.getElementById('btcPriceUsdBrl');
+
   var mstrEl = document.getElementById('btcPriceMstr');
 
   var dotEl = document.getElementById('btcDot');
@@ -1219,28 +1240,39 @@
 
   function formatUSD(p){
 
-    return '$ ' + p.toLocaleString('en-US',{
-      minimumFractionDigits:2,
-      maximumFractionDigits:2
-    });
+    return '$ ' + p.toLocaleString(
+      'en-US',
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    );
   }
 
   function formatBRL(p){
 
-    return 'R$ ' + p.toLocaleString('pt-BR',{
-      minimumFractionDigits:2,
-      maximumFractionDigits:2
-    });
+    return 'R$ ' + p.toLocaleString(
+      'pt-BR',
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    );
   }
+
+  /* =====================================
+     CHART
+  ===================================== */
 
   function drawChart(){
 
-    if(!ctx || candles.length < 2) return;
+    if(!ctx || candles.length < 2)
+      return;
 
     var dpr = window.devicePixelRatio || 1;
 
     var w = canvas.offsetWidth;
-    var h = 58;
+    var h = 54;
 
     canvas.width = w * dpr;
     canvas.height = h * dpr;
@@ -1255,7 +1287,7 @@
     var range = max - min || 1;
 
     var spacing = w / candles.length;
-    var candleWidth = spacing * .58;
+    var candleWidth = spacing * .52;
 
     for(var i=0;i<candles.length;i++){
 
@@ -1283,6 +1315,7 @@
       /* LINHA */
 
       ctx.beginPath();
+
       ctx.lineWidth = 1.2;
 
       ctx.moveTo(x,yHigh);
@@ -1307,6 +1340,10 @@
       );
     }
   }
+
+  /* =====================================
+     HISTÓRICO
+  ===================================== */
 
   async function fetchChartData(){
 
@@ -1336,41 +1373,44 @@
     }
   }
 
+  /* =====================================
+     MSTR
+  ===================================== */
+
   async function fetchMSTR(){
 
     try{
 
-      var url = encodeURIComponent(
-        'https://query1.finance.yahoo.com/v8/finance/chart/MSTR'
+      const res = await fetch(
+        'https://financialmodelingprep.com/api/v3/quote/MSTR?apikey=demo'
       );
 
-      var res = await fetch(
-        'https://api.allorigins.win/get?url=' + url
-      );
+      const data = await res.json();
 
-      var json = await res.json();
+      if(data && data[0] && data[0].price){
 
-      var data = JSON.parse(json.contents);
-
-      var price =
-        data.chart.result[0]
-        .meta.regularMarketPrice;
-
-      if(price){
+        const price = data[0].price;
 
         mstrEl.textContent =
           'MSTR $ ' +
-          price.toLocaleString('en-US',{
-            minimumFractionDigits:2,
-            maximumFractionDigits:2
-          });
+          price.toLocaleString(
+            'en-US',
+            {
+              minimumFractionDigits:2,
+              maximumFractionDigits:2
+            }
+          );
       }
 
     } catch(e){
 
-      console.error(e);
+      console.error('MSTR erro:',e);
     }
   }
+
+  /* =====================================
+     WEBSOCKET
+  ===================================== */
 
   function connect(){
 
@@ -1394,7 +1434,7 @@
       var stream = payload.stream;
       var data = payload.data;
 
-      /* BTC USD */
+      /* BTC */
 
       if(stream === 'btcusdt@ticker'){
 
@@ -1508,6 +1548,10 @@
     };
   }
 
+  /* =====================================
+     INIT
+  ===================================== */
+
   if(canvas){
 
     canvas.width =
@@ -1518,10 +1562,8 @@
 
     fetchMSTR();
 
-    setInterval(
-      fetchMSTR,
-      300000
-    );
+    /* ↓ AGORA ATUALIZA */
+    setInterval(fetchMSTR,60000);
 
     window.addEventListener(
       'resize',
@@ -1531,7 +1573,8 @@
 
 })();
 
-</script>      <div class="stat-row">
+</script>
+<div class="stat-row">
         <div class="stat-card">
           <div class="stat-value">Especialistas</div>
           <div class="stat-label">Dedicados exclusivamente à Rede Bitcoin</div>
