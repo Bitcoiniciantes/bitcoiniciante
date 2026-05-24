@@ -1,4 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BITCOIN INICIANTES – Assessoria Técnica em Bitcoin para Indivíduos.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --orange: #F7931A;
+      --orange-dark: #C97310;
+      --orange-light: #FFF4E6;
+      --black: #0A0A0A;
+      --gray-900: #111111;
+      --gray-700: #3A3A3A;
+      --gray-500: #6B6B6B;
+      --gray-200: #E8E8E8;
+      --gray-100: #F5F5F5;
+      --white: #FFFFFF;
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--white);
+      color: var(--black);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gray-200);
+      z-index: 100;
+      padding: 0 5%;
+      height: 70px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--orange);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+    .logo span { color: var(--orange); }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--gray-700);
       text-decoration: none;
       letter-spacing: 0.01em;
       transition: color .2s;
@@ -571,7 +640,7 @@
     <!-- BTC / BRL -->
     <div class="btc-col-item">
       <div class="bci-label">BTC / BRL</div>
-      <div class="bci-price" id="btcPriceBrl">—</div>
+      <div class="bci-price" id="btcPriceBrl"> —</div>
       <div class="bci-change" id="btcChangeBrl">—</div>
     </div>
 
@@ -589,34 +658,31 @@
     <!-- USD / BRL -->
     <div class="btc-col-item">
       <div class="bci-label">USD / BRL</div>
-      <div class="bci-price" id="btcPriceUsdBrl">—</div>
+      <div class="bci-price" id="btcPriceUsdBrl"> —</div>
       <div class="bci-change" id="usdChange">—</div>
     </div>
 
   </div>
 
-  <!-- TIMEFRAME BUTTONS -->
-  <div class="btc-tf-bar">
-    <button class="btc-tf-btn active" data-interval="1h" data-limit="24">1H</button>
-    <button class="btc-tf-btn" data-interval="1d" data-limit="7">1S</button>
-    <button class="btc-tf-btn" data-interval="1d" data-limit="30">1M</button>
-    <button class="btc-tf-btn" data-interval="1w" data-limit="52">1A</button>
-  </div>
-
   <!-- CHART -->
   <div class="btc-chart-box">
+
     <canvas id="btcMiniChart" height="72"></canvas>
+
   </div>
 
   <!-- FOOTER -->
   <div class="btc-footer">
+
     <div class="btc-footer-left">
       <span class="btc-pulse"></span>
       <span>LIVE STREAM</span>
     </div>
-    <div class="btc-footer-right" id="btcTfLabel">
+
+    <div class="btc-footer-right">
       TIMEFRAME • 1H
     </div>
+
   </div>
 
 </div>
@@ -959,7 +1025,7 @@
 
 /* BTC/BRL precisa de mais espaço — número maior */
 .btc-col-item:first-child{
-  flex: 2;
+  flex: 1.9;
 }
 
 .btc-col-divider{
@@ -1015,49 +1081,20 @@
 
   border-radius: 18px;
 
-  background: #2a2a2a;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,255,174,.05),
+      rgba(0,198,255,.02),
+      rgba(255,255,255,.01)
+    );
 
-  border: 1px solid rgba(255,255,255,.07);
+  border: 1px solid rgba(0,255,174,.08);
 
   margin-bottom: 10px;
 
+  /* ↓ ÁREA MAIS ALTA */
   min-height: 90px;
-}
-
-/* =====================================
-   TIMEFRAME BUTTONS
-===================================== */
-
-.btc-tf-bar{
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.btc-tf-btn{
-  background: transparent;
-  border: 1.5px solid #4a5568;
-  border-radius: 8px;
-  color: #4ade80;
-  font-size: .75rem;
-  font-weight: 700;
-  padding: 6px 14px;
-  cursor: pointer;
-  letter-spacing: .04em;
-  transition: background .18s, border-color .18s, color .18s;
-  font-family: var(--font-head, sans-serif);
-}
-
-.btc-tf-btn:hover{
-  border-color: #4ade80;
-  background: rgba(74,222,128,.08);
-}
-
-.btc-tf-btn.active{
-  background: #4ade80;
-  border-color: #4ade80;
-  color: #fff;
 }
 
 #btcMiniChart{
@@ -1178,7 +1215,7 @@
 
   function formatBRL(p){
 
-    return p.toLocaleString(
+    return 'R$ ' + p.toLocaleString(
       'pt-BR',
       {
         minimumFractionDigits:2,
@@ -1272,15 +1309,12 @@
      HISTÓRICO
   ===================================== */
 
-  async function fetchChartData(interval, limit){
-
-    interval = interval || '1h';
-    limit    = limit    || 30;
+  async function fetchChartData(){
 
     try{
 
       var res = await fetch(
-        'https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=' + interval + '&limit=' + limit
+        'https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=24'
       );
 
       var data = await res.json();
@@ -1302,22 +1336,6 @@
       console.error(e);
     }
   }
-
-  /* =====================================
-     TIMEFRAME BUTTONS
-  ===================================== */
-
-  var tfLabel = document.getElementById('btcTfLabel');
-
-  document.querySelectorAll('.btc-tf-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      document.querySelectorAll('.btc-tf-btn').forEach(function(b){ b.classList.remove('active'); });
-      btn.classList.add('active');
-      var label = btn.textContent;
-      if(tfLabel) tfLabel.textContent = 'TIMEFRAME • ' + label;
-      fetchChartData(btn.dataset.interval, parseInt(btn.dataset.limit));
-    });
-  });
 
   /* =====================================
      MSTR (YAHOO FINANCE)
@@ -1464,7 +1482,7 @@
       else if(stream === 'usdtbrl@ticker'){
 
         var usdVal = parseFloat(data.c);
-        usdBrlEl.textContent = usdVal.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+        usdBrlEl.textContent = 'R$ ' + usdVal.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
 
         var usdPct = parseFloat(data.P);
         usdChangeEl.textContent = (usdPct >= 0 ? '▲ +' : '▼ ') + usdPct.toFixed(2) + '%';
@@ -1719,12 +1737,12 @@
       <div class="sif__gauge-badge" id="sif-fator-badge">SEGURANÇA: —</div>
     </div>
     <div class="sif__gauge-label">Patrimônio Alvo Recomendado</div>
-    <div class="sif__gauge-value" id="sif-patrimonio">R$ —</div>
+    <div class="sif__gauge-value" id="sif-patrimonio">—</div>
     
     <div class="sif__progress-container">
       <div class="sif__progress-texts">
         <span>Progresso: <strong id="sif-prog-pct" style="color: #2e7d32;">0%</strong></span>
-        <span id="sif-gap-txt">Falta Acumular: R$ 0</span>
+        <span id="sif-gap-txt">Falta Acumular:  0</span>
       </div>
       <div class="sif__progress-bar">
         <div class="sif__progress-fill" id="sif-prog-fill"></div>
