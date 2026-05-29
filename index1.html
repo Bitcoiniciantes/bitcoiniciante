@@ -1639,17 +1639,100 @@
           <li>Suporte individualizado — focado no seu perfil e privacidade</li>
         </ul>
       </div>
-      <div class="about-img-block">
-        <div class="btc-symbol">₿</div>
-        <p class="about-quote">
-          "Nossa missão é transformar iniciantes em detentores soberanos através do conhecimento prático."
-          <br><br>
-          <strong>— Time BITCOIN INICIANTES</strong>
-        </p>
-      </div>
+
+      
+<div class="about-img-block btc-dashboard-holder">
+                ? 'up'
+                : p < lastPrice
+                  ? 'down'
+                  : ''
+          );
+
+        lastPrice = p;
+
+        change24hEl.textContent =
+          (pct >= 0 ? '▲ +' : '▼ ') + pct.toFixed(2) + '% 24h';
+
+        change24hEl.className =
+          'btc-change-badge ' +
+          (pct >= 0 ? 'up' : 'down');
+
+        candles.push({ c:p });
+
+        if(candles.length > 40){
+          candles.shift();
+        }
+
+        drawChart();
+      }
+
+      else if(stream === 'btcbrl@ticker'){
+
+        const brlPct = parseFloat(data.P);
+
+        brlEl.textContent =
+          formatBRL(parseFloat(data.c));
+
+        brlChangeEl.textContent =
+          (brlPct >= 0 ? '▲ +' : '▼ ') + brlPct.toFixed(2) + '%';
+
+        brlChangeEl.className =
+          'bci-change ' +
+          (brlPct >= 0 ? 'up' : 'down');
+      }
+
+      else if(stream === 'usdtbrl@ticker'){
+
+        const usdPct = parseFloat(data.P);
+
+        usdBrlEl.textContent =
+          'R$ ' + parseFloat(data.c).toLocaleString('pt-BR', {
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+          });
+
+        usdChangeEl.textContent =
+          (usdPct >= 0 ? '▲ +' : '▼ ') + usdPct.toFixed(2) + '%';
+
+        usdChangeEl.className =
+          'bci-change ' +
+          (usdPct >= 0 ? 'up' : 'down');
+      }
+    };
+
+    ws.onclose = function(){
+
+      dotEl.className = 'btc-live-dot';
+      statusEl.textContent = 'RECONECTANDO';
+
+      setTimeout(connect,3000);
+    };
+
+    ws.onerror = function(){
+      ws.close();
+    };
+  }
+
+  resizeCanvas();
+
+  window.addEventListener('resize', resizeCanvas);
+
+  fetchChartData().then(connect);
+
+  fetchMSTR();
+
+  setInterval(fetchMSTR,60000);
+
+})();
+
+</script>
+
+      
     </div>
   </div>
 </section>
+
+  
 
 <section id="servicos">
   <div class="section-inner">
