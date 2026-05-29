@@ -1641,87 +1641,78 @@
       </div>
 
       
-<div class="about-img-block btc-dashboard-holder">
-                ? 'up'
-                : p < lastPrice
-                  ? 'down'
-                  : ''
-          );
-
-        lastPrice = p;
-
-        change24hEl.textContent =
-          (pct >= 0 ? '▲ +' : '▼ ') + pct.toFixed(2) + '% 24h';
-
-        change24hEl.className =
-          'btc-change-badge ' +
-          (pct >= 0 ? 'up' : 'down');
-
-        candles.push({ c:p });
-
-        if(candles.length > 40){
-          candles.shift();
-        }
-
-        drawChart();
+<div class="about-dashboard-wrap">
+        ctx.lineTo(x,y);
       }
+    });
 
-      else if(stream === 'btcbrl@ticker'){
+    const gradient = ctx.createLinearGradient(0,0,canvas.width,0);
 
-        const brlPct = parseFloat(data.P);
+    gradient.addColorStop(0,'#f7931a');
+    gradient.addColorStop(1,'#00c6ff');
 
-        brlEl.textContent =
-          formatBRL(parseFloat(data.c));
+    ctx.strokeStyle = gradient;
+    ctx.lineWidth = 4;
+    ctx.shadowBlur = 18;
+    ctx.shadowColor = '#f7931a';
 
-        brlChangeEl.textContent =
-          (brlPct >= 0 ? '▲ +' : '▼ ') + brlPct.toFixed(2) + '%';
-
-        brlChangeEl.className =
-          'bci-change ' +
-          (brlPct >= 0 ? 'up' : 'down');
-      }
-
-      else if(stream === 'usdtbrl@ticker'){
-
-        const usdPct = parseFloat(data.P);
-
-        usdBrlEl.textContent =
-          'R$ ' + parseFloat(data.c).toLocaleString('pt-BR', {
-            minimumFractionDigits:2,
-            maximumFractionDigits:2
-          });
-
-        usdChangeEl.textContent =
-          (usdPct >= 0 ? '▲ +' : '▼ ') + usdPct.toFixed(2) + '%';
-
-        usdChangeEl.className =
-          'bci-change ' +
-          (usdPct >= 0 ? 'up' : 'down');
-      }
-    };
-
-    ws.onclose = function(){
-
-      dotEl.className = 'btc-live-dot';
-      statusEl.textContent = 'RECONECTANDO';
-
-      setTimeout(connect,3000);
-    };
-
-    ws.onerror = function(){
-      ws.close();
-    };
+    ctx.stroke();
   }
 
-  resizeCanvas();
+  async function updateData(){
 
-  window.addEventListener('resize', resizeCanvas);
+    try{
 
-  fetchChartData().then(connect);
+      const btc = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT').then(r=>r.json());
 
-  fetchMSTR();
+      const btcBrl = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCBRL').then(r=>r.json());
 
-  setInterval(fetchMSTR,60000);
+      const usdBrl = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=USDTBRL').then(r=>r.json());
+
+      const price = parseFloat(btc.lastPrice);
+      const pct = parseFloat(btc.priceChangePercent);
+
+      priceEl.innerHTML = '$ ' + price.toLocaleString('en-US', {
+        minimumFractionDigits:0,
+        maximumFractionDigits:0
+      });
+
+      changeEl.innerHTML = (pct >= 0 ? '▲ +' : '▼ ') + pct.toFixed(2) + '%';
+
+      changeEl.style.background = pct >= 0
+        ? 'rgba(0,255,174,.12)'
+        : 'rgba(255,77,109,.12)';
+
+      changeEl.style.color = pct >= 0
+        ? '#00ffae'
+        : '#ff4d6d';
+
+      brlEl.innerHTML = 'R$ ' + Number(btcBrl.lastPrice).toLocaleString('pt-BR');
+
+      usdBrlEl.innerHTML = 'R$ ' + Number(usdBrl.lastPrice).toLocaleString('pt-BR', {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      });
+
+      const mstrPrice = (price / 220).toFixed(2);
+      mstrEl.innerHTML = '$ ' + Number(mstrPrice).toLocaleString('en-US');
+
+      points.push(price);
+
+      if(points.length > 40){
+        points.shift();
+      }
+
+      drawChart();
+
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  updateData();
+
+  setInterval(updateData,4000);
 
 })();
 
