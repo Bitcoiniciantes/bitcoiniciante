@@ -1221,8 +1221,7 @@
 </style>
 
 
-
-      <script>
+<script>
 (function() {
   var candles = [];
   var lastPrice = null;
@@ -1232,38 +1231,74 @@
 
   var priceEl = document.getElementById('btcPrice');
   var change24hEl = document.getElementById('btcChange24h');
+
   var brlEl = document.getElementById('btcPriceBrl');
   var brlChangeEl = document.getElementById('btcChangeBrl');
   var usdBrlEl = document.getElementById('btcPriceUsdBrl');
   var usdChangeEl = document.getElementById('usdChange');
+
   var mstrEl = document.getElementById('btcPriceMstr');
   var mstrChangeEl = document.getElementById('mstrChange');
+
   var dotEl = document.getElementById('btcDot');
   var statusEl = document.getElementById('btcStatusTxt');
 
-  function formatUSD(p) { return '$ ' + p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-  function formatBRL(p) { return 'R$ ' + p.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function formatUSD(p) {
+    return '$ ' + p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
 
+  function formatBRL(p) {
+    return 'R$ ' + p.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  /* =====================================
+     CHART (HISTÓRICO 24H)
+  ===================================== */
   function drawChart() {
     if (!ctx || candles.length < 2) return;
+
     var dpr = window.devicePixelRatio || 1;
-    var w = canvas.offsetWidth; var h = 72;
-    canvas.width = w * dpr; canvas.height = h * dpr;
-    ctx.scale(dpr, dpr); ctx.clearRect(0, 0, w, h);
+    var w = canvas.offsetWidth;
+    var h = 72;
+
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, w, h);
+
     var min = Math.min(...candles.map(c => c.l));
     var max = Math.max(...candles.map(c => c.h));
-    var range = max - min || 1; var spacing = w / candles.length; var candleWidth = spacing * .52;
+    var range = max - min || 1;
+    var spacing = w / candles.length;
+    var candleWidth = spacing * .52;
 
     for (var i = 0; i < candles.length; i++) {
-      var c = candles[i]; var x = i * spacing + spacing / 2;
+      var c = candles[i];
+      var x = i * spacing + spacing / 2;
+
       var yOpen  = h - ((c.o - min) / range) * h;
       var yClose = h - ((c.c - min) / range) * h;
       var yHigh  = h - ((c.h - min) / range) * h;
       var yLow   = h - ((c.l - min) / range) * h;
-      var isUp = c.c >= c.o; var color = isUp ? '#00ffae' : '#ff4d6d';
-      ctx.strokeStyle = color; ctx.fillStyle = color; ctx.shadowColor = color; ctx.shadowBlur = 4;
-      ctx.beginPath(); ctx.lineWidth = 1.2; ctx.moveTo(x, yHigh); ctx.lineTo(x, yLow); ctx.stroke();
-      var bodyY = Math.min(yOpen, yClose); var bodyH = Math.max(Math.abs(yClose - yOpen), 2);
+
+      var isUp = c.c >= c.o;
+      var color = isUp ? '#00ffae' : '#ff4d6d';
+
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 4;
+
+      /* LINHA WICK */
+      ctx.beginPath();
+      ctx.lineWidth = 1.2;
+      ctx.moveTo(x, yHigh);
+      ctx.lineTo(x, yLow);
+      ctx.stroke();
+
+      /* CORPO CANDLE */
+      var bodyY = Math.min(yOpen, yClose);
+      var bodyH = Math.max(Math.abs(yClose - yOpen), 2);
       ctx.fillRect(x - candleWidth / 2, bodyY, candleWidth, bodyH);
     }
   }
@@ -1272,176 +1307,180 @@
     try {
       var res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=24');
       var data = await res.json();
-      candles = data.map(k => ({ o: parseFloat(k[1]), h: parseFloat(k[2]), l: parseFloat(k[3]), c: parseFloat(k[4]) }));
+      candles = data.map(function(k) {
+        return {
+          o: parseFloat(k[1]),
+          h: parseFloat(k[2]),
+          l: parseFloat(k[3]),
+          c: parseFloat(k[4])
+        };
+      });
       drawChart();
-    } catch (e) { console.error("Erro gráfico:", e); }
-  }
-
-  async function fetchPrices() {
-    try {
-      // 1. Puxa preço do BTC e variação 24h direto da API pública da Binance (HTTP estável)
-      var resBtc = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
-      var btcData = await resBtc.json();
-      var priceBtc = parseFloat(btcData.lastPrice);
-      var pctBtc = parseFloat(btcData.priceChangePercent);
-
-      if(priceEl) {
-        priceEl.textContent = formatUSD(priceBtc);
-        priceEl.className = "btc-price " + (pctBtc >= 0 ? "up" : "down");
+      
+      // Atualiza a variação 24h inicial baseada nas candles
+      if(candles.length > 0) {
+        var open24h = candles[0].o;
+        var closeCurrent = candles[candles.length - 1].c;
+        updateChangeBadge(closeCurrent, open24h, change24hEl);
       }
-      if(change24hEl) {
-        change24hEl.textContent = (pctBtc >= 0 ? '+' : '') + pctBtc.toFixed(2) + '%';
-        change24hEl.className = "btc-change-badge " + (pctBtc >= 0 ? "up" : "down");
-      }
-
-      // 2. Puxa Dólar Comercial
-      var resUsd = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL');
-      var usdData = await resUsd.json();
-      if(usdData && usdData.USDBRL) {
-        var usdPrice = parseFloat(usdData.USDBRL.bid);
-        var usdPct = parseFloat(usdData.USDBRL.pctChange);
-        
-        if(usdBrlEl) usdBrlEl.textContent = 'R$ ' + usdPrice.toFixed(2);
-        if(usdChangeEl) {
-          usdChangeEl.textContent = (usdPct >= 0 ? '+' : '') + usdPct.toFixed(2) + '%';
-          usdChangeEl.className = "bci-change " + (usdPct >= 0 ? "up" : "down");
-        }
-        if(brlEl) brlEl.textContent = formatBRL(priceBtc * usdPrice);
-        if(brlChangeEl) {
-          brlChangeEl.textContent = (pctBtc >= 0 ? '+' : '') + pctBtc.toFixed(2) + '%';
-          brlChangeEl.className = "bci-change " + (pctBtc >= 0 ? "up" : "down");
-        }
-      }
-
-      // 3. Simulação segura para MSTR para evitar quebra por CORS
-      if(mstrEl) mstrEl.textContent = formatUSD(priceBtc * 0.0018); 
-      if(mstrChangeEl) {
-        mstrChangeEl.textContent = (pctBtc >= 0 ? '+' : '') + (pctBtc * 1.2).toFixed(2) + '%';
-        mstrChangeEl.className = "bci-change " + (pctBtc >= 0 ? "up" : "down");
-      }
-
-      if(dotEl) dotEl.className = "btc-live-dot live";
-      if(statusEl) statusEl.textContent = "AO VIVO";
-
     } catch (e) {
-      console.error("Erro na busca de preços:", e);
+      console.error("Erro ao buscar gráfico:", e);
     }
   }
 
+  function updateChangeBadge(current, original, element) {
+    if(!element || !original) return;
+    var pct = ((current - original) / original) * 100;
+    var sign = pct >= 0 ? '+' : '';
+    element.textContent = sign + pct.toFixed(2) + '%';
+    
+    if(pct >= 0) {
+      element.className = "btc-change-badge up";
+    } else {
+      element.className = "btc-change-badge down";
+    }
+  }
+
+  function updateItemChange(current, original, element) {
+    if(!element || !original) return;
+    var pct = ((current - original) / original) * 100;
+    var sign = pct >= 0 ? '+' : '';
+    element.textContent = sign + pct.toFixed(2) + '%';
+    
+    if(pct >= 0) {
+      element.className = "bci-change up";
+    } else {
+      element.className = "bci-change down";
+    }
+  }
+
+  /* =====================================
+     MSTR (YAHOO FINANCE VIA PROXY)
+  ===================================== */
+  async function fetchMSTR() {
+    try {
+      const yahooUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/MSTR?region=US&lang=en-US&interval=1m&range=1d';
+      const proxy = 'https://api.allorigins.win/get?url=';
+      
+      const res = await fetch(proxy + encodeURIComponent(yahooUrl));
+      const data = await res.json();
+      
+      if (data && data.contents) {
+        const json = JSON.parse(data.contents);
+        const result = json.chart.result[0];
+        const price = result.meta.regularMarketPrice;
+        const prevClose = result.meta.chartPreviousClose || result.meta.previousClose;
+
+        if (price && mstrEl) {
+          mstrEl.textContent = '$ ' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          if (prevClose && mstrChangeEl) {
+            updateItemChange(price, prevClose, mstrChangeEl);
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Erro ao buscar MSTR:", e);
+      if(mstrEl) mstrEl.textContent = "$ N/A";
+    }
+  }
+
+  /* =====================================
+     USD / BRL & CÁLCULO BTC/BRL
+  ===================================== */
+  async function fetchUsdBrl(btcUsdtPrice) {
+    try {
+      const res = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL');
+      const data = await res.json();
+      if(data && data.USDBRL) {
+        const usdPrice = parseFloat(data.USDBRL.bid);
+        const pctChange = parseFloat(data.USDBRL.pctChange);
+        
+        if(usdBrlEl) usdBrlEl.textContent = 'R$ ' + usdPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        if(usdChangeEl) {
+          usdChangeEl.textContent = (pctChange >= 0 ? '+' : '') + pctChange.toFixed(2) + '%';
+          usdChangeEl.className = pctChange >= 0 ? "bci-change up" : "bci-change down";
+        }
+
+        // Calcula dinamicamente o BTC em Reais se tiver o preço do BTC
+        if(btcUsdtPrice && brlEl) {
+          const btcBrl = btcUsdtPrice * usdPrice;
+          brlEl.textContent = formatBRL(btcBrl);
+          
+          // Variação aproximada baseada na variação do BTC
+          if(candles.length > 0 && brlChangeEl) {
+            var btcBrlOpen = candles[0].o * usdPrice; // Aproximação simples
+            updateItemChange(btcBrl, btcBrlOpen, brlChangeEl);
+          }
+        }
+      }
+    } catch(e) {
+      console.error("Erro ao buscar USD/BRL:", e);
+    }
+  }
+
+  /* =====================================
+     WEBSOCKET BINANCE (PREÇO EM TEMPO REAL)
+  ===================================== */
+  function initWebSocket() {
+    var ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
+
+    ws.onopen = function() {
+      if(dotEl) dotEl.className = "btc-live-dot live";
+      if(statusEl) statusEl.textContent = "AO VIVO";
+    };
+
+    ws.onmessage = function(event) {
+      var data = JSON.parse(event.data);
+      var price = parseFloat(data.c); // Preço atual
+      var open24h = parseFloat(data.o); // Preço de abertura 24h atrás
+
+      if(priceEl) {
+        priceEl.textContent = formatUSD(price);
+        
+        // Efeito visual de piscar ao mudar de preço
+        if(lastPrice !== null) {
+          if(price > lastPrice) {
+            priceEl.className = "btc-price up";
+          } else if(price < lastPrice) {
+            priceEl.className = "btc-price down";
+          }
+        }
+        lastPrice = price;
+      }
+
+      // Atualiza badge 24h principal
+      updateChangeBadge(price, open24h, change24hEl);
+
+      // Dispara a atualização do par em BRL puxando o câmbio atualizado
+      fetchUsdBrl(price);
+    };
+
+    ws.onclose = function() {
+      if(dotEl) dotEl.className = "btc-live-dot";
+      if(statusEl) statusEl.textContent = "DESCONECTADO";
+      // Tenta reconectar em 5 segundos
+      setTimeout(initWebSocket, 5000);
+    };
+  }
+
+  // Inicialização geral ao carregar a página
   window.addEventListener('DOMContentLoaded', function() {
     fetchChartData();
-    fetchPrices();
-    setInterval(fetchPrices, 10000); // Atualiza tudo a cada 10 segundos sem travar
-    setInterval(fetchChartData, 60000);
+    fetchMSTR();
+    initWebSocket();
+    
+    // Atualiza ações e câmbio a cada 2 minutos
+    setInterval(function() {
+      fetchMSTR();
+      fetchChartData(); // Atualiza as candles do mini gráfico
+    }, 120000);
   });
 
+  // Re-desenha o gráfico se a tela mudar de tamanho (responsividade)
   window.addEventListener('resize', drawChart);
+
 })();
 </script>
-      
-<div class="stat-row">
-        <div class="stat-card">
-          <div class="stat-value">Especialistas</div>
-          <div class="stat-label">Dedicados exclusivamente à Rede Bitcoin</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">Direto</div>
-          <div class="stat-label">Sem custodiantes entre você e seu capital</div>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value">Posse Soberana</div>
-        <div class="stat-label">O controle é seu. Chaves privadas sob sua gestão.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<section class="about" id="sobre">
-  <div class="section-inner">
-    <div class="about-grid">
-      <div>
-        <div class="section-tag">Quem Somos</div>
-        <h2 class="section-title">Não operamos como corretora.<br>Atuamos como sua assessoria privada.</h2>
-        <p class="section-sub">Capacitamos indivíduos a compreender, adquirir e armazenar Bitcoin com métodos rigorosos de segurança — sem dependência de plataformas ou promessas vazias.</p>
-        <ul class="about-list">
-          <li>Foco integral no ecossistema Bitcoin e tecnologia Blockchain</li>
-          <li>Execução técnica de custódia própria (Hardware Wallets e Multisig)</li>
-          <li>Estratégias de sucessão familiar e proteção de longo prazo</li>
-          <li>Educação técnica: da teoria monetária à prática operacional</li>
-          <li>Suporte individualizado — focado no seu perfil e privacidade</li>
-        </ul>
-      </div>
-      <div class="about-img-block btc-dashboard-holder">
-
-<div class="btc-ultra-card">
-
-  <div class="btc-bg-glow btc-glow-1"></div>
-  <div class="btc-bg-glow btc-glow-2"></div>
-
-  <div class="btc-top">
-
-    <div class="btc-coin">
-
-      <div class="btc-icon-wrap">
-        <div class="btc-icon">₿</div>
-      </div>
-
-      <div>
-        <div class="btc-label">
-          BITCOIN MARKET
-        </div>
-
-        <div class="btc-live-row">
-          <span id="btcStatusDot" class="btc-live-dot"></span>
-          <span id="btcStatusTxt">CONECTANDO</span>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="btc-badge">
-      LIVE
-    </div>
-
-  </div>
-
-  <div id="btcPrice" class="btc-price">
-    $ --
-  </div>
-
-  <div id="btcChange24h" class="btc-change-badge">
-    Atualizando...
-  </div>
-
-  <div class="btc-chart-wrap">
-    <canvas id="btcCanvas"></canvas>
-  </div>
-
-  <div class="btc-stats-grid">
-
-    <div class="btc-stat-box">
-      <div class="btc-stat-title">BTC / BRL</div>
-      <div id="btcBRL" class="btc-stat-value">R$ --</div>
-      <div id="btcBRLChange" class="bci-change">--</div>
-    </div>
-
-    <div class="btc-stat-box">
-      <div class="btc-stat-title">MSTR</div>
-      <div id="mstrPrice" class="btc-stat-value">$ --</div>
-      <div class="btc-mini-sub">MicroStrategy</div>
-    </div>
-
-    <div class="btc-stat-box">
-      <div class="btc-stat-title">USD / BRL</div>
-      <div id="usdBrl" class="btc-stat-value">R$ --</div>
-      <div id="usdChange" class="bci-change">--</div>
-    </div>
-
-    <div class="btc-stat-box">
-      <div class="btc-stat-title">DOM BTC</div>
-</script>
-
 
 
 
