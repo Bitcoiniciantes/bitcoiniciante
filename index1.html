@@ -1150,47 +1150,47 @@
           <button class="tw-help-btn" title="Score de -2 (venda forte) a +2 (compra forte)">?</button>
         </div>
 
-        <!-- Grid 4×2 de indicadores -->
+        <!-- Grid 4×2 de indicadores — 8 fontes 100% gratuitas -->
         <div class="tw-cards-grid">
           <div class="tw-card">
             <div class="tw-card-label">200W MA Ratio</div>
             <div class="tw-card-value" id="tw-200-val">—</div>
-            <span class="tw-badge tw-badge-neutro" id="tw-200-badge">NEUTRO</span>
+            <span class="tw-badge tw-badge-neutro" id="tw-200-badge">...</span>
           </div>
           <div class="tw-card">
-            <div class="tw-card-label">MVRV Ratio</div>
-            <div class="tw-card-value" id="tw-mvrv-val">—</div>
-            <span class="tw-badge tw-badge-neutro" id="tw-mvrv-badge">NEUTRO</span>
+            <div class="tw-card-label">Mayer Multiple</div>
+            <div class="tw-card-value" id="tw-mayer-val">—</div>
+            <span class="tw-badge tw-badge-neutro" id="tw-mayer-badge">...</span>
           </div>
           <div class="tw-card">
             <div class="tw-card-label">Fear &amp; Greed</div>
             <div class="tw-card-value orange" id="tw-fg-val">—</div>
-            <span class="tw-badge tw-badge-neutro" id="tw-fg-badge">NEUTRO</span>
+            <span class="tw-badge tw-badge-neutro" id="tw-fg-badge">...</span>
           </div>
           <div class="tw-card">
-            <div class="tw-card-label">RSI Mensal</div>
-            <div class="tw-card-value" id="tw-rsi-val">—</div>
-            <span class="tw-badge tw-badge-neutro" id="tw-rsi-badge">NEUTRO</span>
+            <div class="tw-card-label">RSI Mensal BTC/USD</div>
+            <div class="tw-card-value" id="tw-rsim-val">—</div>
+            <span class="tw-badge tw-badge-neutro" id="tw-rsim-badge">...</span>
           </div>
           <div class="tw-card">
-            <div class="tw-card-label">Rhodl Ratio</div>
-            <div class="tw-card-value" id="tw-rhodl-val">—</div>
-            <span class="tw-badge tw-badge-neutro" id="tw-rhodl-badge">NEUTRO</span>
-          </div>
-          <div class="tw-card">
-            <div class="tw-card-label">RSI BTC/USD 14d</div>
+            <div class="tw-card-label">RSI 14d BTC/USD</div>
             <div class="tw-card-value" id="tw-rsi14-val">—</div>
-            <span class="tw-badge tw-badge-neutro" id="tw-rsi14-badge">NEUTRO</span>
+            <span class="tw-badge tw-badge-neutro" id="tw-rsi14-badge">...</span>
           </div>
           <div class="tw-card">
             <div class="tw-card-label">Dominância BTC</div>
             <div class="tw-card-value" id="tw-dom-val">—</div>
-            <span class="tw-badge tw-badge-neutro" id="tw-dom-badge">NEUTRO</span>
+            <span class="tw-badge tw-badge-neutro" id="tw-dom-badge">...</span>
           </div>
           <div class="tw-card">
-            <div class="tw-card-label">Tend. 7 Dias</div>
-            <div class="tw-card-value" id="tw-trend-val">—</div>
-            <span class="tw-badge tw-badge-neutro" id="tw-trend-badge">NEUTRO</span>
+            <div class="tw-card-label">Variação 30d</div>
+            <div class="tw-card-value" id="tw-v30-val">—</div>
+            <span class="tw-badge tw-badge-neutro" id="tw-v30-badge">...</span>
+          </div>
+          <div class="tw-card">
+            <div class="tw-card-label">Variação 7d</div>
+            <div class="tw-card-value" id="tw-v7-val">—</div>
+            <span class="tw-badge tw-badge-neutro" id="tw-v7-badge">...</span>
           </div>
         </div>
 
@@ -1205,14 +1205,20 @@
   </div>
 </section>
 
-<!-- Termômetro Script -->
+<!-- Termômetro Script — indicadores 100% gratuitos e reais -->
 <script>
 (function(){
 
-  /* ── helpers badge ── */
-  function scoreLabel(s){ return s>=1.5?'COMPRA FORTE':s>=0.5?'COMPRA':s<=-1.5?'VENDA FORTE':s<=-0.5?'VENDA':'NEUTRO'; }
-  function badgeClass(s){ return s>=1.5?'tw-badge tw-badge-forte':s>=0.5?'tw-badge tw-badge-compra':s<=-1.5?'tw-badge tw-badge-venda':s<=-0.5?'tw-badge tw-badge-venda':'tw-badge tw-badge-neutro'; }
-
+  /* ── BADGE helpers ── */
+  function scoreLabel(s){
+    return s>=1.5?'COMPRA FORTE':s>=0.5?'COMPRA':s<=-1.5?'VENDA FORTE':s<=-0.5?'VENDA':'NEUTRO';
+  }
+  function badgeClass(s){
+    if(s>=1.5) return 'tw-badge tw-badge-forte';
+    if(s>=0.5) return 'tw-badge tw-badge-compra';
+    if(s<=-0.5) return 'tw-badge tw-badge-venda';
+    return 'tw-badge tw-badge-neutro';
+  }
   function setCard(valId, badgeId, valTxt, score){
     document.getElementById(valId).textContent = valTxt;
     var b = document.getElementById(badgeId);
@@ -1220,123 +1226,203 @@
     b.className = badgeClass(score);
   }
 
-  function scoreFromRsi(rsi){ return rsi<30?2:rsi<45?1:rsi<55?0:rsi<70?-1:-2; }
-  function scoreFromFg(fg){ return fg<=15?2:fg<=35?1:fg<=65?0:fg<=80?-1:-2; }
-
-  function calcRsi(closes){
-    var gains=0,losses=0;
-    for(var i=1;i<closes.length;i++){
-      var d=closes[i]-closes[i-1];
+  /* ── RSI com suavização de Wilder (padrão real) ── */
+  function calcRsiWilder(closes, period){
+    if(closes.length < period+1) return null;
+    var gains=0, losses=0;
+    for(var i=1; i<=period; i++){
+      var d = closes[i]-closes[i-1];
       if(d>0) gains+=d; else losses+=Math.abs(d);
     }
-    var rs=gains/(losses||1);
+    var avgGain = gains/period;
+    var avgLoss = losses/period;
+    for(var i=period+1; i<closes.length; i++){
+      var d = closes[i]-closes[i-1];
+      if(d>0){ avgGain=(avgGain*(period-1)+d)/period; avgLoss=(avgLoss*(period-1))/period; }
+      else    { avgLoss=(avgLoss*(period-1)+Math.abs(d))/period; avgGain=(avgGain*(period-1))/period; }
+    }
+    if(avgLoss===0) return 100;
+    var rs = avgGain/avgLoss;
     return 100-(100/(1+rs));
   }
 
-  /* ── sinal principal ── */
-  function updateSignal(avg){
-    var sigEl = document.getElementById('tw-signal-label');
-    var sigBox = document.querySelector('.tw-signal-box');
-    var lbl = scoreLabel(avg);
-    sigEl.textContent = 'SINAL: '+lbl+' (score: '+avg.toFixed(1)+')';
+  /* ── Scores RSI ── */
+  function scoreRsi(rsi){
+    if(rsi===null) return null;
+    return rsi<30?2:rsi<42?1:rsi<58?0:rsi<70?-1:-2;
+  }
 
+  /* ── Score Fear & Greed ── */
+  function scoreFg(fg){
+    return fg<=15?2:fg<=35?1:fg<=60?0:fg<=80?-1:-2;
+  }
+
+  /* ── Score 200W MA Ratio (preço / média 200 semanas) ──
+     <0.8 compra forte | 0.8-1.0 compra | 1.0-2.0 neutro | 2.0-2.4 venda | >2.4 venda forte */
+  function score200W(ratio){
+    return ratio<0.8?2:ratio<1.0?1:ratio<2.0?0:ratio<2.4?-1:-2;
+  }
+
+  /* ── Score Mayer Multiple (preço / 200d MA) ──
+     <1.0 compra forte | 1.0-1.5 compra | 1.5-2.4 neutro | 2.4-3.0 venda | >3.0 venda forte */
+  function scoreMayer(m){
+    return m<1.0?2:m<1.5?1:m<2.4?0:m<3.0?-1:-2;
+  }
+
+  /* ── Score Dominância ── */
+  function scoreDom(d){
+    return d>58?2:d>52?1:d>44?0:d>38?-1:-2;
+  }
+
+  /* ── Score Variação % ── */
+  function scoreVar(pct, limites){
+    // limites: [compraForte, compra, venda, vendaForte] positivos para alta
+    return pct>limites[0]?2:pct>limites[1]?1:pct>limites[2]?0:pct>limites[3]?-1:-2;
+  }
+
+  /* ── Sinal principal ── */
+  function updateSignal(scores){
+    var valid = scores.filter(function(s){ return s!==null; });
+    if(!valid.length) return;
+    var avg = valid.reduce(function(a,b){return a+b;},0)/valid.length;
+    var sigEl  = document.getElementById('tw-signal-label');
+    var sigBox = document.querySelector('.tw-signal-box');
+    sigEl.textContent = 'SINAL: '+scoreLabel(avg)+' (score: '+avg.toFixed(1)+')';
     var col = avg>=1?'#00ffae':avg>=0?'#F7931A':avg>=-1?'#fbbf24':'#f87171';
     sigEl.style.color = col;
     sigBox.style.borderColor = col;
   }
 
-  /* ── carrega tudo ── */
+  /* ════════════════════════════════════════════
+     MAIN LOAD — todas as chamadas em paralelo
+  ════════════════════════════════════════════ */
   async function twLoad(){
     document.getElementById('tw-updated').textContent = 'atualizando...';
-    var scores=[];
+    var allScores = [];
 
-    /* 1. CoinGecko — preço, 200w ratio proxy, dominância, tendência 7d */
-    try{
-      var r = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false');
-      var d = await r.json();
-      var md = d.market_data;
-      var price  = md.current_price.usd;
-      var chg24  = md.price_change_percentage_24h;
-      var ath    = md.ath.usd;
-      var dom    = md.market_cap_dominance;
-      var v7     = (md.price_change_percentage_7d_in_currency && md.price_change_percentage_7d_in_currency.usd) || 0;
+    /* ── 1. CoinGecko: preço atual + dominância + var 7d/30d ── */
+    var cgGlobal = fetch('https://api.coingecko.com/api/v3/global')
+      .then(function(r){ return r.json(); }).catch(function(){ return null; });
 
-      /* Preço principal */
+    var cgBtc = fetch(
+      'https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false'
+    ).then(function(r){ return r.json(); }).catch(function(){ return null; });
+
+    /* ── 2. Histórico diário 210 dias (200d MA + RSI 14d) ── */
+    var cgDaily = fetch(
+      'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=210&interval=daily'
+    ).then(function(r){ return r.json(); }).catch(function(){ return null; });
+
+    /* ── 3. Histórico semanal ~1400 dias (200W MA) ── */
+    var cgWeekly = fetch(
+      'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1500&interval=weekly'
+    ).then(function(r){ return r.json(); }).catch(function(){ return null; });
+
+    /* ── 4. Fear & Greed ── */
+    var fngFetch = fetch('https://api.alternative.me/fng/?limit=1')
+      .then(function(r){ return r.json(); }).catch(function(){ return null; });
+
+    /* Aguarda tudo em paralelo */
+    var results = await Promise.allSettled([cgGlobal, cgBtc, cgDaily, cgWeekly, fngFetch]);
+    var globalData = results[0].value;
+    var btcData    = results[1].value;
+    var dailyData  = results[2].value;
+    var weeklyData = results[3].value;
+    var fngData    = results[4].value;
+
+    var price=null, chg24=0, v7=0, v30=0, dom=null;
+
+    /* ── Preço, var 7d/30d ── */
+    if(btcData && btcData.market_data){
+      var md = btcData.market_data;
+      price = md.current_price.usd;
+      chg24 = md.price_change_percentage_24h||0;
+      v7    = (md.price_change_percentage_7d_in_currency&&md.price_change_percentage_7d_in_currency.usd)||0;
+      v30   = (md.price_change_percentage_30d_in_currency&&md.price_change_percentage_30d_in_currency.usd)||0;
+
       document.getElementById('tw-price-val').textContent =
-        '$ ' + price.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+        '$ '+price.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
       var chgEl = document.getElementById('tw-price-chg');
       chgEl.textContent = (chg24>=0?'+':'')+chg24.toFixed(2)+'%';
       chgEl.className = chg24>=0 ? 'up' : '';
 
-      /* 200W MA Ratio (proxy: price/ATH × fator) */
-      var ratio200 = price/ath * 1.35; /* proxy simples */
-      var s200 = ratio200<0.8?2:ratio200<1.0?1:ratio200<1.3?0:ratio200<1.7?-1:-2;
-      scores.push(s200);
-      setCard('tw-200-val','tw-200-badge', ratio200.toFixed(3), s200);
+      /* Var 7d */
+      var sv7 = scoreVar(v7,[15,3,-3,-15]);
+      allScores.push(sv7);
+      setCard('tw-v7-val','tw-v7-badge',(v7>=0?'+':'')+v7.toFixed(2)+'%', sv7);
 
-      /* MVRV Ratio (proxy via market_cap/realized_cap — sem API on-chain pública, usamos ratio cap/200d avg) */
-      /* Usamos chg24 e v7 para estimar momentum como proxy de MVRV */
-      var mvrvProxy = 1 + (v7/100)*2; /* simplificado */
-      var smvrv = mvrvProxy<0.8?2:mvrvProxy<1.0?1:mvrvProxy<2.4?0:mvrvProxy<3.0?-1:-2;
-      scores.push(smvrv);
-      setCard('tw-mvrv-val','tw-mvrv-badge', mvrvProxy.toFixed(3), smvrv);
+      /* Var 30d */
+      var sv30 = scoreVar(v30,[40,10,-10,-40]);
+      allScores.push(sv30);
+      setCard('tw-v30-val','tw-v30-badge',(v30>=0?'+':'')+v30.toFixed(2)+'%', sv30);
+    }
 
-      /* Dominância */
-      var sdom = dom>55?1:dom>45?0:-1;
-      scores.push(sdom);
+    /* ── Dominância ── */
+    if(globalData && globalData.data && globalData.data.market_cap_percentage){
+      dom = globalData.data.market_cap_percentage.btc||null;
+    }
+    if(dom===null && btcData && btcData.market_data){
+      dom = btcData.market_data.market_cap_dominance||null;
+    }
+    if(dom!==null){
+      var sdom = scoreDom(dom);
+      allScores.push(sdom);
       setCard('tw-dom-val','tw-dom-badge', dom.toFixed(1)+'%', sdom);
+    }
 
-      /* Tendência 7d como RHODL proxy */
-      var rhodlProxy = 1 + (v7/50);
-      var srhodl = v7>20?2:v7>5?1:v7>-5?0:v7>-20?-1:-2;
-      scores.push(srhodl);
-      setCard('tw-rhodl-val','tw-rhodl-badge', rhodlProxy.toFixed(3), srhodl);
+    /* ── 200d MA (Mayer Multiple) e RSI 14d e RSI Mensal (~30d) ── */
+    if(dailyData && dailyData.prices && dailyData.prices.length>=201){
+      var dPrices = dailyData.prices.map(function(p){ return p[1]; });
+      var last    = dPrices[dPrices.length-1];
 
-      /* Tendência 7d */
-      var strend = v7>10?2:v7>3?1:v7>-3?0:v7>-10?-1:-2;
-      scores.push(strend);
-      setCard('tw-trend-val','tw-trend-badge', (v7>=0?'+':'')+v7.toFixed(1)+'%', strend);
+      /* 200d MA simples */
+      var slice200 = dPrices.slice(-200);
+      var ma200    = slice200.reduce(function(a,b){return a+b;},0)/200;
+      var mayer    = last/ma200;
+      var smayer   = scoreMayer(mayer);
+      allScores.push(smayer);
+      setCard('tw-mayer-val','tw-mayer-badge', mayer.toFixed(3), smayer);
 
-    } catch(e){ console.warn('CoinGecko err',e); }
+      /* RSI 14d — usa últimos 15 fechamentos */
+      var rsi14 = calcRsiWilder(dPrices.slice(-30), 14);
+      if(rsi14!==null){
+        var srsi14 = scoreRsi(rsi14);
+        allScores.push(srsi14);
+        setCard('tw-rsi14-val','tw-rsi14-badge', rsi14.toFixed(1), srsi14);
+      }
 
-    /* 2. Fear & Greed */
-    try{
-      var rf = await fetch('https://api.alternative.me/fng/');
-      var df = await rf.json();
-      var fgVal = parseInt(df.data[0].value);
-      var sfg = scoreFromFg(fgVal);
-      scores.push(sfg);
+      /* RSI Mensal — usa 31 fechamentos diários (≈ 30 períodos) */
+      var rsiM = calcRsiWilder(dPrices.slice(-62), 30);
+      if(rsiM!==null){
+        var srsiM = scoreRsi(rsiM);
+        allScores.push(srsiM);
+        setCard('tw-rsim-val','tw-rsim-badge', rsiM.toFixed(1), srsiM);
+      }
+    }
+
+    /* ── 200W MA Ratio (preço / média das últimas 200 semanas) ── */
+    if(weeklyData && weeklyData.prices && weeklyData.prices.length>=200 && price){
+      var wPrices  = weeklyData.prices.map(function(p){ return p[1]; });
+      var slice200w= wPrices.slice(-200);
+      var ma200w   = slice200w.reduce(function(a,b){return a+b;},0)/200;
+      var ratio200 = price/ma200w;
+      var s200     = score200W(ratio200);
+      allScores.push(s200);
+      setCard('tw-200-val','tw-200-badge', ratio200.toFixed(3), s200);
+    }
+
+    /* ── Fear & Greed ── */
+    if(fngData && fngData.data && fngData.data[0]){
+      var fgVal = parseInt(fngData.data[0].value);
+      var sfg   = scoreFg(fgVal);
+      allScores.push(sfg);
       document.getElementById('tw-fg-val').textContent = fgVal;
       document.getElementById('tw-fg-badge').textContent = scoreLabel(sfg);
       document.getElementById('tw-fg-badge').className = badgeClass(sfg);
-    } catch(e){ console.warn('FNG err',e); }
-
-    /* 3. RSI Mensal (30d) e RSI 14d — CoinGecko market_chart */
-    try{
-      /* RSI 14d — preços diários 30 dias */
-      var rr = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=30&interval=daily');
-      var dr = await rr.json();
-      var closes = dr.prices.map(function(p){ return p[1]; });
-      if(closes.length>=15){
-        /* RSI 14d */
-        var rsi14 = calcRsi(closes.slice(-15));
-        var srsi14 = scoreFromRsi(rsi14);
-        scores.push(srsi14);
-        setCard('tw-rsi14-val','tw-rsi14-badge', rsi14.toFixed(1), srsi14);
-
-        /* RSI Mensal — todos os 30 */
-        var rsiM = calcRsi(closes);
-        var srsiM = scoreFromRsi(rsiM);
-        scores.push(srsiM);
-        setCard('tw-rsi-val','tw-rsi-badge', rsiM.toFixed(1), srsiM);
-      }
-    } catch(e){ console.warn('RSI err',e); }
-
-    /* ── Score médio → sinal ── */
-    if(scores.length>0){
-      var avg = scores.reduce(function(a,b){return a+b;},0)/scores.length;
-      updateSignal(avg);
     }
+
+    /* ── Sinal consolidado ── */
+    updateSignal(allScores);
 
     var now = new Date();
     document.getElementById('tw-updated').textContent =
@@ -1345,6 +1431,7 @@
 
   document.getElementById('tw-refresh-btn').addEventListener('click', twLoad);
 
+  /* Dispara imediatamente e renova a cada 5 minutos */
   twLoad();
   setInterval(twLoad, 5*60*1000);
 
