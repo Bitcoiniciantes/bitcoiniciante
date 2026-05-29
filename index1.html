@@ -213,7 +213,7 @@
     .about { background: var(--gray-100); }
     .about-grid {
       display: grid;
-      grid-template-columns: 1fr 1.1fr;
+      grid-template-columns: 1fr 1.5fr;
       gap: 3rem;
       align-items: start;
     }
@@ -1293,140 +1293,160 @@
     sigBox.style.borderColor = col;
   }
 
+  /* ── helper fetch seguro ── */
+  async function safeFetch(url){
+    try{
+      var r = await fetch(url);
+      if(!r.ok) return null;
+      return await r.json();
+    } catch(e){ return null; }
+  }
+
+  /* ── amostrar array em N pontos espaçados (para 200W MA) ── */
+  function sampleEvery(arr, stepDays){
+    var out=[];
+    for(var i=0;i<arr.length;i+=stepDays) out.push(arr[i]);
+    return out;
+  }
+
   /* ════════════════════════════════════════════
-     MAIN LOAD — todas as chamadas em paralelo
+     MAIN LOAD — chamadas em paralelo, sem falha
   ════════════════════════════════════════════ */
   async function twLoad(){
     document.getElementById('tw-updated').textContent = 'atualizando...';
     var allScores = [];
 
-    /* ── 1. CoinGecko: preço atual + dominância + var 7d/30d ── */
-    var cgGlobal = fetch('https://api.coingecko.com/api/v3/global')
-      .then(function(r){ return r.json(); }).catch(function(){ return null; });
+    /* Dispara todas as chamadas ao mesmo tempo */
+    var [btcData, globalData, dailyData, longData, fngData] = await Promise.all([
+      /* 1. Dados do BTC: preço, var 7d/30d */
+      safeFetch('https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false'),
+      /* 2. Global: dominância */
+      safeFetch('https://api.coingecko.com/api/v3/global'),
+      /* 3. Diário 210 dias: 200d MA (Mayer) + RSI 14d + RSI Mensal */
+      safeFetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=210&interval=daily'),
+      /* 4. Diário 1400 dias: amostrado para 200W MA */
+      safeFetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1400&interval=daily'),
+      /* 5. Fear & Greed */
+      safeFetch('https://api.alternative.me/fng/?limit=1')
+    ]);
 
-    var cgBtc = fetch(
-      'https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false'
-    ).then(function(r){ return r.json(); }).catch(function(){ return null; });
+    var price=null, chg24=0, v7=0, v30=0;
 
-    /* ── 2. Histórico diário 210 dias (200d MA + RSI 14d) ── */
-    var cgDaily = fetch(
-      'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=210&interval=daily'
-    ).then(function(r){ return r.json(); }).catch(function(){ return null; });
-
-    /* ── 3. Histórico semanal ~1400 dias (200W MA) ── */
-    var cgWeekly = fetch(
-      'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1500&interval=weekly'
-    ).then(function(r){ return r.json(); }).catch(function(){ return null; });
-
-    /* ── 4. Fear & Greed ── */
-    var fngFetch = fetch('https://api.alternative.me/fng/?limit=1')
-      .then(function(r){ return r.json(); }).catch(function(){ return null; });
-
-    /* Aguarda tudo em paralelo */
-    var results = await Promise.allSettled([cgGlobal, cgBtc, cgDaily, cgWeekly, fngFetch]);
-    var globalData = results[0].value;
-    var btcData    = results[1].value;
-    var dailyData  = results[2].value;
-    var weeklyData = results[3].value;
-    var fngData    = results[4].value;
-
-    var price=null, chg24=0, v7=0, v30=0, dom=null;
-
-    /* ── Preço, var 7d/30d ── */
+    /* ═══ 1. PREÇO + VAR 7d/30d ═══ */
     if(btcData && btcData.market_data){
-      var md = btcData.market_data;
-      price = md.current_price.usd;
-      chg24 = md.price_change_percentage_24h||0;
-      v7    = (md.price_change_percentage_7d_in_currency&&md.price_change_percentage_7d_in_currency.usd)||0;
-      v30   = (md.price_change_percentage_30d_in_currency&&md.price_change_percentage_30d_in_currency.usd)||0;
+      var md  = btcData.market_data;
+      price   = md.current_price.usd;
+      chg24   = md.price_change_percentage_24h||0;
+      v7      = (md.price_change_percentage_7d_in_currency  && md.price_change_percentage_7d_in_currency.usd)  || 0;
+      v30     = (md.price_change_percentage_30d_in_currency && md.price_change_percentage_30d_in_currency.usd) || 0;
 
       document.getElementById('tw-price-val').textContent =
-        '$ '+price.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+        '$ ' + price.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
       var chgEl = document.getElementById('tw-price-chg');
       chgEl.textContent = (chg24>=0?'+':'')+chg24.toFixed(2)+'%';
-      chgEl.className = chg24>=0 ? 'up' : '';
+      chgEl.className   = chg24>=0 ? 'up' : '';
 
-      /* Var 7d */
+      /* Variação 7d */
       var sv7 = scoreVar(v7,[15,3,-3,-15]);
       allScores.push(sv7);
       setCard('tw-v7-val','tw-v7-badge',(v7>=0?'+':'')+v7.toFixed(2)+'%', sv7);
 
-      /* Var 30d */
+      /* Variação 30d */
       var sv30 = scoreVar(v30,[40,10,-10,-40]);
       allScores.push(sv30);
       setCard('tw-v30-val','tw-v30-badge',(v30>=0?'+':'')+v30.toFixed(2)+'%', sv30);
     }
 
-    /* ── Dominância ── */
+    /* ═══ 2. DOMINÂNCIA BTC ═══
+       Tenta /global primeiro, fallback em market_cap_dominance do BTC endpoint */
+    var dom = null;
     if(globalData && globalData.data && globalData.data.market_cap_percentage){
-      dom = globalData.data.market_cap_percentage.btc||null;
+      dom = globalData.data.market_cap_percentage.btc || null;
     }
     if(dom===null && btcData && btcData.market_data){
-      dom = btcData.market_data.market_cap_dominance||null;
+      dom = btcData.market_data.market_cap_dominance || null;
     }
-    if(dom!==null){
+    if(dom!==null && dom>0){
       var sdom = scoreDom(dom);
       allScores.push(sdom);
       setCard('tw-dom-val','tw-dom-badge', dom.toFixed(1)+'%', sdom);
     }
 
-    /* ── 200d MA (Mayer Multiple) e RSI 14d e RSI Mensal (~30d) ── */
-    if(dailyData && dailyData.prices && dailyData.prices.length>=201){
-      var dPrices = dailyData.prices.map(function(p){ return p[1]; });
-      var last    = dPrices[dPrices.length-1];
+    /* ═══ 3. MAYER MULTIPLE + RSI 14d + RSI MENSAL (dados diários 210d) ═══ */
+    if(dailyData && dailyData.prices && dailyData.prices.length >= 62){
+      var dp   = dailyData.prices.map(function(p){ return p[1]; });
+      var last = dp[dp.length-1];
 
-      /* 200d MA simples */
-      var slice200 = dPrices.slice(-200);
-      var ma200    = slice200.reduce(function(a,b){return a+b;},0)/200;
-      var mayer    = last/ma200;
-      var smayer   = scoreMayer(mayer);
-      allScores.push(smayer);
-      setCard('tw-mayer-val','tw-mayer-badge', mayer.toFixed(3), smayer);
-
-      /* RSI 14d — usa últimos 15 fechamentos */
-      var rsi14 = calcRsiWilder(dPrices.slice(-30), 14);
-      if(rsi14!==null){
-        var srsi14 = scoreRsi(rsi14);
-        allScores.push(srsi14);
-        setCard('tw-rsi14-val','tw-rsi14-badge', rsi14.toFixed(1), srsi14);
+      /* Mayer Multiple = preço / 200d SMA */
+      if(dp.length >= 200){
+        var s200d = dp.slice(-200);
+        var ma200 = s200d.reduce(function(a,b){return a+b;},0)/200;
+        var mayer = last / ma200;
+        var smay  = scoreMayer(mayer);
+        allScores.push(smay);
+        setCard('tw-mayer-val','tw-mayer-badge', mayer.toFixed(3), smay);
       }
 
-      /* RSI Mensal — usa 31 fechamentos diários (≈ 30 períodos) */
-      var rsiM = calcRsiWilder(dPrices.slice(-62), 30);
-      if(rsiM!==null){
-        var srsiM = scoreRsi(rsiM);
-        allScores.push(srsiM);
-        setCard('tw-rsim-val','tw-rsim-badge', rsiM.toFixed(1), srsiM);
+      /* RSI 14d Wilder — precisa de ≥30 pontos para warm-up */
+      if(dp.length >= 30){
+        var rsi14 = calcRsiWilder(dp.slice(-30), 14);
+        if(rsi14 !== null){
+          var sr14 = scoreRsi(rsi14);
+          allScores.push(sr14);
+          setCard('tw-rsi14-val','tw-rsi14-badge', rsi14.toFixed(1), sr14);
+        }
+      }
+
+      /* RSI Mensal Wilder (período 30) — precisa de ≥62 pontos */
+      if(dp.length >= 62){
+        var rsiM = calcRsiWilder(dp.slice(-62), 30);
+        if(rsiM !== null){
+          var srM = scoreRsi(rsiM);
+          allScores.push(srM);
+          setCard('tw-rsim-val','tw-rsim-badge', rsiM.toFixed(1), srM);
+        }
       }
     }
 
-    /* ── 200W MA Ratio (preço / média das últimas 200 semanas) ── */
-    if(weeklyData && weeklyData.prices && weeklyData.prices.length>=200 && price){
-      var wPrices  = weeklyData.prices.map(function(p){ return p[1]; });
-      var slice200w= wPrices.slice(-200);
-      var ma200w   = slice200w.reduce(function(a,b){return a+b;},0)/200;
-      var ratio200 = price/ma200w;
-      var s200     = score200W(ratio200);
-      allScores.push(s200);
-      setCard('tw-200-val','tw-200-badge', ratio200.toFixed(3), s200);
+    /* ═══ 4. 200W MA RATIO ═══
+       Usa histórico diário de 1400d, amostra a cada 7 dias → ~200 semanas */
+    if(longData && longData.prices && longData.prices.length >= 200 && price){
+      var lp = longData.prices.map(function(p){ return p[1]; });
+      /* Pega um ponto a cada 7 dias para simular fechamentos semanais */
+      var weekly = sampleEvery(lp, 7);
+      if(weekly.length >= 200){
+        var w200   = weekly.slice(-200);
+        var ma200w = w200.reduce(function(a,b){return a+b;},0) / w200.length;
+        var r200   = price / ma200w;
+        var s200   = score200W(r200);
+        allScores.push(s200);
+        setCard('tw-200-val','tw-200-badge', r200.toFixed(3), s200);
+      } else if(weekly.length >= 50){
+        /* fallback: usa todos os pontos disponíveis */
+        var maW    = weekly.reduce(function(a,b){return a+b;},0) / weekly.length;
+        var r200f  = price / maW;
+        var s200f  = score200W(r200f);
+        allScores.push(s200f);
+        setCard('tw-200-val','tw-200-badge', r200f.toFixed(3)+' ~', s200f);
+      }
     }
 
-    /* ── Fear & Greed ── */
+    /* ═══ 5. FEAR & GREED ═══ */
     if(fngData && fngData.data && fngData.data[0]){
-      var fgVal = parseInt(fngData.data[0].value);
+      var fgVal = parseInt(fngData.data[0].value, 10);
       var sfg   = scoreFg(fgVal);
       allScores.push(sfg);
-      document.getElementById('tw-fg-val').textContent = fgVal;
-      document.getElementById('tw-fg-badge').textContent = scoreLabel(sfg);
-      document.getElementById('tw-fg-badge').className = badgeClass(sfg);
+      document.getElementById('tw-fg-val').textContent        = fgVal;
+      document.getElementById('tw-fg-badge').textContent      = scoreLabel(sfg);
+      document.getElementById('tw-fg-badge').className        = badgeClass(sfg);
     }
 
-    /* ── Sinal consolidado ── */
+    /* ═══ SINAL CONSOLIDADO ═══ */
     updateSignal(allScores);
 
     var now = new Date();
     document.getElementById('tw-updated').textContent =
-      'Última atualização: '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      'Última atualização: ' + now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   }
 
   document.getElementById('tw-refresh-btn').addEventListener('click', twLoad);
@@ -1860,3 +1880,4 @@
 </script>
 </body>
 </html>
+
