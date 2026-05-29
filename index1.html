@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFP2BB2V0B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-WFP2BB2V0B');
+</script>
+
+
   
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -633,61 +645,36 @@
       $ —
     </div>
 
+    <div class="btc-change-badge" id="btcChange24h">—</div>
+
   </div>
 
-  <!-- GRID -->
-  <div class="btc-stats-grid">
+  <!-- GRID 3 COLUNAS — estilo imagem referência -->
+  <div class="btc-cols-grid">
 
-    <!-- VARIAÇÃO -->
-    <div class="btc-stat-card change-card">
-
-      <div class="btc-stat-label">
-        VARIAÇÃO 24HS
-      </div>
-
-      <div class="btc-change" id="btcChange">
-        —
-      </div>
-
+    <!-- BTC / BRL -->
+    <div class="btc-col-item">
+      <div class="bci-label">BTC / BRL</div>
+      <div class="bci-price" id="btcPriceBrl"> —</div>
+      <div class="bci-change" id="btcChangeBrl">—</div>
     </div>
 
-    <!-- BTC BRL -->
-    <div class="btc-stat-card">
-
-      <div class="btc-stat-label">
-        BITCOIN EM REAIS
-      </div>
-
-      <div class="btc-stat-value orange" id="btcPriceBrl">
-        R$ —
-      </div>
-
-    </div>
-
-    <!-- USD -->
-    <div class="btc-stat-card">
-
-      <div class="btc-stat-label">
-        USD/BRL
-      </div>
-
-      <div class="btc-stat-value orange" id="btcPriceUsdBrl">
-        USD —
-      </div>
-
-    </div>
+    <div class="btc-col-divider"></div>
 
     <!-- MSTR -->
-    <div class="btc-stat-card">
+    <div class="btc-col-item">
+      <div class="bci-label">MSTR</div>
+      <div class="bci-price" id="btcPriceMstr">$ —</div>
+      <div class="bci-change" id="mstrChange">—</div>
+    </div>
 
-      <div class="btc-stat-label">
-        ESTRATEGY
-      </div>
+    <div class="btc-col-divider"></div>
 
-      <div class="btc-stat-value purple" id="btcPriceMstr">
-        MSTR $ —
-      </div>
-
+    <!-- USD / BRL -->
+    <div class="btc-col-item">
+      <div class="bci-label">USD / BRL</div>
+      <div class="bci-price" id="btcPriceUsdBrl"> —</div>
+      <div class="bci-change" id="usdChange">—</div>
     </div>
 
   </div>
@@ -994,8 +981,37 @@
 
   margin-bottom:14px;
 
-  /* ↓ CENTRALIZA */
-  text-align:center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btc-change-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 8px;
+  letter-spacing: 0.01em;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.5);
+  transition: .3s ease;
+  white-space: nowrap;
+  align-self: center;
+  margin-top: 4px;
+}
+
+.btc-change-badge.up{
+  background: rgba(0,255,174,0.15);
+  color: var(--btc-green);
+}
+
+.btc-change-badge.down{
+  background: rgba(255,77,109,0.15);
+  color: var(--btc-red);
 }
 
 .btc-price{
@@ -1030,119 +1046,74 @@
 }
 
 /* =====================================
-   GRID
+   GRID 3 COLUNAS — estilo imagem referência
 ===================================== */
 
-.btc-stats-grid{
-
-  display:grid;
-
-  grid-template-columns:repeat(4,1fr);
-
-  gap:7px;
-
-  margin-bottom:12px;
+.btc-cols-grid{
+  display: flex;
+  align-items: stretch;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+  margin-bottom: 12px;
+  overflow: hidden;
 }
 
-/* =====================================
-   CARDS INTERNOS
-===================================== */
-
-.btc-stat-card{
-
-  /* ↓ MAIS ESTREITOS */
-  min-height: 54px;
-
-  padding: 7px 6px;
-
-  border-radius: 12px;
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,.04),
-      rgba(255,255,255,.015)
-    );
-
-  border:1px solid rgba(255,255,255,.06);
-
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-
-  /* ↓ CENTRALIZA */
-  text-align:center;
+.btc-col-item{
+  flex: 1;
+  padding: 18px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-/* =====================================
-   LABELS
-===================================== */
-
-.btc-stat-label{
-
-  color:#8d8d8d;
-
-  font-size:.54rem;
-
-  letter-spacing:.07em;
-
-  text-transform:uppercase;
-
-  margin-bottom:5px;
+/* BTC/BRL precisa de mais espaço — número maior */
+.btc-col-item:first-child{
+  flex: 1.9;
 }
 
-/* =====================================
-   VALORES
-===================================== */
-
-.btc-stat-value{
-
-  color:#fff;
-
-  font-size:.88rem;
-
-  font-weight:800;
+.btc-col-divider{
+  width: 1px;
+  background: rgba(255,255,255,.10);
+  flex-shrink: 0;
 }
 
-.orange{
-
-  color: var(--btc-orange);
-
-  text-shadow:
-    0 0 12px rgba(255,159,26,.18);
+.bci-label{
+  font-size: .72rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: .04em;
+  text-transform: uppercase;
 }
 
-.purple{
-  color: var(--btc-purple);
+.bci-price{
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
-/* =====================================
-   VARIAÇÃO
-===================================== */
-
-.change-card{
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(0,255,174,.08),
-      rgba(0,198,255,.04)
-    );
+.bci-change{
+  font-size: .82rem;
+  font-weight: 700;
+  color: #8d8d8d;
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
 
-.btc-change{
-
-  font-size:1.1rem;
-  font-weight:900;
+.bci-change.up{
+  color: #4ade80;
 }
 
-.btc-change.up{
-  color: var(--btc-green);
-}
-
-.btc-change.down{
+.bci-change.down{
   color: var(--btc-red);
 }
+
+.orange{ color: var(--btc-orange); text-shadow: 0 0 12px rgba(255,159,26,.18); }
+.purple{ color: var(--btc-purple); }
 
 /* =====================================
    CHART
@@ -1261,11 +1232,15 @@
 
   var priceEl = document.getElementById('btcPrice');
   var changeEl = document.getElementById('btcChange');
+  var change24hEl = document.getElementById('btcChange24h');
 
   var brlEl = document.getElementById('btcPriceBrl');
+  var brlChangeEl = document.getElementById('btcChangeBrl');
   var usdBrlEl = document.getElementById('btcPriceUsdBrl');
+  var usdChangeEl = document.getElementById('usdChange');
 
   var mstrEl = document.getElementById('btcPriceMstr');
+  var mstrChangeEl = document.getElementById('mstrChange');
 
   var dotEl = document.getElementById('btcDot');
   var statusEl = document.getElementById('btcStatusTxt');
@@ -1423,20 +1398,28 @@
       
       if(data && data.contents) {
         const json = JSON.parse(data.contents);
-        const price = json.chart.result[0].meta.regularMarketPrice;
+        const result = json.chart.result[0];
+        const price = result.meta.regularMarketPrice;
+        const prevClose = result.meta.chartPreviousClose || result.meta.previousClose;
 
         if(price) {
-          mstrEl.textContent = 'MSTR $ ' + price.toLocaleString('en-US', {
+          mstrEl.textContent = '$ ' + price.toLocaleString('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
           });
+
+          if(prevClose && mstrChangeEl) {
+            const pct = ((price - prevClose) / prevClose) * 100;
+            mstrChangeEl.textContent = (pct >= 0 ? '▲ +' : '▼ ') + pct.toFixed(2) + '%';
+            mstrChangeEl.className = 'bci-change ' + (pct >= 0 ? 'up' : 'down');
+          }
         }
       }
 
     } catch(e){
 
       console.error('Erro ao buscar MSTR no Yahoo Finance:', e);
-      mstrEl.textContent = 'MSTR $ Erro';
+      mstrEl.textContent = 'MSTR $ ...';
     }
   }
 
@@ -1513,6 +1496,11 @@
               : ''
           );
 
+        if(change24hEl){
+          change24hEl.textContent = (pct >= 0 ? '▲ +' : '▼ ') + pct.toFixed(2) + '% 24h';
+          change24hEl.className = 'btc-change-badge ' + (pct >= 0 ? 'up' : 'down');
+        }
+
         if(flashTimer)
           clearTimeout(flashTimer);
 
@@ -1523,17 +1511,6 @@
 
         },700);
 
-        changeEl.textContent =
-          (pct >= 0 ? '+' : '') +
-          pct.toFixed(2) + '%';
-
-        changeEl.className =
-          'btc-change ' +
-          (
-            pct >= 0
-            ? 'up'
-            : 'down'
-          );
       }
 
       /* BTC BRL */
@@ -1544,22 +1521,22 @@
           formatBRL(
             parseFloat(data.c)
           );
+
+        var brlPct = parseFloat(data.P);
+        brlChangeEl.textContent = (brlPct >= 0 ? '▲ +' : '▼ ') + brlPct.toFixed(2) + '%';
+        brlChangeEl.className = 'bci-change ' + (brlPct >= 0 ? 'up' : 'down');
       }
 
       /* USD BRL */
 
       else if(stream === 'usdtbrl@ticker'){
 
-        usdBrlEl.textContent =
-          'USD ' +
-          parseFloat(data.c)
-          .toLocaleString(
-            'pt-BR',
-            {
-              minimumFractionDigits:2,
-              maximumFractionDigits:2
-            }
-          );
+        var usdVal = parseFloat(data.c);
+        usdBrlEl.textContent = 'R$ ' + usdVal.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+        var usdPct = parseFloat(data.P);
+        usdChangeEl.textContent = (usdPct >= 0 ? '▲ +' : '▼ ') + usdPct.toFixed(2) + '%';
+        usdChangeEl.className = 'bci-change ' + (usdPct >= 0 ? 'up' : 'down');
       }
     };
 
@@ -1639,91 +1616,85 @@
           <li>Suporte individualizado — focado no seu perfil e privacidade</li>
         </ul>
       </div>
+      <div class="about-img-block btc-dashboard-holder">
 
-      
-<div class="about-dashboard-wrap">
-        ctx.lineTo(x,y);
-      }
-    });
+<div class="btc-ultra-card">
 
-    const gradient = ctx.createLinearGradient(0,0,canvas.width,0);
+  <div class="btc-bg-glow btc-glow-1"></div>
+  <div class="btc-bg-glow btc-glow-2"></div>
 
-    gradient.addColorStop(0,'#f7931a');
-    gradient.addColorStop(1,'#00c6ff');
+  <div class="btc-top">
 
-    ctx.strokeStyle = gradient;
-    ctx.lineWidth = 4;
-    ctx.shadowBlur = 18;
-    ctx.shadowColor = '#f7931a';
+    <div class="btc-coin">
 
-    ctx.stroke();
-  }
+      <div class="btc-icon-wrap">
+        <div class="btc-icon">₿</div>
+      </div>
 
-  async function updateData(){
+      <div>
+        <div class="btc-label">
+          BITCOIN MARKET
+        </div>
 
-    try{
+        <div class="btc-live-row">
+          <span id="btcStatusDot" class="btc-live-dot"></span>
+          <span id="btcStatusTxt">CONECTANDO</span>
+        </div>
+      </div>
 
-      const btc = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT').then(r=>r.json());
+    </div>
 
-      const btcBrl = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCBRL').then(r=>r.json());
+    <div class="btc-badge">
+      LIVE
+    </div>
 
-      const usdBrl = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=USDTBRL').then(r=>r.json());
+  </div>
 
-      const price = parseFloat(btc.lastPrice);
-      const pct = parseFloat(btc.priceChangePercent);
+  <div id="btcPrice" class="btc-price">
+    $ --
+  </div>
 
-      priceEl.innerHTML = '$ ' + price.toLocaleString('en-US', {
-        minimumFractionDigits:0,
-        maximumFractionDigits:0
-      });
+  <div id="btcChange24h" class="btc-change-badge">
+    Atualizando...
+  </div>
 
-      changeEl.innerHTML = (pct >= 0 ? '▲ +' : '▼ ') + pct.toFixed(2) + '%';
+  <div class="btc-chart-wrap">
+    <canvas id="btcCanvas"></canvas>
+  </div>
 
-      changeEl.style.background = pct >= 0
-        ? 'rgba(0,255,174,.12)'
-        : 'rgba(255,77,109,.12)';
+  <div class="btc-stats-grid">
 
-      changeEl.style.color = pct >= 0
-        ? '#00ffae'
-        : '#ff4d6d';
+    <div class="btc-stat-box">
+      <div class="btc-stat-title">BTC / BRL</div>
+      <div id="btcBRL" class="btc-stat-value">R$ --</div>
+      <div id="btcBRLChange" class="bci-change">--</div>
+    </div>
 
-      brlEl.innerHTML = 'R$ ' + Number(btcBrl.lastPrice).toLocaleString('pt-BR');
+    <div class="btc-stat-box">
+      <div class="btc-stat-title">MSTR</div>
+      <div id="mstrPrice" class="btc-stat-value">$ --</div>
+      <div class="btc-mini-sub">MicroStrategy</div>
+    </div>
 
-      usdBrlEl.innerHTML = 'R$ ' + Number(usdBrl.lastPrice).toLocaleString('pt-BR', {
-        minimumFractionDigits:2,
-        maximumFractionDigits:2
-      });
+    <div class="btc-stat-box">
+      <div class="btc-stat-title">USD / BRL</div>
+      <div id="usdBrl" class="btc-stat-value">R$ --</div>
+      <div id="usdChange" class="bci-change">--</div>
+    </div>
 
-      const mstrPrice = (price / 220).toFixed(2);
-      mstrEl.innerHTML = '$ ' + Number(mstrPrice).toLocaleString('en-US');
-
-      points.push(price);
-
-      if(points.length > 40){
-        points.shift();
-      }
-
-      drawChart();
-
-    }catch(err){
-      console.log(err);
-    }
-  }
-
-  updateData();
-
-  setInterval(updateData,4000);
-
-})();
-
+    <div class="btc-stat-box">
+      <div class="btc-stat-title">DOM BTC</div>
 </script>
 
-      
+
+
+
+
+
+
     </div>
   </div>
 </section>
-
-  
 
 <section id="servicos">
   <div class="section-inner">
@@ -1884,12 +1855,12 @@
       <div class="sif__gauge-badge" id="sif-fator-badge">SEGURANÇA: —</div>
     </div>
     <div class="sif__gauge-label">Patrimônio Alvo Recomendado</div>
-    <div class="sif__gauge-value" id="sif-patrimonio">R$ —</div>
+    <div class="sif__gauge-value" id="sif-patrimonio">—</div>
     
     <div class="sif__progress-container">
       <div class="sif__progress-texts">
         <span>Progresso: <strong id="sif-prog-pct" style="color: #2e7d32;">0%</strong></span>
-        <span id="sif-gap-txt">Falta Acumular: R$ 0</span>
+        <span id="sif-gap-txt">Falta Acumular:  0</span>
       </div>
       <div class="sif__progress-bar">
         <div class="sif__progress-fill" id="sif-prog-fill"></div>
