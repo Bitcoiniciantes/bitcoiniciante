@@ -1,0 +1,3406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFP2BB2V0B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-WFP2BB2V0B');
+</script>
+
+
+  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BITCOIN INICIANTES – Assessoria Técnica em Bitcoin para Indivíduos.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --orange: #F7931A;
+      --orange-dark: #C97310;
+      --orange-light: #FFF4E6;
+      --black: #0A0A0A;
+      --gray-900: #111111;
+      --gray-700: #3A3A3A;
+      --gray-500: #6B6B6B;
+      --gray-200: #E8E8E8;
+      --gray-100: #F5F5F5;
+      --white: #FFFFFF;
+      --font-head: 'Instrument Sans', sans-serif;
+      --font-body: 'Instrument Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--white);
+      color: var(--black);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gray-200);
+      z-index: 100;
+      padding: 0 5%;
+      height: 70px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--orange);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+    .logo span { color: var(--orange); }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--gray-700);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: color .2s;
+    }
+    nav ul a:hover { color: var(--orange); }
+    .nav-cta {
+      background: var(--orange);
+      color: white !important;
+      padding: 9px 20px;
+      border-radius: 6px;
+      font-weight: 600 !important;
+      transition: background .2s !important;
+    }
+    .nav-cta:hover { background: var(--orange-dark) !important; color: white !important; }
+
+    /* ── MOBILE MENU ── */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      z-index: 101;
+      padding: 10px;
+    }
+    .menu-toggle span {
+      display: block;
+      width: 25px;
+      height: 2px;
+      background: var(--black);
+      transition: 0.3s;
+    }
+    .menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .menu-toggle.active span:nth-child(2) { opacity: 0; }
+    .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -6px); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 100px 5% 30px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+      min-height: 70vh;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--orange-light);
+      color: var(--orange-dark);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--black);
+      margin-bottom: 1rem;
+    }
+    .hero h1 em { font-style: normal; color: var(--orange); }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--gray-500);
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--orange);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: background .2s, transform .15s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--orange-dark); transform: translateY(-1px); }
+    .btn-outline {
+      border: 2px solid var(--gray-200);
+      color: var(--black);
+      padding: 13px 26px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: border-color .2s, color .2s;
+      display: inline-block;
+    }
+    .btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+
+    .hero-visual {
+      display: flex; flex-direction: column; gap: 1rem;
+      padding-top: 0;
+    }
+    .stat-card {
+      background: var(--gray-100);
+      border-radius: 14px;
+      padding: 22px 26px;
+      border: 1px solid var(--gray-200);
+    }
+    .stat-card.accent { background: var(--orange); color: white; border-color: var(--orange); }
+    .stat-card.accent .stat-label { color: rgba(255,255,255,0.75); }
+    .stat-value {
+      font-family: var(--font-head);
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label { font-size: 0.82rem; color: var(--gray-500); font-weight: 400; }
+    .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* ── SECTION BASE ── */
+    section { padding: 40px 5%; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+    }
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--gray-500);
+      font-weight: 300;
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    /* ── ABOUT ── */
+    .about { background: var(--gray-100); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .about-list { list-style: none; margin-top: 1.2rem; display: flex; flex-direction: column; gap: 0.8rem; }
+    .about-list li {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 0.95rem;
+      color: var(--gray-700);
+      line-height: 1.5;
+    }
+    .about-list li::before {
+      content: "₿";
+      color: var(--orange);
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .about-img-block {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      border: 1px solid var(--gray-200);
+      text-align: center;
+    }
+    .btc-symbol {
+      font-family: var(--font-head);
+      font-size: 6rem;
+      color: var(--orange);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .about-quote {
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--gray-700);
+      line-height: 1.6;
+    }
+    .about-quote strong { font-style: normal; color: var(--black); font-weight: 600; }
+
+    /* ── SERVICES ── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .service-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 14px;
+      padding: 2rem;
+      transition: box-shadow .25s, transform .2s, border-color .25s;
+      background: var(--white);
+    }
+    .service-card:hover {
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      transform: translateY(-3px);
+      border-color: var(--orange);
+    }
+    .service-icon {
+      width: 48px; height: 48px;
+      background: var(--orange-light);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 1.2rem;
+    }
+    .service-card h3 {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.01em;
+    }
+    .service-card p { font-size: 0.9rem; color: var(--gray-500); line-height: 1.6; }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: var(--gray-100); }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .step {
+      background: var(--white);
+      border-radius: 14px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border: 1px solid var(--gray-200);
+    }
+    .step-num {
+      font-family: var(--font-head);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--orange);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .step h4 {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .step p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .testi-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 14px;
+      padding: 1.8rem;
+      background: var(--white);
+    }
+    .testi-stars { color: var(--orange); font-size: 0.9rem; margin-bottom: 0.8rem; }
+    .testi-text {
+      font-size: 0.9rem;
+      color: var(--gray-700);
+      line-height: 1.65;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+    .testi-author { font-size: 0.82rem; font-weight: 600; color: var(--black); }
+    .testi-handle { font-size: 0.78rem; color: var(--gray-500); }
+
+    /* ── NOT FOR EVERYONE ── */
+    .nfe { background: var(--black); color: white; }
+    .nfe .section-title { color: white; }
+    .nfe-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-top: 2rem;
+    }
+    .nfe-col h4 {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 2px solid;
+    }
+    .nfe-col.yes h4 { color: #4ADE80; border-color: #4ADE80; }
+    .nfe-col.no h4 { color: #F87171; border-color: #F87171; }
+    .nfe-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+    .nfe-col ul li {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.75);
+      padding-left: 1.4rem;
+      position: relative;
+      line-height: 1.5;
+    }
+    .nfe-col.yes ul li::before { content: "✓"; position: absolute; left: 0; color: #4ADE80; font-weight: 700; }
+    .nfe-col.no ul li::before { content: "✗"; position: absolute; left: 0; color: #F87171; font-weight: 700; }
+
+    /* ── FORM ── */
+    #consultoria { background: var(--orange-light); }
+    .form-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .form-info h2 {
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+    }
+    .form-info p {
+      font-size: 0.95rem;
+      color: var(--gray-700);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+    .form-promise {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+    .form-promise-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.88rem;
+      color: var(--gray-700);
+      font-weight: 500;
+    }
+    .form-promise-item::before {
+      content: "✓";
+      width: 22px; height: 22px;
+      background: var(--orange);
+      color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    form {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 2.5rem;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.06);
+    }
+    form h3 {
+      font-family: var(--font-head);
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1.8rem;
+      letter-spacing: -0.02em;
+    }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+    input, select, textarea {
+      width: 100%;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--black);
+      background: var(--white);
+      transition: border-color .2s;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--orange); }
+    textarea { resize: vertical; min-height: 100px; }
+    select { cursor: pointer; }
+    .form-submit {
+      width: 100%;
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+      margin-top: 0.5rem;
+      letter-spacing: 0.01em;
+    }
+    .form-submit:hover { background: var(--orange-dark); transform: translateY(-1px); }
+    .form-note {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--gray-500);
+      margin-top: 0.8rem;
+    }
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+    .form-success .success-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .form-success h4 {
+      font-family: var(--font-head);
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    .form-success p { color: var(--gray-500); font-size: 0.9rem; }
+
+    /* ── FAQ ── */
+    .faq-list { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1rem; max-width: 700px; }
+    .faq-item {
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 1.1rem 1.4rem;
+      font-family: var(--font-head);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--black);
+    }
+    .faq-q::after { content: "+"; font-size: 1.3rem; color: var(--orange); font-weight: 400; transition: transform .25s; }
+    .faq-item.open .faq-q::after { transform: rotate(45deg); }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease, padding .35s;
+      padding: 0 1.4rem;
+      font-size: 0.9rem;
+      color: var(--gray-700);
+      line-height: 1.6;
+    }
+    .faq-item.open .faq-a { max-height: 300px; padding: 0 1.4rem 1.2rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--gray-900);
+      color: rgba(255,255,255,0.6);
+      padding: 3rem 5%;
+      text-align: center;
+    }
+    footer .footer-logo {
+      font-family: var(--font-head);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+    footer .footer-logo span { color: var(--orange); }
+    footer p { font-size: 0.82rem; line-height: 1.7; }
+    footer a { color: var(--orange); text-decoration: none; }
+    .footer-divider { width: 40px; height: 2px; background: var(--orange); margin: 1.2rem auto; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; padding: 90px 5% 30px; }
+      .about-grid, .nfe-grid, .form-wrap { grid-template-columns: 1fr; gap: 2.5rem; }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr 1fr; }
+      
+      .menu-toggle { display: flex; }
+      nav ul {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        height: 100vh;
+        background: white;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: 0.3s;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+        z-index: 100;
+      }
+      nav ul.active { right: 0; }
+      nav ul li { margin: 1.5rem 0; }
+      nav ul a { font-size: 1.2rem; }
+    }
+    @media (max-width: 600px) {
+      .services-grid, .steps, .testimonials-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      section { padding: 40px 5%; }
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-text > * { animation: fadeUp .65s ease both; }
+    .hero-text > *:nth-child(2) { animation-delay: .1s; }
+    .hero-text > *:nth-child(3) { animation-delay: .2s; }
+    .hero-text > *:nth-child(4) { animation-delay: .3s; }
+  </style>
+</head>
+
+<body>
+
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">₿</div>
+    BITCOIN&nbsp;<span>INICIANTES</span>
+  </a>
+  <div class="menu-toggle" id="mobile-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <ul id="nav-list">
+    <li><a href="#sobre">Nossa Abordagem</a></li>
+    <li><a href="#servicos">Soluções</a></li>
+    <li><a href="#Independenciafinanceira">Independência Financeira</a></li>
+    <li><a href="#faq">Dúvidas</a></li>
+    <li><a href="#consultoria" class="nav-cta">Agendar Consultoria</a></li>
+  </ul>
+</nav>
+
+<div style="max-width:1100px;margin:0 auto;">
+  <div class="hero">
+    <div class="hero-text">
+      <span class="hero-badge">Apoio Técnico em Bitcoin para o Investidor Individual</span>
+      <h1>Blindagem patrimonial com <em>Bitcoin soberano</em></h1>
+      <p>A BITCOIN INICIANTES orienta você do primeiro contato até a posse definitiva, priorizando a segurança e a autonomia total sobre seus bens.</p>
+      <div class="hero-btns">
+        <a href="#consultoria" class="btn-primary">Solicitar Avaliação Cortesia</a>
+        <a href="#servicos" class="btn-outline">Ver Diferenciais</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <!-- Widget Cotação BTC/USD em Tempo Real -->
+<div class="btc-ultra-card" id="btcTickerCard">
+
+  <!-- GLOW -->
+  <div class="btc-bg-glow btc-glow-1"></div>
+  <div class="btc-bg-glow btc-glow-2"></div>
+
+  <!-- TOPO -->
+  <div class="btc-top">
+
+    <div class="btc-coin">
+
+      <div class="btc-icon-wrap">
+        <div class="btc-icon">₿</div>
+      </div>
+
+      <div>
+        <div class="btc-name">Bitcoin Iniciantes</div>
+        <div class="btc-pair">BTC / USD</div>
+      </div>
+
+    </div>
+
+    <div class="btc-status">
+      <span class="btc-live-dot" id="btcDot"></span>
+      <span class="btc-status-text" id="btcStatusTxt">
+        AO VIVO
+      </span>
+    </div>
+
+  </div>
+
+  <!-- PREÇO -->
+  <div class="btc-price-area">
+
+    <div class="btc-price" id="btcPrice">
+      $ —
+    </div>
+
+    <div class="btc-change-badge" id="btcChange24h">—</div>
+
+  </div>
+
+  <!-- GRID 3 COLUNAS — estilo imagem referência -->
+  <div class="btc-cols-grid">
+
+    <!-- BTC / BRL -->
+    <div class="btc-col-item">
+      <div class="bci-label">BTC / BRL</div>
+      <div class="bci-price" id="btcPriceBrl"> —</div>
+      <div class="bci-change" id="btcChangeBrl">—</div>
+    </div>
+
+    <div class="btc-col-divider"></div>
+
+    <!-- MSTR -->
+    <div class="btc-col-item">
+      <div class="bci-label">MSTR</div>
+      <div class="bci-price" id="btcPriceMstr">$ —</div>
+      <div class="bci-change" id="mstrChange">—</div>
+    </div>
+
+    <div class="btc-col-divider"></div>
+
+    <!-- USD / BRL -->
+    <div class="btc-col-item">
+      <div class="bci-label">USD / BRL</div>
+      <div class="bci-price" id="btcPriceUsdBrl"> —</div>
+      <div class="bci-change" id="usdChange">—</div>
+    </div>
+
+  </div>
+
+  <!-- CHART -->
+  <div class="btc-chart-box">
+
+    <canvas id="btcMiniChart" height="72"></canvas>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="btc-footer">
+
+    <div class="btc-footer-left">
+      <span class="btc-pulse"></span>
+      <span>LIVE STREAM</span>
+    </div>
+
+    <div class="btc-footer-right">
+      TIMEFRAME • 1H
+    </div>
+
+  </div>
+
+</div>
+
+<style>
+
+/* =====================================
+   BASE
+===================================== */
+
+:root{
+
+  --btc-orange: #ff9f1a;
+  --btc-yellow: #ffcc00;
+
+  --btc-green: #00ffae;
+  --btc-red: #ff4d6d;
+
+  --btc-blue: #00c6ff;
+
+  --btc-purple: #c084fc;
+}
+
+/* =====================================
+   CARD PRINCIPAL
+===================================== */
+
+.btc-ultra-card{
+
+  position: relative;
+  overflow: hidden;
+
+  width: 100%;
+
+  /* ↓ ESTREITADO */
+  max-width: 500px;
+
+  /* ↓ ALINHADO COM O BADGE — sem margin-top */
+  margin: 0 auto 0;
+
+  /* ↓ MENOS ALTURA */
+  padding: 16px 16px 12px;
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.05),
+      rgba(255,255,255,.015)
+    ),
+    #070707;
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.04);
+
+  backdrop-filter: blur(14px);
+
+  /* ↓ ANIMAÇÃO DE ENTRADA SURPRESA */
+  animation: cardSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both,
+             borderGlow 3.5s ease-in-out 1s infinite;
+}
+
+/* =====================================
+   GLOW
+===================================== */
+
+.btc-bg-glow{
+
+  position:absolute;
+
+  border-radius:50%;
+
+  filter: blur(90px);
+
+  opacity:.15;
+
+  pointer-events:none;
+}
+
+.btc-glow-1{
+
+  width:220px;
+  height:220px;
+
+  background: var(--btc-orange);
+
+  top:-120px;
+  right:-80px;
+}
+
+.btc-glow-2{
+
+  width:180px;
+  height:180px;
+
+  background: var(--btc-blue);
+
+  bottom:-90px;
+  left:-60px;
+}
+
+/* =====================================
+   TOPO
+===================================== */
+
+.btc-top{
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  margin-bottom:14px;
+}
+
+.btc-coin{
+
+  display:flex;
+  align-items:center;
+
+  gap:12px;
+}
+
+/* =====================================
+   ÍCONE
+===================================== */
+
+.btc-icon-wrap{
+
+  padding:2px;
+
+  border-radius:50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--btc-yellow),
+      var(--btc-orange)
+    );
+}
+
+.btc-icon{
+
+  width:44px;
+  height:44px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+ background: var(--btc-orange);
+
+  color:#fff;
+
+  font-size:1.15rem;
+  font-weight:900;
+
+  box-shadow:
+    0 0 20px rgba(255,159,26,.22);
+}
+
+/* =====================================
+   TEXTOS
+===================================== */
+
+.btc-name{
+
+  color:#fff;
+
+  font-size:1rem;
+  font-weight:800;
+}
+
+.btc-pair{
+
+  color:#8d8d8d;
+
+  font-size:.66rem;
+
+  letter-spacing:.16em;
+
+  margin-top:2px;
+}
+
+/* =====================================
+   STATUS
+===================================== */
+
+.btc-status{
+
+  display:flex;
+  align-items:center;
+
+  gap:8px;
+
+  padding:7px 12px;
+
+  border-radius:999px;
+
+  background: rgba(255,255,255,.04);
+
+  border:1px solid rgba(255,255,255,.05);
+}
+
+.btc-live-dot{
+
+  width:8px;
+  height:8px;
+
+  border-radius:50%;
+
+  background:#666;
+}
+
+.btc-live-dot.live{
+
+  background: var(--btc-green);
+
+  box-shadow:
+    0 0 10px var(--btc-green),
+    0 0 20px var(--btc-green);
+
+  animation: pulse 1.4s infinite;
+}
+
+/* =====================================
+   ANIMAÇÕES SURPRESA
+===================================== */
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.97);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(255,159,26,.15); box-shadow: 0 18px 45px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.04), 0 0 0px rgba(255,159,26,0); }
+  50% { border-color: rgba(255,159,26,.35); box-shadow: 0 18px 45px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.04), 0 0 24px rgba(255,159,26,.12); }
+}
+
+@keyframes pulse{
+
+  0%,100%{
+    transform:scale(1);
+    opacity:1;
+  }
+
+  50%{
+    transform:scale(1.2);
+    opacity:.6;
+  }
+}
+
+
+
+.btc-status-text{
+
+  color:#fff;
+
+  font-size:.72rem;
+  font-weight:700;
+}
+
+/* =====================================
+   PREÇO PRINCIPAL
+===================================== */
+
+.btc-price-area{
+
+  margin-bottom:14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btc-change-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 8px;
+  letter-spacing: 0.01em;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.5);
+  transition: .3s ease;
+  white-space: nowrap;
+  align-self: center;
+  margin-top: 4px;
+}
+
+.btc-change-badge.up{
+  background: rgba(0,255,174,0.15);
+  color: var(--btc-green);
+}
+
+.btc-change-badge.down{
+  background: rgba(255,77,109,0.15);
+  color: var(--btc-red);
+}
+
+.btc-price{
+
+  font-size: clamp(2.6rem,3.3vw,3.3rem);
+
+  line-height:1;
+
+  font-weight:900;
+
+  letter-spacing:-0.05em;
+
+  color:#fff;
+
+  transition:.25s ease;
+}
+
+.btc-price.up{
+
+  color: var(--btc-green);
+
+  text-shadow:
+    0 0 20px rgba(0,255,174,.30);
+}
+
+.btc-price.down{
+
+  color: var(--btc-red);
+
+  text-shadow:
+    0 0 20px rgba(255,77,109,.30);
+}
+
+/* =====================================
+   GRID 3 COLUNAS — estilo imagem referência
+===================================== */
+
+.btc-cols-grid{
+  display: flex;
+  align-items: stretch;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.btc-col-item{
+  flex: 1;
+  padding: 18px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* BTC/BRL precisa de mais espaço — número maior */
+.btc-col-item:first-child{
+  flex: 1.9;
+}
+
+.btc-col-divider{
+  width: 1px;
+  background: rgba(255,255,255,.10);
+  flex-shrink: 0;
+}
+
+.bci-label{
+  font-size: .72rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.bci-price{
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.bci-change{
+  font-size: .82rem;
+  font-weight: 700;
+  color: #8d8d8d;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.bci-change.up{
+  color: #4ade80;
+}
+
+.bci-change.down{
+  color: var(--btc-red);
+}
+
+.orange{ color: var(--btc-orange); text-shadow: 0 0 12px rgba(255,159,26,.18); }
+.purple{ color: var(--btc-purple); }
+
+/* =====================================
+   CHART
+===================================== */
+
+.btc-chart-box{
+
+  padding: 10px 10px 6px;
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,255,174,.05),
+      rgba(0,198,255,.02),
+      rgba(255,255,255,.01)
+    );
+
+  border: 1px solid rgba(0,255,174,.08);
+
+  margin-bottom: 10px;
+
+  /* ↓ ÁREA MAIS ALTA */
+  min-height: 90px;
+}
+
+#btcMiniChart{
+
+  width:100%;
+  display:block;
+}
+
+/* =====================================
+   FOOTER
+===================================== */
+
+.btc-footer{
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  font-size:.66rem;
+
+  letter-spacing:.14em;
+
+  color:#8d8d8d;
+}
+
+.btc-footer-left{
+
+  display:flex;
+  align-items:center;
+
+  gap:8px;
+}
+
+.btc-pulse{
+
+  width:8px;
+  height:8px;
+
+  border-radius:50%;
+
+  background: var(--btc-green);
+
+  box-shadow:
+    0 0 12px var(--btc-green);
+
+  animation: pulse 1.4s infinite;
+}
+
+.btc-footer-right{
+
+  color: var(--btc-blue);
+
+  font-weight:700;
+}
+
+/* =====================================
+   RESPONSIVO
+===================================== */
+
+@media(max-width:640px){
+
+  .btc-ultra-card{
+
+    max-width:100%;
+
+    padding:14px;
+
+    border-radius:18px;
+  }
+
+  .btc-stats-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .btc-price{
+    font-size:2.7rem;
+  }
+}
+
+</style>
+
+<script>
+
+(function() {
+
+  var candles = [];
+  var lastPrice = null;
+
+  var canvas = document.getElementById('btcMiniChart');
+  var ctx = canvas ? canvas.getContext('2d') : null;
+
+  var priceEl = document.getElementById('btcPrice');
+  var changeEl = document.getElementById('btcChange');
+  var change24hEl = document.getElementById('btcChange24h');
+
+  var brlEl = document.getElementById('btcPriceBrl');
+  var brlChangeEl = document.getElementById('btcChangeBrl');
+  var usdBrlEl = document.getElementById('btcPriceUsdBrl');
+  var usdChangeEl = document.getElementById('usdChange');
+
+  var mstrEl = document.getElementById('btcPriceMstr');
+  var mstrChangeEl = document.getElementById('mstrChange');
+
+  var dotEl = document.getElementById('btcDot');
+  var statusEl = document.getElementById('btcStatusTxt');
+
+  var flashTimer = null;
+
+  function formatUSD(p){
+
+    return '$ ' + p.toLocaleString(
+      'pt-BR',
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    );
+  }
+
+  function formatBRL(p){
+
+    return 'R$ ' + p.toLocaleString(
+      'pt-BR',
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    );
+  }
+
+  /* =====================================
+     CHART
+  ===================================== */
+
+  function drawChart(){
+
+    if(!ctx || candles.length < 2)
+      return;
+
+    var dpr = window.devicePixelRatio || 1;
+
+    var w = canvas.offsetWidth;
+    var h = 72;
+
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+
+    ctx.scale(dpr,dpr);
+
+    ctx.clearRect(0,0,w,h);
+
+    var min = Math.min(...candles.map(c => c.l));
+    var max = Math.max(...candles.map(c => c.h));
+
+    var range = max - min || 1;
+
+    var spacing = w / candles.length;
+    var candleWidth = spacing * .52;
+
+    for(var i=0;i<candles.length;i++){
+
+      var c = candles[i];
+
+      var x = i * spacing + spacing/2;
+
+      var yOpen  = h - ((c.o - min)/range)*h;
+      var yClose = h - ((c.c - min)/range)*h;
+      var yHigh  = h - ((c.h - min)/range)*h;
+      var yLow   = h - ((c.l - min)/range)*h;
+
+      var isUp = c.c >= c.o;
+
+      var color = isUp
+        ? '#00ffae'
+        : '#ff4d6d';
+
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 10;
+
+      /* LINHA */
+
+      ctx.beginPath();
+
+      ctx.lineWidth = 1.2;
+
+      ctx.moveTo(x,yHigh);
+      ctx.lineTo(x,yLow);
+
+      ctx.stroke();
+
+      /* CORPO */
+
+      var bodyY = Math.min(yOpen,yClose);
+
+      var bodyH = Math.max(
+        Math.abs(yClose-yOpen),
+        2
+      );
+
+      ctx.fillRect(
+        x - candleWidth/2,
+        bodyY,
+        candleWidth,
+        bodyH
+      );
+    }
+  }
+
+  /* =====================================
+     HISTÓRICO
+  ===================================== */
+
+  async function fetchChartData(){
+
+    try{
+
+      var res = await fetch(
+        'https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=24'
+      );
+
+      var data = await res.json();
+
+      candles = data.map(function(k){
+
+        return {
+          o: parseFloat(k[1]),
+          h: parseFloat(k[2]),
+          l: parseFloat(k[3]),
+          c: parseFloat(k[4])
+        };
+      });
+
+      drawChart();
+
+    } catch(e){
+
+      console.error(e);
+    }
+  }
+
+  /* =====================================
+     MSTR (YAHOO FINANCE)
+  ===================================== */
+
+  async function fetchMSTR(){
+
+    try{
+      // Usando o endpoint oficial do Yahoo Finance via proxy para contornar CORS
+      const yahooUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/MSTR?region=US&lang=en-US&interval=1m&range=1d';
+      const proxy = 'https://api.allorigins.win/get?url=';
+      
+      const res = await fetch(proxy + encodeURIComponent(yahooUrl));
+      const data = await res.json();
+      
+      if(data && data.contents) {
+        const json = JSON.parse(data.contents);
+        const result = json.chart.result[0];
+        const price = result.meta.regularMarketPrice;
+        const prevClose = result.meta.chartPreviousClose || result.meta.previousClose;
+
+        if(price) {
+          mstrEl.textContent = '$ ' + price.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          });
+
+          if(prevClose && mstrChangeEl) {
+            const pct = ((price - prevClose) / prevClose) * 100;
+            mstrChangeEl.textContent = (pct >= 0 ? '▲ +' : '▼ ') + pct.toFixed(2) + '%';
+            mstrChangeEl.className = 'bci-change ' + (pct >= 0 ? 'up' : 'down');
+          }
+        }
+      }
+
+    } catch(e){
+
+      console.error('Erro ao buscar MSTR no Yahoo Finance:', e);
+      mstrEl.textContent = 'MSTR $ ...';
+    }
+  }
+
+  /* =====================================
+     WEBSOCKET
+  ===================================== */
+
+  function connect(){
+
+    var ws = new WebSocket(
+      'wss://stream.binance.com:9443/stream?streams=btcusdt@ticker/btcbrl@ticker/usdtbrl@ticker'
+    );
+
+    ws.onopen = function(){
+
+      dotEl.className =
+        'btc-live-dot live';
+
+      statusEl.textContent =
+        'AO VIVO';
+    };
+
+    ws.onmessage = function(e){
+
+      var payload = JSON.parse(e.data);
+
+      var stream = payload.stream;
+      var data = payload.data;
+
+      /* BTC */
+
+      if(stream === 'btcusdt@ticker'){
+
+        var p = parseFloat(data.c);
+        var pct = parseFloat(data.P);
+
+        if(candles.length > 0){
+
+          var lastCandle =
+            candles[candles.length - 1];
+
+          lastCandle.c = p;
+
+          if(p > lastCandle.h)
+            lastCandle.h = p;
+
+          if(p < lastCandle.l)
+            lastCandle.l = p;
+
+          drawChart();
+        }
+
+        var dir =
+          lastPrice === null
+          ? 0
+          : p > lastPrice
+            ? 1
+            : p < lastPrice
+              ? -1
+              : 0;
+
+        lastPrice = p;
+
+        priceEl.textContent =
+          formatUSD(p);
+
+        priceEl.className =
+          'btc-price ' +
+          (
+            dir === 1
+            ? 'up'
+            : dir === -1
+              ? 'down'
+              : ''
+          );
+
+        if(change24hEl){
+          change24hEl.textContent = (pct >= 0 ? '▲ +' : '▼ ') + pct.toFixed(2) + '% 24h';
+          change24hEl.className = 'btc-change-badge ' + (pct >= 0 ? 'up' : 'down');
+        }
+
+        if(flashTimer)
+          clearTimeout(flashTimer);
+
+        flashTimer = setTimeout(function(){
+
+          priceEl.className =
+            'btc-price';
+
+        },700);
+
+      }
+
+      /* BTC BRL */
+
+      else if(stream === 'btcbrl@ticker'){
+
+        brlEl.textContent =
+          formatBRL(
+            parseFloat(data.c)
+          );
+
+        var brlPct = parseFloat(data.P);
+        brlChangeEl.textContent = (brlPct >= 0 ? '▲ +' : '▼ ') + brlPct.toFixed(2) + '%';
+        brlChangeEl.className = 'bci-change ' + (brlPct >= 0 ? 'up' : 'down');
+      }
+
+      /* USD BRL */
+
+      else if(stream === 'usdtbrl@ticker'){
+
+        var usdVal = parseFloat(data.c);
+        usdBrlEl.textContent = 'R$ ' + usdVal.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+        var usdPct = parseFloat(data.P);
+        usdChangeEl.textContent = (usdPct >= 0 ? '▲ +' : '▼ ') + usdPct.toFixed(2) + '%';
+        usdChangeEl.className = 'bci-change ' + (usdPct >= 0 ? 'up' : 'down');
+      }
+    };
+
+    ws.onclose = function(){
+
+      dotEl.className =
+        'btc-live-dot';
+
+      statusEl.textContent =
+        'RECONECTANDO';
+
+      setTimeout(connect,3000);
+    };
+
+    ws.onerror = function(){
+
+      ws.close();
+    };
+  }
+
+  /* =====================================
+     INIT
+  ===================================== */
+
+  if(canvas){
+
+    canvas.width =
+      canvas.offsetWidth;
+
+    fetchChartData()
+      .then(connect);
+
+    fetchMSTR();
+
+    /* ↓ ATUALIZA MSTR A CADA 60s */
+    setInterval(fetchMSTR,60000);
+
+    window.addEventListener(
+      'resize',
+      drawChart
+    );
+  }
+
+})();
+
+/* MOBILE MENU JS */
+const mobileMenu = document.getElementById('mobile-menu');
+const navList = document.getElementById('nav-list');
+
+if (mobileMenu && navList) {
+  mobileMenu.addEventListener('click', () => {
+    mobileMenu.classList.toggle('active');
+    navList.classList.toggle('active');
+  });
+
+  // Fecha o menu ao clicar em um link
+  document.querySelectorAll('#nav-list a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('active');
+      navList.classList.remove('active');
+    });
+  });
+}
+
+</script>
+<div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-value">Especialistas</div>
+          <div class="stat-label">Dedicados exclusivamente à Rede Bitcoin</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Direto</div>
+          <div class="stat-label">Sem custodiantes entre você e seu capital</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">Posse Soberana</div>
+        <div class="stat-label">O controle é seu. Chaves privadas sob sua gestão.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="about" id="sobre">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div>
+        <div class="section-tag">Quem Somos</div>
+        <h2 class="section-title">Não operamos como corretora.<br>Atuamos como sua assessoria privada.</h2>
+        <p class="section-sub">Capacitamos indivíduos a compreender, adquirir e armazenar Bitcoin com métodos rigorosos de segurança — sem dependência de plataformas ou promessas vazias.</p>
+        <ul class="about-list">
+          <li>Foco integral no ecossistema Bitcoin e tecnologia Blockchain</li>
+          <li>Execução técnica de custódia própria (Hardware Wallets e Multisig)</li>
+          <li>Estratégias de sucessão familiar e proteção de longo prazo</li>
+          <li>Educação técnica: da teoria monetária à prática operacional</li>
+          <li>Suporte individualizado — focado no seu perfil e privacidade</li>
+        </ul>
+      </div>
+
+      <!-- COLUNA DIREITA: WIDGETS -->
+      <div>
+      <!-- FEAR & GREED INDEX WIDGET -->
+      <style>
+        /* ── FNG outer wrapper ── */
+        .fng-outer {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0;
+          border-radius: 20px;
+          border: 1px solid #dde1e7;
+          overflow: hidden;
+          box-shadow: 0 6px 32px rgba(0,0,0,0.09);
+          background: #ffffff;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          margin-bottom: 1.2rem;
+        }
+        /* LEFT panel */
+        .fng-left {
+          padding: 1.8rem 1.6rem 1.5rem;
+          border-right: 1px solid #dde1e7;
+          display: flex;
+          flex-direction: column;
+          background: #fff;
+        }
+        .fng-left-header {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 0.2rem;
+        }
+        .fng-logo-icon {
+          width: 32px; height: 32px;
+          background: #F7931A;
+          border-radius: 8px;
+          display: flex; align-items: center; justify-content: center;
+          color: white;
+          font-weight: 900;
+          font-size: 1.05rem;
+          flex-shrink: 0;
+        }
+        .fng-left-title {
+          font-size: 1.05rem;
+          font-weight: 700;
+          color: #1a1a2e;
+          letter-spacing: -0.01em;
+          line-height: 1.25;
+        }
+        .fng-left-sub {
+          font-size: 0.72rem;
+          color: #888;
+          font-weight: 400;
+          margin: 0.35rem 0 0.7rem;
+          line-height: 1.4;
+        }
+        .fng-divider { height: 1px; background: #eee; margin-bottom: 0.85rem; }
+        .fng-now-label {
+          font-size: 0.82rem;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 3px;
+        }
+        .fng-now-sentiment {
+          font-size: 1rem;
+          font-weight: 700;
+          margin-bottom: 0.5rem;
+        }
+        /* Gauge */
+        .fng-gauge-wrap {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          flex: 1;
+          margin-top: 0.3rem;
+        }
+        .fng-svg { width: 100%; max-width: 100%; }
+        .fng-score-bubble {
+          position: absolute;
+          left: 6px;
+          bottom: 22px;
+          width: 40px; height: 40px;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 0.95rem;
+          font-weight: 800;
+          color: white;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .fng-left-footer {
+          font-size: 0.65rem;
+          color: #aaa;
+          margin-top: 0.8rem;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          line-height: 1.4;
+        }
+        .fng-dot {
+          width: 8px; height: 8px;
+          border-radius: 50%;
+          background: #ccc;
+          flex-shrink: 0;
+        }
+        .fng-dot.live { background: #43A047; animation: pulse-dot 2s infinite; }
+        @keyframes pulse-dot {
+          0%,100%{ box-shadow: 0 0 0 3px rgba(67,160,71,0.25); }
+          50%{ box-shadow: 0 0 0 7px rgba(67,160,71,0.07); }
+        }
+        /* RIGHT panel */
+        .fng-right {
+          padding: 1.8rem 1.6rem 1.5rem;
+          display: flex;
+          flex-direction: column;
+          background: #fff;
+        }
+        .fng-right-title {
+          font-size: 1rem;
+          font-weight: 700;
+          color: #1a1a2e;
+          margin-bottom: 1rem;
+          letter-spacing: -0.01em;
+        }
+        .fng-hist-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.7rem 0;
+          border-bottom: 1px solid #f0f0f0;
+        }
+        .fng-hist-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .fng-hist-period {
+          font-size: 0.85rem;
+          color: #444;
+          font-weight: 500;
+          line-height: 1.3;
+          margin-bottom: 2px;
+        }
+        .fng-hist-sent {
+          font-size: 0.75rem;
+          font-weight: 700;
+        }
+        .fng-badge-circle {
+          width: 50px; height: 50px;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 0.9rem;
+          font-weight: 800;
+          color: white;
+          flex-shrink: 0;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+      </style>
+
+      <div class="fng-outer">
+        <!-- LEFT: gauge -->
+        <div class="fng-left">
+          <div class="fng-left-header">
+            <div class="fng-logo-icon">₿</div>
+            <span class="fng-left-title">Fear &amp; Greed Index</span>
+          </div>
+          <div class="fng-left-sub">Análise Multifatorial do Sentimento do Mercado Cripto</div>
+          <div class="fng-divider"></div>
+          <div class="fng-now-label">Agora:</div>
+          <div class="fng-now-sentiment" id="fng-now-sent">—</div>
+          <div class="fng-gauge-wrap">
+            <svg class="fng-svg" viewBox="0 0 280 168" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="fng-grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%"   stop-color="#C62828"/>
+                  <stop offset="25%"  stop-color="#E65100"/>
+                  <stop offset="48%"  stop-color="#F9A825"/>
+                  <stop offset="72%"  stop-color="#7CB342"/>
+                  <stop offset="100%" stop-color="#2E7D32"/>
+                </linearGradient>
+              </defs>
+              <!-- track -->
+              <path d="M 24 152 A 116 116 0 0 1 256 152" fill="none" stroke="#EBEBEB" stroke-width="24" stroke-linecap="round"/>
+              <!-- gradient arc -->
+              <path d="M 24 152 A 116 116 0 0 1 256 152" fill="none" stroke="url(#fng-grad2)" stroke-width="22" stroke-linecap="round"/>
+              <!-- needle -->
+              <line id="fng-needle" x1="140" y1="152" x2="140" y2="46"
+                stroke="#555" stroke-width="3.5" stroke-linecap="round"
+                style="transform-origin:140px 152px; transform:rotate(-90deg); transition:transform 1.3s cubic-bezier(.4,0,.2,1);"/>
+              <!-- hub -->
+              <circle cx="140" cy="152" r="11" fill="#444"/>
+              <circle cx="140" cy="152" r="6"  fill="white"/>
+              <!-- score text above hub -->
+              <text id="fng-arc-score" x="140" y="138" text-anchor="middle"
+                font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"
+                font-size="20" font-weight="800" fill="#222"
+                style="transition:fill 0.5s;">—</text>
+            </svg>
+          <!-- score shown inside SVG arc -->
+          </div>
+          <div class="fng-left-footer">
+            <span class="fng-dot" id="fng-dot"></span>
+            <span id="fng-updated">alternative.me</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: historical values -->
+        <div class="fng-right">
+          <div class="fng-right-title">Valores Históricos</div>
+
+          <div class="fng-hist-item">
+            <div>
+              <div class="fng-hist-period">Agora</div>
+              <div class="fng-hist-sent" id="fng-h-now-sent">—</div>
+            </div>
+            <div class="fng-badge-circle" id="fng-h-now-badge">—</div>
+          </div>
+
+          <div class="fng-hist-item">
+            <div>
+              <div class="fng-hist-period">Ontem</div>
+              <div class="fng-hist-sent" id="fng-h-prev-sent">—</div>
+            </div>
+            <div class="fng-badge-circle" id="fng-h-prev-badge">—</div>
+          </div>
+
+          <div class="fng-hist-item">
+            <div>
+              <div class="fng-hist-period">Semana passada</div>
+              <div class="fng-hist-sent" id="fng-h-week-sent">—</div>
+            </div>
+            <div class="fng-badge-circle" id="fng-h-week-badge">—</div>
+          </div>
+
+          <div class="fng-hist-item">
+            <div>
+              <div class="fng-hist-period">Mês passado</div>
+              <div class="fng-hist-sent" id="fng-h-month-sent">—</div>
+            </div>
+            <div class="fng-badge-circle" id="fng-h-month-badge">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEMPOOL FEE WIDGET -->
+      <style>
+        .mempool-widget {
+          margin-top: 0;
+          border-radius: 16px;
+          border: 1px solid #dde1e7;
+          overflow: hidden;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+          background: #e0f7fa;
+          font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .mempool-header {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 0.85rem 1.2rem 0.7rem;
+          border-bottom: 1px solid #e8e8e8;
+        }
+        .mempool-header-icon {
+          width: 26px; height: 26px;
+          background: #F7931A;
+          border-radius: 6px;
+          display: flex; align-items: center; justify-content: center;
+          color: white;
+          font-weight: 900;
+          font-size: 0.85rem;
+          flex-shrink: 0;
+        }
+        .mempool-header-title {
+          font-size: 0.82rem;
+          font-weight: 700;
+          color: #0052FF !important;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+        .mempool-live-dot {
+          width: 7px; height: 7px;
+          border-radius: 50%;
+          background: #4caf50;
+          margin-left: auto;
+          animation: pulse-dot 2s infinite;
+          display: none;
+        }
+        .mempool-fees {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0;
+        }
+        .mempool-fee-col {
+          padding: 0.9rem 0.7rem 1rem;
+          text-align: center;
+          border-right: 1px solid #e8e8e8;
+          transition: background 0.2s;
+        }
+        .mempool-fee-col:last-child { border-right: none; }
+        .mempool-fee-col { background: #e0f7fa; }
+        .mempool-fee-col.active { background: #fff8f0; }
+        .mempool-fee-label {
+          font-size: 0.7rem;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          margin-bottom: 0.5rem;
+          color: #666666;
+        }
+        .mempool-fee-col.active .mempool-fee-label {
+          color: #F7931A;
+          font-weight: 800;
+        }
+        .mempool-fee-col.active {
+          border-top: 2px solid #F7931A;
+        }
+        .mempool-fee-col:not(.active) {
+          border-top: 2px solid transparent;
+        }
+        .mempool-fee-val {
+          font-size: 1.5rem;
+          font-weight: 900;
+          color: #1a1a2e;
+          line-height: 1;
+          margin-bottom: 2px;
+          font-family: 'Instrument Sans', sans-serif;
+        }
+        .mempool-fee-unit {
+          font-size: 0.68rem;
+          color: #999999;
+          font-weight: 600;
+        }
+        .mempool-fee-usd {
+          font-size: 0.75rem;
+          color: #666666;
+          font-weight: 600;
+          margin-top: 4px;
+        }
+        .mempool-footer {
+          padding: 0.45rem 1.2rem;
+          border-top: 1px solid #e8e8e8;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .mempool-footer-text {
+          font-size: 0.6rem;
+          color: #999999;
+          font-weight: 500;
+        }
+        .mempool-footer a {
+          color: #F7931A;
+          text-decoration: none;
+          font-size: 0.6rem;
+          font-weight: 600;
+        }
+        .mempool-footer a:hover { text-decoration: underline; }
+        @media (max-width: 500px) {
+          .mempool-fee-val { font-size: 1.05rem; }
+        }
+      </style>
+
+      <div class="mempool-widget">
+        <div class="mempool-header">
+          <div class="mempool-header-icon">₿</div>
+          <span class="mempool-header-title">Taxa-transação-blockchain</span>
+          <span class="mempool-live-dot"></span>
+        </div>
+        <div class="mempool-fees">
+          <div class="mempool-fee-col active" id="mfee-none">
+            <div class="mempool-fee-label">Sem Prioridade</div>
+            <div class="mempool-fee-val" id="mfee-none-val">—</div>
+            <div class="mempool-fee-unit">sat/vB</div>
+            <div class="mempool-fee-usd" id="mfee-none-usd">US$ —</div>
+          </div>
+          <div class="mempool-fee-col" id="mfee-low">
+            <div class="mempool-fee-label">Prioridade Baixa</div>
+            <div class="mempool-fee-val" id="mfee-low-val">—</div>
+            <div class="mempool-fee-unit">sat/vB</div>
+            <div class="mempool-fee-usd" id="mfee-low-usd">US$ —</div>
+          </div>
+          <div class="mempool-fee-col" id="mfee-med">
+            <div class="mempool-fee-label">Prioridade Média</div>
+            <div class="mempool-fee-val" id="mfee-med-val">—</div>
+            <div class="mempool-fee-unit">sat/vB</div>
+            <div class="mempool-fee-usd" id="mfee-med-usd">US$ —</div>
+          </div>
+          <div class="mempool-fee-col" id="mfee-high">
+            <div class="mempool-fee-label">Prioridade Alta</div>
+            <div class="mempool-fee-val" id="mfee-high-val">—</div>
+            <div class="mempool-fee-unit">sat/vB</div>
+            <div class="mempool-fee-usd" id="mfee-high-usd">US$ —</div>
+          </div>
+        </div>
+        <div class="mempool-footer">
+          <span class="mempool-footer-text">Fonte: <a href="https://mempool.space/pt/" target="_blank" rel="noopener">mempool.space</a> · Atualizado a cada 30s</span>
+        </div>
+      </div>
+
+      <script>
+      (function(){
+        var BTC_PRICE_USD = 0;
+        var AVG_TX_VBYTES = 141;
+
+        function satToUsd(sat) {
+          if (!BTC_PRICE_USD) return 'US$ —';
+          var usd = (sat * AVG_TX_VBYTES * BTC_PRICE_USD) / 1e8;
+          return 'US$ ' + usd.toFixed(2);
+        }
+
+        function loadFees() {
+          fetch('https://mempool.space/api/v1/fees/recommended')
+            .then(function(r){ return r.json(); })
+            .then(function(d){
+              var none = Math.max(1, Math.round(d.minimumFee || d.economyFee));
+              var low  = d.economyFee  || d.hourFee;
+              var med  = d.halfHourFee || d.hourFee;
+              var high = d.fastestFee;
+
+              document.getElementById('mfee-none-val').textContent = none;
+              document.getElementById('mfee-low-val').textContent  = low;
+              document.getElementById('mfee-med-val').textContent  = med;
+              document.getElementById('mfee-high-val').textContent = high;
+
+              document.getElementById('mfee-none-usd').textContent = satToUsd(none);
+              document.getElementById('mfee-low-usd').textContent  = satToUsd(low);
+              document.getElementById('mfee-med-usd').textContent  = satToUsd(med);
+              document.getElementById('mfee-high-usd').textContent = satToUsd(high);
+            })
+            .catch(function(){ /* silently fail */ });
+        }
+
+        function loadBtcPrice() {
+          fetch('https://mempool.space/api/v1/prices')
+            .then(function(r){ return r.json(); })
+            .then(function(d){
+              BTC_PRICE_USD = d.USD || 0;
+              loadFees();
+            })
+            .catch(function(){ loadFees(); });
+        }
+
+        loadBtcPrice();
+        setInterval(loadBtcPrice, 30000);
+      })();
+      </script>
+      <!-- END MEMPOOL FEE WIDGET -->
+      </div>
+
+      <script>
+      (function(){
+        function getLabel(v){
+          if(v<=20) return 'Medo Extremo';
+          if(v<=40) return 'Medo';
+          if(v<=60) return 'Neutro';
+          if(v<=80) return 'Ganância';
+          return 'Ganância Extrema';
+        }
+        function getColor(v){
+          if(v<=20) return '#C62828';
+          if(v<=40) return '#E65100';
+          if(v<=60) return '#F9A825';
+          if(v<=80) return '#7CB342';
+          return '#2E7D32';
+        }
+        function rotateNeedle(v){
+          var deg = (v/100)*180 - 90;
+          var needle = document.getElementById('fng-needle');
+          if(needle) needle.style.transform = 'rotate('+deg+'deg)';
+        }
+        function setBadge(badgeId, sentId, val){
+          if(val === null) return;
+          var lbl = getLabel(val);
+          var col = getColor(val);
+          var b = document.getElementById(badgeId);
+          var s = document.getElementById(sentId);
+          if(b){ b.textContent = val; b.style.background = col; }
+          if(s){ s.textContent = lbl; s.style.color = col; }
+        }
+        function load(){
+          fetch('https://api.alternative.me/fng/?limit=31&format=json')
+            .then(function(r){ return r.json(); })
+            .then(function(d){
+              var data = d.data;
+              var now   = parseInt(data[0].value);
+              var prev  = data[1]  ? parseInt(data[1].value)  : null;
+              var week  = data[7]  ? parseInt(data[7].value)  : null;
+              var month = data[30] ? parseInt(data[30].value) : null;
+
+              var col = getColor(now);
+
+              // left panel
+              var nowSent = document.getElementById('fng-now-sent');
+              if(nowSent){ nowSent.textContent = getLabel(now); nowSent.style.color = col; }
+
+              rotateNeedle(now);
+
+              var arcScore = document.getElementById('fng-arc-score');
+              if(arcScore){ arcScore.textContent = now; arcScore.setAttribute('fill', col); }
+
+              // bubble removed - score shown inside SVG
+
+              var dot = document.getElementById('fng-dot');
+              if(dot) dot.className = 'fng-dot live';
+
+              var upd = document.getElementById('fng-updated');
+              if(upd){
+                var ts = new Date(parseInt(data[0].timestamp)*1000);
+                upd.textContent = 'alternative.me · Atualizado: '+ts.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
+              }
+
+              // right panel
+              setBadge('fng-h-now-badge',   'fng-h-now-sent',   now);
+              setBadge('fng-h-prev-badge',  'fng-h-prev-sent',  prev);
+              setBadge('fng-h-week-badge',  'fng-h-week-sent',  week);
+              setBadge('fng-h-month-badge', 'fng-h-month-sent', month);
+            })
+            .catch(function(){
+              var el = document.getElementById('fng-now-sent');
+              if(el) el.textContent = 'Erro ao carregar';
+            });
+        }
+        load();
+        setInterval(load, 60000);
+      })();
+      </script>
+    </div>
+  </div>
+</section>
+
+<section id="servicos">
+  <div class="section-inner">
+    <div class="section-tag">O que entregamos</div>
+    <h2 class="section-title">Serviços de alto nível<br>para sua jornada Bitcoin</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🔐</div>
+        <h3>Gestão de Carteiras Físicas</h3>
+        <p>Configuração guiada do seu dispositivo de segurança. Domine o uso em poucas horas e elimine o risco de exchanges.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🛡️</div>
+        <h3>Segurança Multi-assinatura</h3>
+        <p>Desenvolvimento de esquemas Multisig para garantir a máxima resiliência do seu capital contra roubos ou perdas.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📋</div>
+        <h3>Protocolo de Sucessão</h3>
+        <p>Estruturamos planos claros para que seus herdeiros acessem o patrimônio com segurança na sua ausência.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">⚡</div>
+        <h3>Uso da Lightning Network</h3>
+        <p>Descubra como realizar pagamentos instantâneos e com taxas mínimas utilizando a segunda camada do Bitcoin.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📚</div>
+        <h3>Imersão Educacional</h3>
+        <p>Entenda o Bitcoin de verdade. Sem ruído de mercado, focamos na robustez tecnológica e fundamentos econômicos.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔍</div>
+        <h3>Auditoria de Segurança</h3>
+        <p>Analisamos sua configuração atual para identificar vulnerabilidades e otimizar seus métodos de armazenamento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how">
+  <div class="section-inner">
+    <div class="section-tag">Metodologia</div>
+    <h2 class="section-title">Processo ágil, seguro e transparente</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h4>Cadastro de Interesse</h4>
+        <p>Conte-nos brevemente sobre sua situação atual e quais são suas metas.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h4>Análise Cortesia</h4>
+        <p>Nossos especialistas avaliam seu caso e propõem a estratégia mais eficiente.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h4>Execução Assistida</h4>
+        <p>Realizamos as configurações em conjunto, respeitando seu ritmo e privacidade.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h4>Independência Total</h4>
+        <p>Você finaliza o processo com documentação, backups e total confiança operacional.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="Independenciafinanceira">
+  <div class="section-inner" style="max-width:1200px;">
+    <div class="section-tag">Independência Financeira</div>
+
+<!-- Layout lado a lado -->
+<div class="fi-dca-row">
+
+<!-- COLUNA ESQUERDA: Simulador de Independência Financeira -->
+<div class="fi-col-left">
+
+<style>
+/* Estilos Base */
+.sif__wrap * { box-sizing: border-box; margin: 0; padding: 0; }
+.sif__wrap { font-family: 'Instrument Sans', sans-serif; background: #ffffff; border: 1px solid #e2e4e9; border-radius: 16px; padding: 24px; width: 100%; color: #1a1d23; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin: auto; }
+.sif__header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 8px; }
+.sif__title { font-size: 15px; font-weight: 600; color: #1a1d23; }
+.sif__metrics { display: flex; gap: 20px; flex-wrap: wrap; }
+.sif__metric-item { text-align: right; }
+.sif__metric-label { font-size: 9px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #8a8f9e; display: block; margin-bottom: 2px; }
+.sif__metric-value { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; color: #1565c0; }
+
+/* Seção do Alvo e Progresso */
+.sif__gauge-section { background: #f7f8fa; border-radius: 12px; padding: 24px 16px; margin-bottom: 20px; text-align: center; position: relative; }
+.sif__gauge-container { position: relative; width: 240px; margin: 0 auto 8px; }
+.sif__gauge-svg { width: 100%; display: block; }
+.sif__gauge-badge { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #e8f5e9; border: 1.5px solid #4caf50; color: #2e7d32; font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 20px; white-space: nowrap; letter-spacing: 0.03em; }
+.sif__gauge-label { font-size: 11px; font-weight: 500; color: #8a8f9e; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 4px; }
+.sif__gauge-value { font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 600; color: #1a1d23; letter-spacing: -0.5px; margin-bottom: 16px; }
+
+/* Nova Barra de Progresso */
+.sif__progress-container { max-width: 320px; margin: 0 auto; text-align: left; }
+.sif__progress-texts { display: flex; justify-content: space-between; font-size: 12px; color: #5a5f6e; margin-bottom: 6px; font-weight: 500; }
+.sif__progress-bar { height: 8px; background: #e2e4e9; border-radius: 4px; overflow: hidden; }
+.sif__progress-fill { height: 100%; background: #4caf50; width: 0%; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+
+/* Gráficos de Barras */
+.sif__chart-section { border: 1px solid #e2e4e9; border-radius: 12px; padding: 16px; margin-bottom: 20px; }
+.sif__chart-row { display: flex; align-items: center; margin-bottom: 10px; gap: 8px; }
+.sif__bar-label { font-size: 11px; color: #5a5f6e; width: 110px; flex-shrink: 0; text-align: right; }
+.sif__bar-track { flex: 1; height: 22px; background: #f0f1f4; border-radius: 4px; overflow: hidden; position: relative; }
+.sif__bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; transition: width 0.5s cubic-bezier(.4,0,.2,1); min-width: 40px; }
+.sif__bar-fill span { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: #fff; white-space: nowrap; }
+.sif__bar-desp { background: #c62828; }
+.sif__bar-renda { background: #2e7d32; }
+.sif__bar-passiva { background: #00897b; } /* Cor nova para renda passiva atual */
+.sif__bar-juros { background: #1565c0; }
+.sif__chart-axis { display: flex; justify-content: space-between; padding-left: 118px; margin-top: 8px; }
+.sif__chart-axis span { font-size: 10px; color: #9aa0b0; font-family: 'DM Mono', monospace; }
+
+/* Controles */
+.sif__controls { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+.sif__control-row { display: flex; flex-direction: column; gap: 6px; }
+.sif__control-row.sif__full { grid-column: 1 / -1; }
+.sif__ctrl-top { display: flex; justify-content: space-between; align-items: center; }
+.sif__ctrl-label { font-size: 12px; color: #5a5f6e; font-weight: 500; }
+.sif__ctrl-val { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: #1a1d23; background: #f0f1f4; border: 1px solid #dde0e8; border-radius: 6px; padding: 2px 8px; min-width: 54px; text-align: center; }
+.sif__slider { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px; background: #dde0e8; outline: none; cursor: pointer; }
+.sif__slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #1565c0; cursor: pointer; }
+</style>
+
+<div class="sif__wrap" id="sif-root">
+  <div class="sif__header">
+    <div class="sif__title">Simulador de Independência Financeira</div>
+    <div class="sif__metrics">
+      <div class="sif__metric-item">
+        <span class="sif__metric-label">Juro Real Anual</span>
+        <span class="sif__metric-value" id="sif-juro-anual">—</span>
+      </div>
+      <div class="sif__metric-item">
+        <span class="sif__metric-label">Custo Líquido</span>
+        <span class="sif__metric-value" id="sif-custo-liq">—</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sif__gauge-section">
+    <div class="sif__gauge-container">
+      <svg class="sif__gauge-svg" viewBox="0 0 240 130">
+        <path d="M 24 124 A 96 96 0 0 1 216 124" fill="none" stroke="#dde0e8" stroke-width="22" stroke-linecap="round"/>
+        <path id="sif-gauge-arc" d="M 24 124 A 96 96 0 0 1 216 124" fill="none" stroke="#1565c0" stroke-width="22" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="301.6" style="transition: stroke-dashoffset 0.7s;"/>
+      </svg>
+      <div class="sif__gauge-badge" id="sif-fator-badge">SEGURANÇA: —</div>
+    </div>
+    <div class="sif__gauge-label">Patrimônio Alvo Recomendado</div>
+    <div class="sif__gauge-value" id="sif-patrimonio">—</div>
+    
+    <div class="sif__progress-container">
+      <div class="sif__progress-texts">
+        <span>Progresso: <strong id="sif-prog-pct" style="color: #2e7d32;">0%</strong></span>
+        <span id="sif-gap-txt">Falta Acumular:  0</span>
+      </div>
+      <div class="sif__progress-bar">
+        <div class="sif__progress-fill" id="sif-prog-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sif__chart-section">
+    <div class="sif__chart-row">
+      <span class="sif__bar-label">Custo de Vida</span>
+      <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-desp" id="sif-bar-desp"><span>R$</span></div></div>
+    </div>
+    <div class="sif__chart-row">
+      <span class="sif__bar-label">Renda Extra (Ativa)</span>
+      <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-renda" id="sif-bar-renda"><span>R$</span></div></div>
+    </div>
+    <div class="sif__chart-row">
+      <span class="sif__bar-label">Sua Renda Passiva</span>
+      <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-passiva" id="sif-bar-passiva"><span>R$</span></div></div>
+    </div>
+    <div class="sif__chart-row">
+      <span class="sif__bar-label">Juros (Alvo Faltante)</span>
+      <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-juros" id="sif-bar-juros"><span>R$</span></div></div>
+    </div>
+    <div class="sif__chart-axis" id="sif-axis"></div>
+  </div>
+
+  <div class="sif__controls">
+    <div class="sif__control-row sif__full">
+      <div class="sif__ctrl-top"><span class="sif__ctrl-label">Patrimônio Atual (R$)</span><span class="sif__ctrl-val" id="sif-val-pat-atual">0</span></div>
+      <input class="sif__slider" type="range" id="sif-pat-atual" min="0" max="2000000" step="5000" value="50000">
+    </div>
+    <div class="sif__control-row">
+      <div class="sif__ctrl-top"><span class="sif__ctrl-label">Selic Nominal (%)</span><span class="sif__ctrl-val" id="sif-val-selic">14</span></div>
+      <input class="sif__slider" type="range" id="sif-selic" min="5" max="25" step="0.5" value="14">
+    </div>
+    <div class="sif__control-row">
+      <div class="sif__ctrl-top"><span class="sif__ctrl-label">Inflação IPCA (%)</span><span class="sif__ctrl-val" id="sif-val-ipca">4,5</span></div>
+      <input class="sif__slider" type="range" id="sif-ipca" min="1" max="15" step="0.5" value="4.5">
+    </div>
+    <div class="sif__control-row">
+      <div class="sif__ctrl-top"><span class="sif__ctrl-label">Dependentes</span><span class="sif__ctrl-val" id="sif-val-dep">2</span></div>
+      <input class="sif__slider" type="range" id="sif-dep" min="0" max="10" step="1" value="2">
+    </div>
+    <div class="sif__control-row">
+      <div class="sif__ctrl-top"><span class="sif__ctrl-label">Despesas (R$)</span><span class="sif__ctrl-val" id="sif-val-desp">9.000</span></div>
+      <input class="sif__slider" type="range" id="sif-desp" min="1000" max="50000" step="500" value="9000">
+    </div>
+    <div class="sif__control-row sif__full">
+      <div class="sif__ctrl-top"><span class="sif__ctrl-label">Receitas Extras (R$)</span><span class="sif__ctrl-val" id="sif-val-rec">7.000</span></div>
+      <input class="sif__slider" type="range" id="sif-rec" min="0" max="30000" step="500" value="7000">
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  function fmtFull(v) { return 'R$ ' + Math.round(v).toLocaleString('pt-BR'); }
+  function fmtBRL(v) { return v >= 1000 ? 'R$ ' + (v/1000).toFixed(1) + 'k' : 'R$ ' + Math.round(v); }
+
+  function calcular() {
+    const selic = parseFloat(document.getElementById('sif-selic').value);
+    const ipca = parseFloat(document.getElementById('sif-ipca').value);
+    const dep = parseInt(document.getElementById('sif-dep').value);
+    const desp = parseFloat(document.getElementById('sif-desp').value);
+    const rec = parseFloat(document.getElementById('sif-rec').value);
+    const patAtual = parseFloat(document.getElementById('sif-pat-atual').value);
+
+    // 1. Taxa Real (Fórmula de Fisher)
+    const taxaRealAnual = ((1 + selic/100) / (1 + ipca/100) - 1);
+    
+    // 2. Fluxo Líquido
+    const deficitMensal = Math.max(0, desp - rec);
+
+    // 3. Montante de Perpetuidade (Cálculo Base)
+    let montanteBase = taxaRealAnual > 0 ? (deficitMensal * 12) / taxaRealAnual : 0;
+
+    // 4. Margem por Dependentes (10% de capital extra por pessoa)
+    const margemSeguranca = 1 + (dep * 0.10);
+    const patrimonioFinal = montanteBase * margemSeguranca;
+
+    // 5. Cálculos de Progresso e Renda Passiva Atual
+    const gap = Math.max(0, patrimonioFinal - patAtual);
+    const progressoPct = patrimonioFinal > 0 ? Math.min(100, (patAtual / patrimonioFinal) * 100) : 100;
+    const rendaPassivaAtual = taxaRealAnual > 0 ? (patAtual * taxaRealAnual) / 12 : 0;
+    const jurosFaltante = Math.max(0, ((patrimonioFinal * taxaRealAnual) / 12) - rendaPassivaAtual);
+
+    // Atualiza Interface (Cabeçalho e Alvo)
+    document.getElementById('sif-juro-anual').textContent = (taxaRealAnual * 100).toFixed(2).replace('.',',') + '%';
+    document.getElementById('sif-custo-liq').textContent = fmtFull(deficitMensal);
+    document.getElementById('sif-patrimonio').textContent = fmtFull(patrimonioFinal);
+    document.getElementById('sif-fator-badge').textContent = 'MARGEM: +' + (dep * 10) + '%';
+
+    // Atualiza Interface (Progresso)
+    document.getElementById('sif-prog-pct').textContent = progressoPct.toFixed(1).replace('.',',') + '%';
+    document.getElementById('sif-gap-txt').textContent = 'Falta Acumular: ' + fmtFull(gap);
+    document.getElementById('sif-prog-fill').style.width = progressoPct + '%';
+
+    // Gráficos e Eixos
+    const maxVal = Math.max(desp, rec, rendaPassivaAtual + jurosFaltante, 5000);
+    const axisMax = Math.ceil(maxVal / 5000) * 5000;
+
+    const setBar = (id, val) => {
+        const pct = Math.min(100, Math.max(5, (val / axisMax) * 100));
+        document.getElementById(id).style.width = pct + '%';
+        document.getElementById(id).innerHTML = `<span>${fmtBRL(val)}</span>`;
+    };
+
+    setBar('sif-bar-desp', desp);
+    setBar('sif-bar-renda', rec);
+    setBar('sif-bar-passiva', rendaPassivaAtual);
+    setBar('sif-bar-juros', jurosFaltante);
+
+    // Gauge Arc (Arco superior baseado apenas na proporção renda passiva total vs custo de vida)
+    const rendaPassivaTotalAlvo = rendaPassivaAtual + jurosFaltante;
+    const ratio = desp > 0 ? Math.min(1, rendaPassivaTotalAlvo / desp) : 0;
+    document.getElementById('sif-gauge-arc').style.strokeDashoffset = 301.6 - (301.6 * ratio);
+
+    // Eixo X
+    const ticks = [];
+    for(let i=0; i<=4; i++) ticks.push('<span>' + fmtBRL(axisMax * i / 4) + '</span>');
+    document.getElementById('sif-axis').innerHTML = ticks.join('');
+
+    // Valores Sliders
+    document.getElementById('sif-val-pat-atual').textContent = patAtual.toLocaleString('pt-BR');
+    document.getElementById('sif-val-selic').textContent = selic.toFixed(1).replace('.',',');
+    document.getElementById('sif-val-ipca').textContent = ipca.toFixed(1).replace('.',',');
+    document.getElementById('sif-val-dep').textContent = dep;
+    document.getElementById('sif-val-desp').textContent = desp.toLocaleString('pt-BR');
+    document.getElementById('sif-val-rec').textContent = rec.toLocaleString('pt-BR');
+  }
+
+  ['sif-pat-atual', 'sif-selic', 'sif-ipca', 'sif-dep', 'sif-desp', 'sif-rec'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calcular);
+  });
+
+  calcular();
+})();
+</script>
+
+</div>
+<!-- FIM COLUNA ESQUERDA -->
+
+<!-- COLUNA DIREITA: Simulador DCA -->
+<div class="fi-col-right">
+
+<div class="dca__wrap" id="dca-root">
+  <!-- Cotação BTC ao vivo no topo -->
+  <div class="dca__ticker">
+    <div class="dca__ticker-left">
+      <span class="dca__ticker-icon">₿</span>
+      <span class="dca__ticker-name">Bitcoin</span>
+    </div>
+    <div class="dca__ticker-right">
+      <span class="dca__ticker-price-usd" id="dca-btc-price-usd">$ —</span>
+      <span class="dca__ticker-price" id="dca-btc-price">R$ —</span>
+      <span class="dca__ticker-change" id="dca-btc-change">—</span>
+    </div>
+  </div>
+
+  <div class="dca__header">
+    <div class="dca__title">📊 Simulador DCA em Bitcoin</div>
+    <div class="dca__sub">Se eu tivesse investido todo mês, quanto teria hoje?</div>
+  </div>
+
+  <div class="dca__controls">
+    <div class="dca__control-row">
+      <div class="dca__ctrl-top"><span class="dca__ctrl-label">Investimento Mensal (R$)</span><span class="dca__ctrl-val" id="dca-val-monthly">1.000</span></div>
+      <input class="dca__slider" type="range" id="dca-monthly" min="100" max="10000" step="100" value="1000">
+    </div>
+
+    <div class="dca__row-2col">
+      <div class="dca__control-row">
+        <div class="dca__ctrl-top"><span class="dca__ctrl-label">De</span></div>
+        <input class="dca__input" type="month" id="dca-start" value="2026-01">
+      </div>
+      <div class="dca__control-row">
+        <div class="dca__ctrl-top"><span class="dca__ctrl-label">Até</span></div>
+        <input class="dca__input" type="month" id="dca-end">
+      </div>
+    </div>
+
+    <button class="dca__btn" id="dca-btn-simulate">Simular →</button>
+  </div>
+
+  <div class="dca__loading" id="dca-loading" style="display:none;">
+    <div class="dca__spinner"></div>
+    <span>Buscando dados...</span>
+  </div>
+
+  <div class="dca__results" id="dca-results" style="display:none;">
+    <div class="dca__results-title" id="dca-results-title">Resultado — DCA em Bitcoin</div>
+    <div class="dca__result-grid" id="dca-result-grid"></div>
+    <div class="dca__chart-box">
+      <canvas id="dca-mini-chart" height="140"></canvas>
+    </div>
+  </div>
+
+  <div class="dca__error" id="dca-error" style="display:none;"></div>
+</div>
+
+<style>
+/* DCA Widget - Tema Escuro */
+.dca__wrap { font-family: 'Instrument Sans', sans-serif; background: #111; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 22px; width: 100%; color: #fff; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+.dca__wrap * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Ticker BTC */
+.dca__ticker { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; }
+.dca__ticker-left { display: flex; align-items: center; gap: 8px; }
+.dca__ticker-icon { width: 28px; height: 28px; background: #F7931A; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 0.85rem; }
+.dca__ticker-name { font-size: 13px; font-weight: 700; color: #fff; }
+.dca__ticker-right { display: flex; align-items: center; gap: 10px; }
+.dca__ticker-price-usd { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 700; color: #00ffae; }
+.dca__ticker-price { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 700; color: #fff; }
+.dca__ticker-change { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,0.06); color: #888; }
+.dca__ticker-change.up { background: rgba(0,255,174,0.12); color: #00ffae; }
+.dca__ticker-change.down { background: rgba(255,77,109,0.12); color: #ff4d6d; }
+
+.dca__header { margin-bottom: 16px; }
+.dca__title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+.dca__sub { font-size: 11px; color: #8a8f9e; }
+.dca__controls { display: flex; flex-direction: column; gap: 12px; }
+.dca__control-row { display: flex; flex-direction: column; gap: 5px; }
+.dca__ctrl-top { display: flex; justify-content: space-between; align-items: center; }
+.dca__ctrl-label { font-size: 11px; color: #aaa; font-weight: 500; }
+.dca__ctrl-val { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; color: #fff; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 2px 8px; }
+.dca__slider { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.12); outline: none; cursor: pointer; }
+.dca__slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #F7931A; cursor: pointer; }
+.dca__input { width: 100%; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 8px 10px; font-family: 'Instrument Sans', sans-serif; font-size: 12px; color: #fff; background: rgba(255,255,255,0.04); outline: none; }
+.dca__input:focus { border-color: #F7931A; }
+.dca__row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dca__btn { width: 100%; margin-top: 8px; background: #F7931A; color: white; border: none; padding: 11px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: background .2s, transform .15s; }
+.dca__btn:hover { background: #e8860f; transform: translateY(-1px); }
+.dca__btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.dca__loading { display: flex; align-items: center; gap: 10px; justify-content: center; padding: 20px 0; font-size: 12px; color: #8a8f9e; }
+.dca__spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.1); border-top-color: #F7931A; border-radius: 50%; animation: dca-spin 0.7s linear infinite; }
+@keyframes dca-spin { to { transform: rotate(360deg); } }
+
+/* Results */
+.dca__results { margin-top: 18px; }
+.dca__results-title { font-size: 12px; font-weight: 600; color: #ccc; margin-bottom: 10px; font-style: italic; }
+.dca__result-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.dca__result-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px 8px; }
+.dca__result-label { font-size: 8px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin-bottom: 6px; }
+.dca__result-value { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 700; color: #fff; }
+.dca__result-value.positive { color: #4ade80; }
+.dca__result-value.negative { color: #ff4d6d; }
+.dca__result-sub { font-size: 10px; color: #666; margin-top: 3px; }
+.dca__chart-box { border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px; background: rgba(255,255,255,0.02); }
+.dca__error { background: rgba(255,77,109,0.08); border: 1px solid rgba(255,77,109,0.2); border-radius: 8px; padding: 10px; color: #ff4d6d; font-size: 11px; text-align: center; margin-top: 12px; }
+
+@media (max-width: 500px) {
+  .dca__result-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  var dcaChart = null;
+
+  // Set default end date
+  var now = new Date();
+  var endInput = document.getElementById('dca-end');
+  if(endInput) endInput.value = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+
+  // Fetch BTC price for ticker
+  function fetchBtcTicker(){
+    fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,brl&include_24hr_change=true')
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if(d && d.bitcoin){
+          var priceUsd = d.bitcoin.usd;
+          var priceBrl = d.bitcoin.brl;
+          var change = d.bitcoin.brl_24h_change || 0;
+          document.getElementById('dca-btc-price-usd').textContent = '$ ' + Math.round(priceUsd).toLocaleString('en-US');
+          document.getElementById('dca-btc-price').textContent = 'R$ ' + Math.round(priceBrl).toLocaleString('pt-BR');
+          var changeEl = document.getElementById('dca-btc-change');
+          var sign = change >= 0 ? '+' : '';
+          changeEl.textContent = sign + change.toFixed(2) + '% 24h';
+          changeEl.className = 'dca__ticker-change ' + (change >= 0 ? 'up' : 'down');
+        }
+      })
+      .catch(function(){});
+  }
+  fetchBtcTicker();
+  setInterval(fetchBtcTicker, 60000);
+
+  // Update slider value display
+  var monthlySlider = document.getElementById('dca-monthly');
+  var monthlyVal = document.getElementById('dca-val-monthly');
+  if(monthlySlider) monthlySlider.addEventListener('input', function(){
+    monthlyVal.textContent = parseInt(this.value).toLocaleString('pt-BR');
+  });
+
+  // Simulate button
+  var btnSim = document.getElementById('dca-btn-simulate');
+  if(btnSim) btnSim.addEventListener('click', dcaSimulate);
+
+  async function dcaSimulate(){
+    var monthly = parseInt(document.getElementById('dca-monthly').value);
+    var startDate = document.getElementById('dca-start').value;
+    var endDate = document.getElementById('dca-end').value;
+
+    if(!startDate || !endDate || startDate >= endDate){
+      showDcaError('Datas inválidas.');
+      return;
+    }
+
+    hideDcaError();
+    showDcaLoading(true);
+    showDcaResults(false);
+
+    try {
+      var months = getDcaMonths(startDate, endDate);
+      var start = new Date(startDate + '-01').getTime() / 1000;
+      var end = new Date(endDate + '-28').getTime() / 1000;
+
+      // Calcula dias entre start e end
+      var daysDiff = Math.ceil((end - start) / 86400);
+      var url = 'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=brl&days=' + daysDiff;
+      var res = await fetch(url);
+      if(!res.ok) throw new Error('Erro na API: ' + res.status + '. Tente um período menor.');
+      var data = await res.json();
+      var prices = data.prices;
+      if(!prices || prices.length === 0) throw new Error('Sem dados para o período.');
+
+      // DCA calc
+      var totalInvested = 0, totalCoins = 0;
+      var dcaValues = [];
+      for(var i = 0; i < months.length; i++){
+        var price = getPrice(prices, months[i].year, months[i].month);
+        totalCoins += monthly / price;
+        totalInvested += monthly;
+        dcaValues.push(totalCoins * price);
+      }
+
+      var finalValue = dcaValues[dcaValues.length - 1];
+      var profit = finalValue - totalInvested;
+      var pctTotal = ((finalValue / totalInvested) - 1) * 100;
+
+      // CAGR (retorno anual composto)
+      var years = months.length / 12;
+      var cagr = years > 0 ? (Math.pow(finalValue / totalInvested, 1 / years) - 1) * 100 : 0;
+
+      displayDcaResults(totalInvested, finalValue, pctTotal, cagr, months.length);
+      renderDcaChart(months, dcaValues, totalInvested);
+      showDcaResults(true);
+
+    } catch(e){
+      showDcaError(e.message || 'Erro ao buscar dados.');
+    } finally {
+      showDcaLoading(false);
+    }
+  }
+
+  function getDcaMonths(s, e){
+    var parts = s.split('-').map(Number);
+    var eParts = e.split('-').map(Number);
+    var months = [], y = parts[0], m = parts[1];
+    while(y < eParts[0] || (y === eParts[0] && m <= eParts[1])){
+      months.push({year:y, month:m});
+      m++; if(m>12){m=1;y++;}
+    }
+    return months;
+  }
+
+  function getPrice(prices, year, month){
+    var target = new Date(year, month-1, 1).getTime();
+    var closest = prices[0], minD = Math.abs(prices[0][0]-target);
+    for(var i=1;i<prices.length;i++){
+      var d = Math.abs(prices[i][0]-target);
+      if(d < minD){minD=d; closest=prices[i];}
+    }
+    return closest[1];
+  }
+
+  function displayDcaResults(invested, final, pctTotal, cagr, numMonths){
+    var grid = document.getElementById('dca-result-grid');
+    var profitClass = pctTotal >= 0 ? 'positive' : 'negative';
+    var sign = pctTotal >= 0 ? '+' : '';
+    var signCagr = cagr >= 0 ? '+' : '';
+
+    grid.innerHTML = ''
+      + '<div class="dca__result-item"><div class="dca__result-label">Total Investido</div><div class="dca__result-value">R$ '+Math.round(invested).toLocaleString('pt-BR')+'</div></div>'
+      + '<div class="dca__result-item"><div class="dca__result-label">Valor Hoje</div><div class="dca__result-value '+profitClass+'">R$ '+Math.round(final).toLocaleString('pt-BR')+'</div></div>'
+      + '<div class="dca__result-item"><div class="dca__result-label">Retorno Total</div><div class="dca__result-value '+profitClass+'">'+sign+pctTotal.toFixed(1)+'%</div></div>'
+      + '<div class="dca__result-item"><div class="dca__result-label">Retorno Anual (CAGR)</div><div class="dca__result-value '+profitClass+'">'+signCagr+cagr.toFixed(1)+'% a.a.</div><div class="dca__result-sub">'+numMonths+' meses</div></div>';
+
+    document.getElementById('dca-results-title').textContent = 'Resultado — DCA em Bitcoin';
+  }
+
+  function renderDcaChart(months, dcaValues, totalInvested){
+    var canvas = document.getElementById('dca-mini-chart');
+    var ctx = canvas.getContext('2d');
+    if(dcaChart) dcaChart.destroy();
+
+    var labels = months.map(function(m){ return String(m.month).padStart(2,'0')+'/'+m.year; });
+    var investedLine = months.map(function(_, i){ return (totalInvested / months.length) * (i+1); });
+
+    dcaChart = new Chart(ctx, {
+      type:'line',
+      data:{ labels:labels, datasets:[
+        { label:'DCA Bitcoin', data:dcaValues, borderColor:'#F7931A', borderWidth:2, fill:true, backgroundColor:'rgba(247,147,26,0.08)', tension:0.3, pointRadius:0 },
+        { label:'Total Investido', data:investedLine, borderColor:'#555', borderWidth:1.5, borderDash:[4,4], fill:false, tension:0, pointRadius:0 }
+      ]},
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ labels:{ color:'#aaa', font:{size:10}, boxWidth:12 } } },
+        scales:{
+          x:{ ticks:{ maxTicksLimit:5, font:{size:9}, color:'#666' }, grid:{display:false} },
+          y:{ ticks:{ font:{size:9}, color:'#666', callback:function(v){return 'R$'+Math.round(v/1000)+'k';} }, grid:{color:'rgba(255,255,255,0.04)'} }
+        }
+      }
+    });
+  }
+
+  function showDcaLoading(v){ document.getElementById('dca-loading').style.display = v ? 'flex' : 'none'; document.getElementById('dca-btn-simulate').disabled = v; }
+  function showDcaResults(v){ document.getElementById('dca-results').style.display = v ? 'block' : 'none'; }
+  function showDcaError(msg){ var el = document.getElementById('dca-error'); el.textContent = msg; el.style.display = 'block'; }
+  function hideDcaError(){ document.getElementById('dca-error').style.display = 'none'; }
+})();
+</script>
+
+</div>
+<!-- FIM COLUNA DIREITA -->
+
+</div>
+<!-- FIM fi-dca-row -->
+
+<!-- Estilo do layout lado a lado -->
+<style>
+.fi-dca-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  align-items: start;
+  margin-top: 1.5rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.fi-col-left, .fi-col-right {
+  min-width: 0;
+}
+@media (max-width: 900px) {
+  .fi-dca-row {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="nfe">
+  <div class="section-inner">
+    <div class="section-tag" style="color:#F97316;">Critérios de Atendimento</div>
+    <h2 class="section-title">Trabalhamos com foco exclusivo.<br>Saiba se somos para você.</h2>
+    <div class="nfe-grid">
+      <div class="nfe-col yes">
+        <h4>✓ Apoiamos quem...</h4>
+        <ul>
+          <li>Deseja profundidade no entendimento do Bitcoin</li>
+          <li>Busca autonomia e posse sem intermediários financeiros</li>
+          <li>Pretende blindar o patrimônio familiar com protocolos de elite</li>
+          <li>Deseja iniciar no caminho certo, evitando erros comuns</li>
+          <li>Precisa de uma revisão técnica em estruturas já existentes</li>
+        </ul>
+      </div>
+      <div class="nfe-col no">
+        <h4>✗ Não apoiamos quem...</h4>
+        <ul>
+          <li>Busca enriquecimento rápido através de apostas</li>
+          <li>Procura recomendações de "altcoins" ou moedas secundárias</li>
+          <li>Não tem disposição para aprender os fundamentos básicos</li>
+          <li>Deseja que terceiros guardem seus ativos</li>
+          <li>Busca apenas uma plataforma de compra e venda</li>
+          <li>Subestima os riscos de segurança cibernética</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="consultoria">
+  <div class="section-inner">
+    <div class="form-wrap">
+      <div class="form-info">
+        <div class="section-tag">Contato Direto</div>
+        <h2>Inicie sua consultoria privada</h2>
+        <p>Complete os campos abaixo e nosso time técnico responderá em até 24 horas para analisar suas necessidades e propor a melhor solução.</p>
+        <p>Prezamos pelo atendimento ético — sem scripts de venda, sem pressão e com total sigilo.</p>
+        <div class="form-promise">
+          <div class="form-promise-item">Diagnóstico inicial sem custos ou obrigações</div>
+          <div class="form-promise-item">Conexão direta com especialistas em Rede Bitcoin</div>
+          <div class="form-promise-item">Processos documentados e práticos</div>
+          <div class="form-promise-item">Privacidade absoluta dos seus dados pessoais</div>
+          <div class="form-promise-item">Canal oficial: bitcoiniciantes@proton.me</div>
+        </div>
+      </div>
+
+      <div>
+        <form id="consultForm" novalidate>
+          <h3>🔒 Solicitar Atendimento</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nome">Nome Completo *</label>
+              <input type="text" id="nome" name="nome" placeholder="Como podemos chamá-lo?" required/>
+            </div>
+            <div class="form-group">
+              <label for="email">E-mail para Contato *</label>
+              <input type="email" id="email" name="email" placeholder="seu@email.com" required/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="whatsapp">Telefone / WhatsApp</label>
+              <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000"/>
+            </div>
+            <div class="form-group">
+              <label for="cidade">Região (Cidade/UF)</label>
+              <input type="text" id="cidade" name="cidade" placeholder="Ex: Curitiba, PR"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="servico">Área de interesse principal *</label>
+            <select id="servico" name="servico" required>
+              <option value="" disabled selected>Escolha uma opção</option>
+              <option>Primeiros Passos com Bitcoin</option>
+              <option>Uso de Hardware Wallets</option>
+              <option>Protocolos de Segurança Avançada</option>
+              <option>Planejamento Sucessório</option>
+              <option>Revisão de Configuração Atual</option>
+              <option>Treinamento e Teoria Técnica</option>
+              <option>Outros Assuntos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="nivel">Nível de fluência no assunto</label>
+            <select id="nivel" name="nivel">
+              <option value="" disabled selected>Escolha seu nível</option>
+              <option>Nenhum — desejo aprender do zero</option>
+              <option>Básico — já entendo os conceitos gerais</option>
+              <option>Intermediário — possuo ativos em corretoras</option>
+              <option>Avançado — já utilizo custódia própria</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="mensagem">Descreva seus objetivos ou necessidades *</label>
+            <textarea id="mensagem" name="mensagem" placeholder="Fale um pouco sobre o que você busca resolver ou aprender..." required></textarea>
+          </div>
+          <button type="submit" class="form-submit">Enviar para Análise Técnica →</button>
+          <p class="form-note">📧 Sua mensagem será enviada com sigilo para bitcoiniciantes@proton.me</p>
+        </form>
+        <div class="form-success" id="formSuccess">
+          <div class="success-icon">✅</div>
+          <h4>Solicitação recebida!</h4>
+          <p>Nossos consultores analisarão seus dados em <strong>bitcoiniciantes@proton.me</strong> e entrarão em contato em breve. Agradecemos sua confiança!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="section-inner" style="max-width:1200px;">
+    <div class="faq-mural-row">
+
+      <!-- COLUNA ESQUERDA: FAQ -->
+      <div class="faq-col-left">
+        <div class="section-tag">Centro de Dúvidas</div>
+        <h2 class="section-title">Esclarecimentos frequentes</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-q">A BITCOIN INICIANTES realiza a custódia das moedas?</button>
+            <div class="faq-a">De forma alguma. Nosso objetivo é o inverso: treinamos você para ser o único guardião do seu capital, eliminando qualquer dependência de empresas ou terceiros.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Há um valor mínimo investido para ser cliente?</button>
+            <div class="faq-a">Não operamos com base em montantes. Nosso foco é a seriedade do seu projeto de proteção patrimonial, independentemente do volume financeiro envolvido.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Vocês oferecem consultoria para outras criptomoedas?</button>
+            <div class="faq-a">Não. Somos especialistas 100% focados em Bitcoin. Não trabalhamos com ativos especulativos, tokens secundários ou moedas sem fundamentos de descentralização real.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Como são realizados os atendimentos?</button>
+            <div class="faq-a">As sessões ocorrem via videochamada, permitindo suporte global com total segurança. Todo o processo é acompanhado de documentação técnica para sua futura referência.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Qual o próximo passo após o formulário?</button>
+            <div class="faq-a">Um especialista fará a triagem e entrará em contato em até um dia útil para uma conversa inicial gratuita. Se houver alinhamento, apresentaremos um plano de ação personalizado.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUNA DIREITA: Mural do Bitcoin -->
+      <div class="faq-col-right">
+        <div class="mural__wrap" id="mural-root">
+          <div class="mural__header">
+            <div class="mural__title">₿ Mural de Sentimentos</div>
+            <div class="mural__sub">Como você está se sentindo em relação ao Bitcoin hoje?</div>
+          </div>
+
+          <!-- Formulário de nova entrada -->
+          <div class="mural__form" id="mural-form">
+            <input class="mural__input" type="text" id="mural-apelido" placeholder="Seu apelido (ex: Satoshi_BR)" maxlength="30">
+            <div class="mural__mood-row">
+              <span class="mural__mood-label">Sentimento:</span>
+              <div class="mural__moods">
+                <button class="mural__mood-btn" data-mood="🚀" title="Para a lua!">🚀</button>
+                <button class="mural__mood-btn" data-mood="😎" title="Confiante">😎</button>
+                <button class="mural__mood-btn" data-mood="🧘" title="Hodlando tranquilo">🧘</button>
+                <button class="mural__mood-btn" data-mood="😰" title="Preocupado">😰</button>
+                <button class="mural__mood-btn" data-mood="🔥" title="Acumulando">🔥</button>
+                <button class="mural__mood-btn" data-mood="💎" title="Diamond hands">💎</button>
+              </div>
+            </div>
+            <textarea class="mural__textarea" id="mural-texto" placeholder="Escreva o que está sentindo sobre o Bitcoin agora..." maxlength="280" rows="3"></textarea>
+            <div class="mural__form-footer">
+              <span class="mural__char-count" id="mural-chars">0/280</span>
+              <button class="mural__btn-post" id="mural-btn-post">Publicar no Mural →</button>
+            </div>
+            <div class="mural__error" id="mural-error" style="display:none;"></div>
+          </div>
+
+          <!-- Lista de entradas -->
+          <div class="mural__feed" id="mural-feed">
+            <div class="mural__empty" id="mural-empty">Nenhuma entrada ainda. Seja o primeiro! 👆</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- fim faq-mural-row -->
+  </div>
+</section>
+
+<style>
+/* Layout FAQ + Mural */
+.faq-mural-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+.faq-col-left .faq-list { max-width: 100%; }
+@media (max-width: 900px) {
+  .faq-mural-row { grid-template-columns: 1fr; }
+}
+
+/* Mural */
+.mural__wrap { font-family: 'Instrument Sans', sans-serif; background: #111; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 22px; color: #fff; }
+.mural__wrap * { box-sizing: border-box; }
+.mural__header { margin-bottom: 18px; }
+.mural__title { font-size: 16px; font-weight: 700; color: #F7931A; margin-bottom: 3px; }
+.mural__sub { font-size: 20px; font-weight: 700; color: #fff; text-align: center; line-height: 1.3; margin-top: 8px; }
+
+/* Form */
+.mural__form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+.mural__input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; font-family: 'Instrument Sans', sans-serif; outline: none; transition: border-color .2s; }
+.mural__input:focus { border-color: #F7931A; }
+.mural__input::placeholder { color: #555; }
+.mural__mood-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.mural__mood-label { font-size: 11px; color: #888; font-weight: 500; }
+.mural__moods { display: flex; gap: 6px; flex-wrap: wrap; }
+.mural__mood-btn { background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 5px 8px; font-size: 1.2rem; cursor: pointer; transition: all .2s; }
+.mural__mood-btn:hover { border-color: #F7931A; transform: scale(1.1); }
+.mural__mood-btn.selected { border-color: #F7931A; background: rgba(247,147,26,0.15); box-shadow: 0 0 8px rgba(247,147,26,0.3); }
+.mural__textarea { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 13px; font-family: 'Instrument Sans', sans-serif; outline: none; resize: none; line-height: 1.5; transition: border-color .2s; }
+.mural__textarea:focus { border-color: #F7931A; }
+.mural__textarea::placeholder { color: #555; }
+.mural__form-footer { display: flex; justify-content: space-between; align-items: center; }
+.mural__char-count { font-size: 10px; color: #555; }
+.mural__btn-post { background: #F7931A; color: #fff; border: none; padding: 9px 18px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background .2s, transform .15s; font-family: 'Instrument Sans', sans-serif; }
+.mural__btn-post:hover { background: #e8860f; transform: translateY(-1px); }
+.mural__error { background: rgba(255,77,109,0.1); border: 1px solid rgba(255,77,109,0.2); border-radius: 6px; padding: 8px 10px; color: #ff4d6d; font-size: 11px; }
+
+/* Feed */
+.mural__feed { display: flex; flex-direction: column; gap: 10px; max-height: 420px; overflow-y: auto; padding-right: 4px; }
+.mural__feed::-webkit-scrollbar { width: 4px; }
+.mural__feed::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 2px; }
+.mural__feed::-webkit-scrollbar-thumb { background: rgba(247,147,26,0.3); border-radius: 2px; }
+.mural__empty { text-align: center; color: #555; font-size: 12px; padding: 30px 0; }
+
+/* Card de entrada */
+.mural__card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px 14px; transition: border-color .2s; }
+.mural__card:hover { border-color: rgba(247,147,26,0.2); }
+.mural__card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 8px; }
+.mural__card-left { display: flex; align-items: center; gap: 8px; }
+.mural__card-mood { font-size: 1.4rem; line-height: 1; }
+.mural__card-apelido { font-size: 13px; font-weight: 700; color: #F7931A; }
+.mural__card-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.mural__card-dateline { display: flex; align-items: center; gap: 4px; flex-wrap: nowrap; }
+.mural__card-date { font-size: 10px; color: #555; white-space: nowrap; }
+.mural__card-btc { font-size: 10px; color: #00ffae; font-family: 'DM Mono', monospace; font-weight: 600; white-space: nowrap; }
+.mural__card-texto { font-size: 12px; color: #ccc; line-height: 1.6; word-break: break-word; }
+.mural__card-actions { margin-top: 8px; display: flex; justify-content: flex-end; }
+.mural__btn-edit { background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 5px; color: #666; font-size: 10px; padding: 3px 8px; cursor: pointer; transition: all .2s; font-family: 'Instrument Sans', sans-serif; }
+.mural__btn-edit:hover { border-color: #F7931A; color: #F7931A; }
+
+/* Edit mode */
+.mural__edit-area { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid #F7931A; border-radius: 6px; padding: 8px; color: #fff; font-size: 12px; font-family: 'Instrument Sans', sans-serif; resize: none; outline: none; margin-top: 6px; }
+.mural__edit-actions { display: flex; gap: 6px; margin-top: 6px; justify-content: flex-end; }
+.mural__btn-save { background: #F7931A; color: #fff; border: none; border-radius: 5px; padding: 4px 10px; font-size: 10px; font-weight: 700; cursor: pointer; font-family: 'Instrument Sans', sans-serif; }
+.mural__btn-cancel { background: none; border: 1px solid rgba(255,255,255,0.15); color: #888; border-radius: 5px; padding: 4px 10px; font-size: 10px; cursor: pointer; font-family: 'Instrument Sans', sans-serif; }
+.mural__edit-note { font-size: 9px; color: #555; margin-top: 4px; text-align: right; font-style: italic; }
+
+/* Toggle ver mais */
+.mural__toggle-btn {
+  width: 100%;
+  margin-top: 4px;
+  background: none;
+  border: 1px solid rgba(247,147,26,0.25);
+  border-radius: 8px;
+  color: #F7931A;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px;
+  cursor: pointer;
+  font-family: 'Instrument Sans', sans-serif;
+  transition: background .2s, border-color .2s;
+  letter-spacing: 0.02em;
+}
+.mural__toggle-btn:hover {
+  background: rgba(247,147,26,0.08);
+  border-color: #F7931A;
+}
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  // Firebase config
+  var firebaseConfig = {
+    apiKey: "AIzaSyDssItjo_Ctfdlnqrf2KD5QmvH21h-sS3Y",
+    authDomain: "mural-bitcoiniciantes.firebaseapp.com",
+    databaseURL: "https://mural-bitcoiniciantes-default-rtdb.firebaseio.com",
+    projectId: "mural-bitcoiniciantes",
+    storageBucket: "mural-bitcoiniciantes.firebasestorage.app",
+    messagingSenderId: "725960603784",
+    appId: "1:725960603784:web:00b9a802e76afd593c873d"
+  };
+  firebase.initializeApp(firebaseConfig);
+  var db = firebase.database();
+  var muralRef = db.ref('mural');
+
+  var selectedMood = '';
+  var currentBtcPrice = null;
+
+  // ─── CONTROLE DE AUTORIA ───
+  // Gera um ID único por navegador/dispositivo (persiste no localStorage)
+  function getVisitorId(){
+    var id = localStorage.getItem('mural_visitor_id');
+    if(!id){
+      id = 'v_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('mural_visitor_id', id);
+    }
+    return id;
+  }
+  var VISITOR_ID = getVisitorId();
+
+  // Fetch BTC price (USD)
+  function fetchBtcPriceForMural(){
+    fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if(d && d.bitcoin) currentBtcPrice = d.bitcoin.usd; })
+      .catch(function(){});
+  }
+  fetchBtcPriceForMural();
+
+  // Mood selection
+  document.querySelectorAll('.mural__mood-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.mural__mood-btn').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      selectedMood = btn.dataset.mood;
+    });
+  });
+
+  // Char count
+  var textarea = document.getElementById('mural-texto');
+  var charCount = document.getElementById('mural-chars');
+  textarea.addEventListener('input', function(){
+    charCount.textContent = this.value.length + '/280';
+  });
+
+  // Format date
+  function formatDate(iso){
+    var d = new Date(iso);
+    return d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' })
+      + ' ' + d.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Render feed from Firebase (realtime)
+  muralRef.orderByChild('date').on('value', function(snapshot){
+    var entries = [];
+    snapshot.forEach(function(child){
+      var entry = child.val();
+      entry.firebaseKey = child.key;
+      entries.push(entry);
+    });
+    renderFeed(entries);
+  });
+
+  function renderFeed(entries){
+    var feed = document.getElementById('mural-feed');
+
+    if(!entries || entries.length === 0){
+      feed.innerHTML = '<div class="mural__empty">Nenhuma entrada ainda. Seja o primeiro! 👆</div>';
+      return;
+    }
+
+    feed.innerHTML = '';
+    var sorted = entries.slice().reverse();
+
+    sorted.forEach(function(entry, index){
+      var card = buildCard(entry);
+      if(index > 0){
+        card.classList.add('mural__card--hidden');
+        card.style.display = 'none';
+      }
+      feed.appendChild(card);
+    });
+
+    if(sorted.length > 1){
+      var toggle = document.createElement('button');
+      toggle.className = 'mural__toggle-btn';
+      toggle.id = 'mural-toggle';
+      toggle.innerHTML = '+ Ver mais ' + (sorted.length - 1) + ' comentário' + (sorted.length - 1 > 1 ? 's' : '');
+      toggle.dataset.expanded = 'false';
+      toggle.addEventListener('click', function(){
+        var hidden = feed.querySelectorAll('.mural__card--hidden');
+        var isExpanded = toggle.dataset.expanded === 'true';
+        if(!isExpanded){
+          hidden.forEach(function(c){ c.style.display = 'block'; });
+          toggle.innerHTML = '− Recolher comentários';
+          toggle.dataset.expanded = 'true';
+        } else {
+          hidden.forEach(function(c){ c.style.display = 'none'; });
+          toggle.innerHTML = '+ Ver mais ' + (sorted.length - 1) + ' comentário' + (sorted.length - 1 > 1 ? 's' : '');
+          toggle.dataset.expanded = 'false';
+        }
+      });
+      feed.appendChild(toggle);
+    }
+
+    feed.querySelectorAll('.mural__btn-edit').forEach(function(btn){
+      btn.addEventListener('click', function(){ startEdit(btn.dataset.key); });
+    });
+  }
+
+  function buildCard(entry){
+    var btcTxt = entry.btcPrice
+      ? 'USD ' + entry.btcPrice.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})
+      : '';
+
+    var card = document.createElement('div');
+    card.className = 'mural__card';
+    card.dataset.key = entry.firebaseKey;
+
+    // Só mostra botão editar se o visitante for o autor do post
+    var isOwner = (entry.authorId === VISITOR_ID);
+    var editBtn = isOwner
+      ? '<button class="mural__btn-edit" data-key="' + entry.firebaseKey + '">✏️ Editar</button>'
+      : '';
+
+    card.innerHTML = ''
+      + '<div class="mural__card-top">'
+      +   '<div class="mural__card-left">'
+      +     '<span class="mural__card-mood">' + (entry.mood || '₿') + '</span>'
+      +     '<span class="mural__card-apelido">' + escapeHtml(entry.apelido) + '</span>'
+      +   '</div>'
+      +   '<div class="mural__card-meta">'
+      +     '<div class="mural__card-dateline">'
+      +       '<span class="mural__card-date">' + formatDate(entry.date) + '</span>'
+      +       (btcTxt ? '<span class="mural__card-date" style="color:#444;">,</span><span class="mural__card-btc">' + btcTxt + '</span>' : '')
+      +     '</div>'
+      +   '</div>'
+      + '</div>'
+      + '<div class="mural__card-texto" id="texto-' + entry.firebaseKey + '">' + escapeHtml(entry.texto) + '</div>'
+      + (isOwner ? '<div class="mural__card-actions">' + editBtn + '</div>' : '');
+
+    return card;
+  }
+
+  function startEdit(key){
+    var card = document.querySelector('[data-key="' + key + '"]');
+    if(!card) return;
+    var textoEl = document.getElementById('texto-' + key);
+    var actionsEl = card.querySelector('.mural__card-actions');
+    var currentText = textoEl.textContent;
+
+    textoEl.style.display = 'none';
+    actionsEl.style.display = 'none';
+
+    var editArea = document.createElement('textarea');
+    editArea.className = 'mural__edit-area';
+    editArea.value = currentText;
+    editArea.rows = 3;
+
+    var editActions = document.createElement('div');
+    editActions.className = 'mural__edit-actions';
+    editActions.innerHTML = '<button class="mural__btn-cancel">Cancelar</button><button class="mural__btn-save">Salvar</button>';
+
+    var editNote = document.createElement('div');
+    editNote.className = 'mural__edit-note';
+    editNote.textContent = '⚠️ Entradas podem ser editadas, mas nunca apagadas.';
+
+    card.appendChild(editArea);
+    card.appendChild(editActions);
+    card.appendChild(editNote);
+
+    editActions.querySelector('.mural__btn-cancel').addEventListener('click', function(){
+      editArea.remove(); editActions.remove(); editNote.remove();
+      textoEl.style.display = ''; actionsEl.style.display = '';
+    });
+
+    editActions.querySelector('.mural__btn-save').addEventListener('click', function(){
+      var newText = editArea.value.trim();
+      if(!newText) return;
+      muralRef.child(key).update({ texto: newText, editado: true });
+    });
+  }
+
+  // Post new entry
+  document.getElementById('mural-btn-post').addEventListener('click', function(){
+    var apelido = document.getElementById('mural-apelido').value.trim();
+    var texto = document.getElementById('mural-texto').value.trim();
+    var errorEl = document.getElementById('mural-error');
+
+    errorEl.style.display = 'none';
+
+    if(!apelido){ errorEl.textContent = 'Informe seu apelido.'; errorEl.style.display = 'block'; return; }
+    if(!selectedMood){ errorEl.textContent = 'Selecione um sentimento.'; errorEl.style.display = 'block'; return; }
+    if(!texto){ errorEl.textContent = 'Escreva algo antes de publicar.'; errorEl.style.display = 'block'; return; }
+
+    muralRef.push({
+      apelido: apelido,
+      mood: selectedMood,
+      texto: texto,
+      date: new Date().toISOString(),
+      btcPrice: currentBtcPrice,
+      editado: false,
+      authorId: VISITOR_ID
+    });
+
+    // Reset form
+    document.getElementById('mural-texto').value = '';
+    document.getElementById('mural-chars').textContent = '0/280';
+    document.querySelectorAll('.mural__mood-btn').forEach(function(b){ b.classList.remove('selected'); });
+    selectedMood = '';
+  });
+
+})();
+</script>
+
+<footer>
+  <div class="footer-logo">BITCOIN <span>INICIANTES</span></div>
+  <div class="footer-divider"></div>
+  <p>
+    Assessoria especializada em Bitcoin para indivíduos soberanos<br>
+    📧 <a href="mailto:bitcoiniciantes@proton.me">bitcoiniciantes@proton.me</a><br><br>
+    © 2025 BITCOIN INICIANTES — Todos os direitos reservados.<br>
+    <small>Não somos uma corretora de valores. Não custodiamos ativos de terceiros. Não realizamos aconselhamento financeiro de investimento.</small>
+  </p>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Form submission → Formspree (envia direto para bitcoiniciantes@proton.me)
+  document.getElementById('consultForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const btn = this.querySelector('.form-submit');
+    const textoOriginal = btn.textContent;
+    btn.textContent = 'Processando…';
+    btn.disabled = true;
+
+    const data = {
+      nome:     document.getElementById('nome').value,
+      email:    document.getElementById('email').value,
+      whatsapp: document.getElementById('whatsapp').value || 'não informado',
+      cidade:   document.getElementById('cidade').value   || 'não informado',
+      servico:  document.getElementById('servico').value,
+      nivel:    document.getElementById('nivel').value    || 'não informado',
+      mensagem: document.getElementById('mensagem').value,
+      _subject: '[BITCOIN INICIANTES] Nova Consulta – ' + document.getElementById('nome').value,
+      _replyto: document.getElementById('email').value,
+    };
+
+    try {
+      const FORMSPREE_ID = 'xaqvwpak'; 
+
+      const res = await fetch('https://formspree.io/f/' + FORMSPREE_ID, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        document.getElementById('consultForm').style.display = 'none';
+        document.getElementById('formSuccess').style.display = 'block';
+      } else {
+        const json = await res.json();
+        const erros = json.errors ? json.errors.map(function(e){ return e.message; }).join(', ') : 'Tente novamente.';
+        alert('Falha ao enviar: ' + erros);
+        btn.textContent = textoOriginal;
+        btn.disabled = false;
+      }
+    } catch (err) {
+      alert('Problema de conexão. Verifique seu sinal e tente novamente.');
+      btn.textContent = textoOriginal;
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
