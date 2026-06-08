@@ -164,6 +164,11 @@
 .fng-hist-period { font-size: 0.85rem; color: #444; font-weight: 500; line-height: 1.3; margin-bottom: 2px; }
 .fng-hist-sent { font-size: 0.75rem; font-weight: 700; }
 .fng-badge-circle { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 800; color: white; flex-shrink: 0; }
+@media (max-width: 600px) {
+  .fng-outer { grid-template-columns: 1fr; }
+  .fng-left { border-right: none; border-bottom: 1px solid #dde1e7; padding: 1.4rem 1.2rem 1.2rem; }
+  .fng-right { padding: 1.4rem 1.2rem 1.2rem; }
+}
 
 /* =====================================================================
    3. MEMPOOL FEES
@@ -189,7 +194,18 @@
 .mempool-footer-text { font-size: 0.6rem; color: #999999; font-weight: 500; }
 .mempool-footer a { color: #F7931A; text-decoration: none; font-size: 0.6rem; font-weight: 600; }
 .mempool-footer a:hover { text-decoration: underline; }
-@media (max-width: 500px) { .mempool-fee-val { font-size: 1.05rem; } }
+@media (max-width: 600px) {
+  /* 2x2 para evitar que valores fracionados (0.2, 0.7) cortem */
+  .mempool-fees { grid-template-columns: repeat(2, 1fr); }
+  .mempool-fee-col { border-right: 1px solid #e8e8e8 !important; border-bottom: 1px solid #e8e8e8; }
+  .mempool-fee-col:nth-child(2n) { border-right: none !important; }
+  .mempool-fee-col:nth-child(n+3) { border-bottom: none; }
+  .mempool-fee-val { font-size: 1.35rem; }
+}
+@media (max-width: 380px) {
+  .mempool-fee-val { font-size: 1.15rem; }
+  .mempool-fee-label { font-size: 0.62rem; }
+}
 
 /* =====================================================================
    4. SIMULADOR INDEPENDÊNCIA FINANCEIRA (SIF)

@@ -13,6 +13,7 @@ window.BI_CONFIG = {
     binanceKlinesBase: 'https://api.binance.com/api/v3/klines',
     binanceTicker24h: 'https://api.binance.com/api/v3/ticker/24hr',
     mempoolFees: 'https://mempool.space/api/v1/fees/recommended',
+    mempoolBlocks: 'https://mempool.space/api/v1/fees/mempool-blocks',
     mempoolPrices: 'https://mempool.space/api/v1/prices',
     fearGreed: 'https://api.alternative.me/fng/?limit=31&format=json',
     coingeckoSimple: 'https://api.coingecko.com/api/v3/simple/price',
