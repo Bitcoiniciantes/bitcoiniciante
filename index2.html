@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BITCOIN INICIANTES – Assessoria Técnica em Bitcoin para Indivíduos.</title>
+  <meta name="description" content="Assessoria técnica especializada em Bitcoin para indivíduos: custódia própria, segurança avançada, planejamento sucessório e educação. Sem custódia de terceiros." />
+
+  <!-- Preconnect para acelerar fontes e APIs críticas -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://api.binance.com" />
+
+  <!-- Fontes (Instrument Sans + DM Mono, usadas pelos widgets) -->
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/widgets.css" />
+</head>
+
+<body>
+
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">&#8383;</div>
+    BITCOIN&nbsp;<span>INICIANTES</span>
+  </a>
+  <button class="menu-toggle" id="mobile-menu" aria-label="Abrir menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <ul id="nav-list">
+    <li><a href="#sobre">Nossa Abordagem</a></li>
+    <li><a href="#servicos">Soluções</a></li>
+    <li><a href="#Independenciafinanceira">Independência Financeira</a></li>
+    <li><a href="#projecoes">Projeções BTC</a></li>
+    <li><a href="#faq">Dúvidas</a></li>
+    <li><a href="#consultoria" class="nav-cta">Agendar Consultoria</a></li>
+  </ul>
+</nav>
+
+<div style="max-width:1100px;margin:0 auto;">
+  <header class="hero">
+    <div class="hero-text">
+      <span class="hero-badge">Apoio Técnico em Bitcoin para o Investidor Individual</span>
+      <h1>Blindagem patrimonial com <em>Bitcoin soberano</em></h1>
+      <p>A BITCOIN INICIANTES orienta você do primeiro contato até a posse definitiva, priorizando a segurança e a autonomia total sobre seus bens.</p>
+      <div class="hero-btns">
+        <a href="#consultoria" class="btn-primary">Solicitar Avaliação Cortesia</a>
+        <a href="#servicos" class="btn-outline">Ver Diferenciais</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <!-- Widget Cotação BTC/USD em Tempo Real -->
+      <div class="btc-ultra-card" id="btcTickerCard">
+        <div class="btc-bg-glow btc-glow-1"></div>
+        <div class="btc-bg-glow btc-glow-2"></div>
+
+        <div class="btc-top">
+          <div class="btc-coin">
+            <div class="btc-icon-wrap"><div class="btc-icon">&#8383;</div></div>
+            <div>
+              <div class="btc-name">Bitcoin Iniciantes</div>
+              <div class="btc-pair">BTC / USD</div>
+            </div>
+          </div>
+          <div class="btc-status">
+            <span class="btc-live-dot" id="btcDot"></span>
+            <span class="btc-status-text" id="btcStatusTxt">AO VIVO</span>
+          </div>
+        </div>
+
+        <div class="btc-price-area">
+          <div class="btc-price" id="btcPrice">$ —</div>
+          <div class="btc-change-badge" id="btcChange24h">—</div>
+        </div>
+
+        <div class="btc-cols-grid">
+          <div class="btc-col-item">
+            <div class="bci-label">BTC / BRL</div>
+            <div class="bci-price" id="btcPriceBrl"> —</div>
+            <div class="bci-change" id="btcChangeBrl">—</div>
+          </div>
+          <div class="btc-col-divider"></div>
+          <div class="btc-col-item">
+            <div class="bci-label">MSTR</div>
+            <div class="bci-price" id="btcPriceMstr">$ —</div>
+            <div class="bci-change" id="mstrChange">—</div>
+          </div>
+          <div class="btc-col-divider"></div>
+          <div class="btc-col-item">
+            <div class="bci-label">USD / BRL</div>
+            <div class="bci-price" id="btcPriceUsdBrl"> —</div>
+            <div class="bci-change" id="usdChange">—</div>
+          </div>
+        </div>
+
+        <div class="btc-chart-box">
+          <canvas id="btcMiniChart" height="72"></canvas>
+        </div>
+
+        <div class="btc-footer">
+          <div class="btc-footer-left">
+            <span class="btc-pulse"></span>
+            <span>LIVE STREAM</span>
+          </div>
+          <div class="btc-footer-right">TIMEFRAME • 1H</div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-value">Especialistas</div>
+          <div class="stat-label">Dedicados exclusivamente à Rede Bitcoin</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Direto</div>
+          <div class="stat-label">Sem custodiantes entre você e seu capital</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">Posse Soberana</div>
+        <div class="stat-label">O controle é seu. Chaves privadas sob sua gestão.</div>
+      </div>
+    </div>
+  </header>
+</div>
+
+<section class="about" id="sobre">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div>
+        <div class="section-tag">Quem Somos</div>
+        <h2 class="section-title">Não operamos como corretora.<br>Atuamos como sua assessoria privada.</h2>
+        <p class="section-sub">Capacitamos indivíduos a compreender, adquirir e armazenar Bitcoin com métodos rigorosos de segurança — sem dependência de plataformas ou promessas vazias.</p>
+        <ul class="about-list">
+          <li>Foco integral no ecossistema Bitcoin e tecnologia Blockchain</li>
+          <li>Execução técnica de custódia própria (Hardware Wallets e Multisig)</li>
+          <li>Estratégias de sucessão familiar e proteção de longo prazo</li>
+          <li>Educação técnica: da teoria monetária à prática operacional</li>
+          <li>Suporte individualizado — focado no seu perfil e privacidade</li>
+        </ul>
+      </div>
+
+      <!-- COLUNA DIREITA: WIDGETS -->
+      <div>
+        <!-- FEAR & GREED INDEX -->
+        <div class="fng-outer" id="fng-root">
+          <div class="fng-left">
+            <div class="fng-left-header">
+              <div class="fng-logo-icon">&#8383;</div>
+              <span class="fng-left-title">Fear &amp; Greed Index</span>
+            </div>
+            <div class="fng-left-sub">Análise Multifatorial do Sentimento do Mercado Cripto</div>
+            <div class="fng-divider"></div>
+            <div class="fng-now-label">Agora:</div>
+            <div class="fng-now-sentiment" id="fng-now-sent">—</div>
+            <div class="fng-gauge-wrap">
+              <svg class="fng-svg" viewBox="0 0 280 155" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="fng-grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#C62828"/>
+                    <stop offset="25%" stop-color="#E65100"/>
+                    <stop offset="48%" stop-color="#F9A825"/>
+                    <stop offset="72%" stop-color="#7CB342"/>
+                    <stop offset="100%" stop-color="#2E7D32"/>
+                  </linearGradient>
+                </defs>
+                <!-- Arco colorido (gradiente) -->
+                <path d="M 24 140 A 116 116 0 0 1 256 140" fill="none" stroke="url(#fng-grad2)" stroke-width="22" stroke-linecap="round"/>
+                <!-- Marcadores internos (7 pontos como relógio, distribuídos uniformemente) -->
+                <circle cx="48" cy="115" r="2.8" fill="#444"/>
+                <circle cx="67" cy="79" r="2.8" fill="#444"/>
+                <circle cx="100" cy="54" r="2.8" fill="#444"/>
+                <circle cx="140" cy="45" r="2.8" fill="#444"/>
+                <circle cx="180" cy="54" r="2.8" fill="#444"/>
+                <circle cx="213" cy="79" r="2.8" fill="#444"/>
+                <circle cx="232" cy="115" r="2.8" fill="#444"/>
+                <!-- Sombra em cone atrás do ponteiro -->
+                <path id="fng-needle-shadow" d="M 140 140 L 42 108 L 38 120 Z" fill="rgba(198,40,40,0.13)"/>
+                <!-- Linha do ponteiro (agulha muito fina, quase invisível) -->
+                <line id="fng-needle" x1="140" y1="140" x2="30" y2="140" stroke="#bbb" stroke-width="1.2" stroke-linecap="round"/>
+                <!-- Indicador circular na ponta do ponteiro -->
+                <circle id="fng-needle-tip" cx="30" cy="140" r="7" fill="#fff" stroke="#aaa" stroke-width="1.5"/>
+                <circle id="fng-needle-dot" cx="30" cy="140" r="3" fill="#C62828"/>
+                <!-- Score grande no centro -->
+                <text id="fng-arc-score" x="140" y="100" text-anchor="middle" font-family="var(--font-body)" font-size="40" font-weight="800" fill="#C62828" style="transition:fill 0.5s;">—</text>
+                <!-- Label do sentimento -->
+                <text id="fng-arc-label" x="140" y="122" text-anchor="middle" font-family="var(--font-body)" font-size="14" font-weight="600" fill="#C62828" style="transition:fill 0.5s;">—</text>
+              </svg>
+            </div>
+            <div class="fng-left-footer">
+              <span class="fng-dot" id="fng-dot"></span>
+              <span id="fng-updated">alternative.me</span>
+            </div>
+          </div>
+          <div class="fng-right">
+            <div class="fng-right-title">Valores Históricos</div>
+            <div class="fng-hist-item">
+              <div><div class="fng-hist-period">Agora</div><div class="fng-hist-sent" id="fng-h-now-sent">—</div></div>
+              <div class="fng-badge-circle" id="fng-h-now-badge">—</div>
+            </div>
+            <div class="fng-hist-item">
+              <div><div class="fng-hist-period">Ontem</div><div class="fng-hist-sent" id="fng-h-prev-sent">—</div></div>
+              <div class="fng-badge-circle" id="fng-h-prev-badge">—</div>
+            </div>
+            <div class="fng-hist-item">
+              <div><div class="fng-hist-period">Semana passada</div><div class="fng-hist-sent" id="fng-h-week-sent">—</div></div>
+              <div class="fng-badge-circle" id="fng-h-week-badge">—</div>
+            </div>
+            <div class="fng-hist-item">
+              <div><div class="fng-hist-period">Mês passado</div><div class="fng-hist-sent" id="fng-h-month-sent">—</div></div>
+              <div class="fng-badge-circle" id="fng-h-month-badge">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MEMPOOL FEES -->
+        <div class="mempool-widget" id="mempool-root">
+          <div class="mempool-header">
+            <div class="mempool-header-icon">&#8383;</div>
+            <span class="mempool-header-title">Taxa-transação-blockchain</span>
+            <span class="mempool-live-dot"></span>
+          </div>
+          <div class="mempool-fees">
+            <div class="mempool-fee-col active">
+              <div class="mempool-fee-label">Sem Prioridade</div>
+              <div class="mempool-fee-val" id="mfee-none-val">—</div>
+              <div class="mempool-fee-unit">sat/vB</div>
+              <div class="mempool-fee-usd" id="mfee-none-usd">US$ —</div>
+            </div>
+            <div class="mempool-fee-col">
+              <div class="mempool-fee-label">Prioridade Baixa</div>
+              <div class="mempool-fee-val" id="mfee-low-val">—</div>
+              <div class="mempool-fee-unit">sat/vB</div>
+              <div class="mempool-fee-usd" id="mfee-low-usd">US$ —</div>
+            </div>
+            <div class="mempool-fee-col">
+              <div class="mempool-fee-label">Prioridade Média</div>
+              <div class="mempool-fee-val" id="mfee-med-val">—</div>
+              <div class="mempool-fee-unit">sat/vB</div>
+              <div class="mempool-fee-usd" id="mfee-med-usd">US$ —</div>
+            </div>
+            <div class="mempool-fee-col">
+              <div class="mempool-fee-label">Prioridade Alta</div>
+              <div class="mempool-fee-val" id="mfee-high-val">—</div>
+              <div class="mempool-fee-unit">sat/vB</div>
+              <div class="mempool-fee-usd" id="mfee-high-usd">US$ —</div>
+            </div>
+          </div>
+          <div class="mempool-footer">
+            <span class="mempool-footer-text">Fonte: <a href="https://mempool.space/pt/" target="_blank" rel="noopener">mempool.space</a> · Atualizado a cada 30s</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="servicos">
+  <div class="section-inner">
+    <div class="section-tag">O que entregamos</div>
+    <h2 class="section-title">Serviços de alto nível<br>para sua jornada Bitcoin</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🛡️</div>
+        <h3>Custódia Própria Segura</h3>
+        <p>Configuração de Hardware Wallets e esquemas Multisig para que você seja o único guardião das suas chaves.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔑</div>
+        <h3>Planejamento Sucessório</h3>
+        <p>Estruturas para que seu patrimônio em Bitcoin seja transmitido com segurança aos seus herdeiros.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🚀</div>
+        <h3>Primeiros Passos</h3>
+        <p>Acompanhamento do zero: da primeira compra à retirada para custódia própria, com total segurança.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">⚡</div>
+        <h3>Uso da Lightning Network</h3>
+        <p>Descubra como realizar pagamentos instantâneos e com taxas mínimas utilizando a segunda camada do Bitcoin.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📚</div>
+        <h3>Imersão Educacional</h3>
+        <p>Entenda o Bitcoin de verdade. Sem ruído de mercado, focamos na robustez tecnológica e fundamentos econômicos.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔍</div>
+        <h3>Auditoria de Segurança</h3>
+        <p>Analisamos sua configuração atual para identificar vulnerabilidades e otimizar seus métodos de armazenamento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how">
+  <div class="section-inner">
+    <div class="section-tag">Metodologia</div>
+    <h2 class="section-title">Processo ágil, seguro e transparente</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h4>Cadastro de Interesse</h4>
+        <p>Conte-nos brevemente sobre sua situação atual e quais são suas metas.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h4>Análise Cortesia</h4>
+        <p>Nossos especialistas avaliam seu caso e propõem a estratégia mais eficiente.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h4>Execução Assistida</h4>
+        <p>Realizamos as configurações em conjunto, respeitando seu ritmo e privacidade.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h4>Independência Total</h4>
+        <p>Você finaliza o processo com documentação, backups e total confiança operacional.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="Independenciafinanceira">
+  <div class="section-inner" style="max-width:1200px;">
+    <div class="section-tag">Independência Financeira</div>
+
+    <div class="fi-dca-row">
+      <!-- COLUNA ESQUERDA: Simulador de Independência Financeira -->
+      <div class="fi-col-left">
+        <div class="sif__wrap" id="sif-root">
+          <div class="sif__header">
+            <div class="sif__title">Simulador de Independência Financeira</div>
+            <div class="sif__metrics">
+              <div class="sif__metric-item">
+                <span class="sif__metric-label">Juro Real Anual</span>
+                <span class="sif__metric-value" id="sif-juro-anual">—</span>
+              </div>
+              <div class="sif__metric-item">
+                <span class="sif__metric-label">Custo Líquido</span>
+                <span class="sif__metric-value" id="sif-custo-liq">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sif__gauge-section">
+            <div class="sif__gauge-container">
+              <svg class="sif__gauge-svg" viewBox="0 0 240 130">
+                <path d="M 24 124 A 96 96 0 0 1 216 124" fill="none" stroke="#dde0e8" stroke-width="22" stroke-linecap="round"/>
+                <path id="sif-gauge-arc" d="M 24 124 A 96 96 0 0 1 216 124" fill="none" stroke="#1565c0" stroke-width="22" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="301.6" style="transition: stroke-dashoffset 0.7s;"/>
+              </svg>
+              <div class="sif__gauge-badge" id="sif-fator-badge">SEGURANÇA: —</div>
+            </div>
+            <div class="sif__gauge-label">Patrimônio Alvo Recomendado</div>
+            <div class="sif__gauge-value" id="sif-patrimonio">—</div>
+            <div class="sif__progress-container">
+              <div class="sif__progress-texts">
+                <span>Progresso: <strong id="sif-prog-pct" style="color: #2e7d32;">0%</strong></span>
+                <span id="sif-gap-txt">Falta Acumular: 0</span>
+              </div>
+              <div class="sif__progress-bar">
+                <div class="sif__progress-fill" id="sif-prog-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sif__chart-section">
+            <div class="sif__chart-row">
+              <span class="sif__bar-label">Custo de Vida</span>
+              <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-desp" id="sif-bar-desp"><span>R$</span></div></div>
+            </div>
+            <div class="sif__chart-row">
+              <span class="sif__bar-label">Renda Extra (Ativa)</span>
+              <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-renda" id="sif-bar-renda"><span>R$</span></div></div>
+            </div>
+            <div class="sif__chart-row">
+              <span class="sif__bar-label">Sua Renda Passiva</span>
+              <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-passiva" id="sif-bar-passiva"><span>R$</span></div></div>
+            </div>
+            <div class="sif__chart-row">
+              <span class="sif__bar-label">Juros (Alvo Faltante)</span>
+              <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-juros" id="sif-bar-juros"><span>R$</span></div></div>
+            </div>
+            <div class="sif__chart-axis" id="sif-axis"></div>
+          </div>
+
+          <div class="sif__controls">
+            <div class="sif__control-row sif__full">
+              <div class="sif__ctrl-top"><span class="sif__ctrl-label">Patrimônio Atual (R$)</span><span class="sif__ctrl-val" id="sif-val-pat-atual">0</span></div>
+              <input class="sif__slider" type="range" id="sif-pat-atual" min="0" max="2000000" step="5000" value="50000">
+            </div>
+            <div class="sif__control-row">
+              <div class="sif__ctrl-top"><span class="sif__ctrl-label">Selic Nominal (%)</span><span class="sif__ctrl-val" id="sif-val-selic">14</span></div>
+              <input class="sif__slider" type="range" id="sif-selic" min="5" max="25" step="0.5" value="14">
+            </div>
+            <div class="sif__control-row">
+              <div class="sif__ctrl-top"><span class="sif__ctrl-label">Inflação IPCA (%)</span><span class="sif__ctrl-val" id="sif-val-ipca">4,5</span></div>
+              <input class="sif__slider" type="range" id="sif-ipca" min="1" max="15" step="0.5" value="4.5">
+            </div>
+            <div class="sif__control-row">
+              <div class="sif__ctrl-top"><span class="sif__ctrl-label">Dependentes</span><span class="sif__ctrl-val" id="sif-val-dep">2</span></div>
+              <input class="sif__slider" type="range" id="sif-dep" min="0" max="10" step="1" value="2">
+            </div>
+            <div class="sif__control-row">
+              <div class="sif__ctrl-top"><span class="sif__ctrl-label">Despesas (R$)</span><span class="sif__ctrl-val" id="sif-val-desp">9.000</span></div>
+              <input class="sif__slider" type="range" id="sif-desp" min="1000" max="50000" step="500" value="9000">
+            </div>
+            <div class="sif__control-row sif__full">
+              <div class="sif__ctrl-top"><span class="sif__ctrl-label">Receitas Extras (R$)</span><span class="sif__ctrl-val" id="sif-val-rec">7.000</span></div>
+              <input class="sif__slider" type="range" id="sif-rec" min="0" max="30000" step="500" value="7000">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUNA DIREITA: Simulador DCA -->
+      <div class="fi-col-right">
+        <div class="dca__wrap" id="dca-root">
+          <div class="dca__ticker">
+            <div class="dca__ticker-left">
+              <span class="dca__ticker-icon">&#8383;</span>
+              <span class="dca__ticker-name">Bitcoin</span>
+            </div>
+            <div class="dca__ticker-right">
+              <span class="dca__ticker-price-usd" id="dca-btc-price-usd">$ —</span>
+              <span class="dca__ticker-price" id="dca-btc-price">R$ —</span>
+              <span class="dca__ticker-change" id="dca-btc-change">—</span>
+            </div>
+          </div>
+
+          <div class="dca__header">
+            <div class="dca__title">📊 Simulador DCA em Bitcoin</div>
+            <div class="dca__sub">Se eu tivesse investido todo mês, quanto teria hoje?</div>
+          </div>
+
+          <div class="dca__controls">
+            <div class="dca__control-row">
+              <div class="dca__ctrl-top"><span class="dca__ctrl-label">Investimento Mensal (R$)</span><span class="dca__ctrl-val" id="dca-val-monthly">1.000</span></div>
+              <input class="dca__slider" type="range" id="dca-monthly" min="100" max="10000" step="100" value="1000">
+            </div>
+            <div class="dca__row-2col">
+              <div class="dca__control-row">
+                <div class="dca__ctrl-top"><span class="dca__ctrl-label">De</span></div>
+                <input class="dca__input" type="month" id="dca-start" value="2026-01">
+              </div>
+              <div class="dca__control-row">
+                <div class="dca__ctrl-top"><span class="dca__ctrl-label">Até</span></div>
+                <input class="dca__input" type="month" id="dca-end">
+              </div>
+            </div>
+            <button class="dca__btn" id="dca-btn-simulate">Simular →</button>
+          </div>
+
+          <div class="dca__loading" id="dca-loading" style="display:none;">
+            <div class="dca__spinner"></div>
+            <span>Buscando dados...</span>
+          </div>
+
+          <div class="dca__results" id="dca-results" style="display:none;">
+            <div class="dca__results-title" id="dca-results-title">Resultado — DCA em Bitcoin</div>
+            <div class="dca__result-grid" id="dca-result-grid"></div>
+            <div class="dca__chart-box">
+              <canvas id="dca-mini-chart" height="140"></canvas>
+            </div>
+          </div>
+
+          <div class="dca__error" id="dca-error" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="nfe">
+  <div class="section-inner">
+    <div class="section-tag" style="color:#F97316;">Critérios de Atendimento</div>
+    <h2 class="section-title">Trabalhamos com foco exclusivo.<br>Saiba se somos para você.</h2>
+    <div class="nfe-grid">
+      <div class="nfe-col yes">
+        <h4>✓ Apoiamos quem...</h4>
+        <ul>
+          <li>Deseja profundidade no entendimento do Bitcoin</li>
+          <li>Busca autonomia e posse sem intermediários financeiros</li>
+          <li>Pretende blindar o patrimônio familiar com protocolos de elite</li>
+          <li>Deseja iniciar no caminho certo, evitando erros comuns</li>
+          <li>Precisa de uma revisão técnica em estruturas já existentes</li>
+        </ul>
+      </div>
+      <div class="nfe-col no">
+        <h4>✗ Não apoiamos quem...</h4>
+        <ul>
+          <li>Busca enriquecimento rápido através de apostas</li>
+          <li>Procura recomendações de "altcoins" ou moedas secundárias</li>
+          <li>Não tem disposição para aprender os fundamentos básicos</li>
+          <li>Deseja que terceiros guardem seus ativos</li>
+          <li>Busca apenas uma plataforma de compra e venda</li>
+          <li>Subestima os riscos de segurança cibernética</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="consultoria">
+  <div class="section-inner">
+    <div class="form-wrap">
+      <div class="form-info">
+        <div class="section-tag">Contato Direto</div>
+        <h2>Inicie sua consultoria privada</h2>
+        <p>Complete os campos abaixo e nosso time técnico responderá em até 24 horas para analisar suas necessidades e propor a melhor solução.</p>
+        <p>Prezamos pelo atendimento ético — sem scripts de venda, sem pressão e com total sigilo.</p>
+        <div class="form-promise">
+          <div class="form-promise-item">Diagnóstico inicial sem custos ou obrigações</div>
+          <div class="form-promise-item">Conexão direta com especialistas em Rede Bitcoin</div>
+          <div class="form-promise-item">Processos documentados e práticos</div>
+          <div class="form-promise-item">Privacidade absoluta dos seus dados pessoais</div>
+          <div class="form-promise-item">Canal oficial: bitcoiniciantes@proton.me</div>
+        </div>
+      </div>
+
+      <div>
+        <form id="consultForm" novalidate>
+          <h3>🔒 Solicitar Atendimento</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nome">Nome Completo *</label>
+              <input type="text" id="nome" name="nome" placeholder="Como podemos chamá-lo?" required/>
+            </div>
+            <div class="form-group">
+              <label for="email">E-mail para Contato *</label>
+              <input type="email" id="email" name="email" placeholder="seu@email.com" required/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="whatsapp">Telefone / WhatsApp</label>
+              <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000"/>
+            </div>
+            <div class="form-group">
+              <label for="cidade">Região (Cidade/UF)</label>
+              <input type="text" id="cidade" name="cidade" placeholder="Ex: Curitiba, PR"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="servico">Área de interesse principal *</label>
+            <select id="servico" name="servico" required>
+              <option value="" disabled selected>Escolha uma opção</option>
+              <option>Primeiros Passos com Bitcoin</option>
+              <option>Uso de Hardware Wallets</option>
+              <option>Protocolos de Segurança Avançada</option>
+              <option>Planejamento Sucessório</option>
+              <option>Revisão de Configuração Atual</option>
+              <option>Treinamento e Teoria Técnica</option>
+              <option>Outros Assuntos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="nivel">Nível de fluência no assunto</label>
+            <select id="nivel" name="nivel">
+              <option value="" disabled selected>Escolha seu nível</option>
+              <option>Nenhum — desejo aprender do zero</option>
+              <option>Básico — já entendo os conceitos gerais</option>
+              <option>Intermediário — possuo ativos em corretoras</option>
+              <option>Avançado — já utilizo custódia própria</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="mensagem">Descreva seus objetivos ou necessidades *</label>
+            <textarea id="mensagem" name="mensagem" placeholder="Fale um pouco sobre o que você busca resolver ou aprender..." required></textarea>
+          </div>
+          <button type="submit" class="form-submit">Enviar para Análise Técnica →</button>
+          <p class="form-note">📧 Sua mensagem será enviada com sigilo para bitcoiniciantes@proton.me</p>
+          <div class="form-error-msg" id="formErrorMsg"></div>
+        </form>
+        <div class="form-success" id="formSuccess">
+          <div class="success-icon">✅</div>
+          <h4>Solicitação recebida!</h4>
+          <p>Nossos consultores analisarão seus dados em <strong>bitcoiniciantes@proton.me</strong> e entrarão em contato em breve. Agradecemos sua confiança!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="section-inner" style="max-width:1200px;">
+    <div class="faq-mural-row">
+      <!-- COLUNA ESQUERDA: FAQ -->
+      <div class="faq-col-left">
+        <div class="section-tag">Centro de Dúvidas</div>
+        <h2 class="section-title">Esclarecimentos frequentes</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-q">A BITCOIN INICIANTES realiza a custódia das moedas?</button>
+            <div class="faq-a">De forma alguma. Nosso objetivo é o inverso: treinamos você para ser o único guardião do seu capital, eliminando qualquer dependência de empresas ou terceiros.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Há um valor mínimo investido para ser cliente?</button>
+            <div class="faq-a">Não operamos com base em montantes. Nosso foco é a seriedade do seu projeto de proteção patrimonial, independentemente do volume financeiro envolvido.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Vocês oferecem consultoria para outras criptomoedas?</button>
+            <div class="faq-a">Não. Somos especialistas 100% focados em Bitcoin. Não trabalhamos com ativos especulativos, tokens secundários ou moedas sem fundamentos de descentralização real.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Como são realizados os atendimentos?</button>
+            <div class="faq-a">As sessões ocorrem via videochamada, permitindo suporte global com total segurança. Todo o processo é acompanhado de documentação técnica para sua futura referência.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Qual o próximo passo após o formulário?</button>
+            <div class="faq-a">Um especialista fará a triagem e entrará em contato em até um dia útil para uma conversa inicial gratuita. Se houver alinhamento, apresentaremos um plano de ação personalizado.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUNA DIREITA: Mural do Bitcoin -->
+      <div class="faq-col-right">
+        <div class="mural__wrap" id="mural-root">
+          <div class="mural__header">
+            <div class="mural__title">&#8383; Mural de Sentimentos</div>
+            <div class="mural__sub">Como você está se sentindo em relação ao Bitcoin hoje?</div>
+          </div>
+          <div class="mural__form" id="mural-form">
+            <input class="mural__input" type="text" id="mural-apelido" placeholder="Seu apelido (ex: Satoshi_BR)" maxlength="30">
+            <div class="mural__mood-row">
+              <span class="mural__mood-label">Sentimento:</span>
+              <div class="mural__moods">
+                <button type="button" class="mural__mood-btn" data-mood="🚀" title="Para a lua!">🚀</button>
+                <button type="button" class="mural__mood-btn" data-mood="😎" title="Confiante">😎</button>
+                <button type="button" class="mural__mood-btn" data-mood="🧘" title="Hodlando tranquilo">🧘</button>
+                <button type="button" class="mural__mood-btn" data-mood="😰" title="Preocupado">😰</button>
+                <button type="button" class="mural__mood-btn" data-mood="🔥" title="Acumulando">🔥</button>
+                <button type="button" class="mural__mood-btn" data-mood="💎" title="Diamond hands">💎</button>
+              </div>
+            </div>
+            <textarea class="mural__textarea" id="mural-texto" placeholder="Escreva o que está sentindo sobre o Bitcoin agora..." maxlength="5000" rows="3"></textarea>
+            <div class="mural__form-footer">
+              <span class="mural__char-count" id="mural-chars">0/5000</span>
+              <button type="button" class="mural__btn-post" id="mural-btn-post">Publicar no Mural →</button>
+            </div>
+            <div class="mural__error" id="mural-error" style="display:none;"></div>
+          </div>
+          <div class="mural__feed" id="mural-feed">
+            <div class="mural__empty" id="mural-empty">Nenhuma entrada ainda. Seja o primeiro! 👆</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SEÇÃO: PROJEÇÕES DE PREÇO DO BITCOIN
+═══════════════════════════════════════════ -->
+<section id="projecoes" style="background:#0a0a0a; padding:60px 5%;">
+  <div class="section-inner" style="max-width:1100px;">
+
+    <div class="section-tag" style="color:#F7931A;">Análise de Mercado</div>
+    <h2 class="section-title" style="color:#fff;">Projeções de Preço do Bitcoin</h2>
+    <p style="color:#6b6b6b; font-size:1rem; margin-bottom:0.5rem; max-width:620px; line-height:1.6;">
+      O que os maiores fundos e bancos do mundo projetam — e quanto representa de retorno a partir do preço atual.
+    </p>
+
+    <!-- Barra de preço base -->
+    <div id="proj-pricebar" style="
+      display:flex; flex-wrap:wrap; align-items:center; gap:14px;
+      background:#15191f; border:1px solid #262d38; border-radius:14px;
+      padding:16px 22px; margin:24px 0 10px;">
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <label style="font-size:11px; color:#8a93a2; font-weight:600; letter-spacing:.06em; text-transform:uppercase;">Preço base BTC (US$)</label>
+        <div style="display:flex; align-items:center; gap:8px; background:#0a0a0a; border:1px solid #262d38; border-radius:10px; padding:8px 14px;">
+          <input id="proj-base-price" type="number" value="62000" min="1" step="500"
+            style="width:130px; background:transparent; border:none; color:#F7931A; font-size:20px; font-weight:800; outline:none; font-family:inherit;" />
+          <span style="font-size:12px; color:#555;">USD</span>
+        </div>
+      </div>
+      <span style="font-size:12px; color:#555; max-width:300px; line-height:1.5;">
+        Ajuste o preço atual do BTC — os retornos potenciais recalculam automaticamente.
+      </span>
+      <div id="proj-live-badge" style="margin-left:auto; display:flex; align-items:center; gap:7px;
+        background:rgba(0,255,174,.08); border:1px solid rgba(0,255,174,.2); border-radius:99px; padding:5px 13px;">
+        <span style="width:7px;height:7px;border-radius:50%;background:#00ffae;display:inline-block;animation:proj-pulse 1.4s infinite;"></span>
+        <span id="proj-live-price" style="font-size:12px; font-weight:700; color:#00ffae;">Carregando...</span>
+      </div>
+    </div>
+
+    <!-- Legenda tiers -->
+    <div style="display:flex; flex-wrap:wrap; gap:14px; margin-bottom:22px; font-size:12px; color:#555;">
+      <span style="display:inline-flex;align-items:center;gap:6px;"><i style="width:10px;height:10px;border-radius:99px;background:#16c784;display:inline-block;"></i> Conservador (até +100%)</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;"><i style="width:10px;height:10px;border-radius:99px;background:#f0b90b;display:inline-block;"></i> Base (+100% a +350%)</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;"><i style="width:10px;height:10px;border-radius:99px;background:#F7931A;display:inline-block;"></i> Moonshot (+350% ou mais)</span>
+    </div>
+
+    <!-- Grid de cards -->
+    <div id="proj-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:16px;"></div>
+
+    <!-- Disclaimer -->
+    <div style="margin-top:28px; background:rgba(234,57,67,.07); border:1px solid rgba(234,57,67,.25);
+      border-radius:12px; padding:14px 18px; font-size:12.5px; color:#f3b6ba; line-height:1.6;">
+      <strong style="color:#ff7a82;">⚠️ Aviso:</strong> Este quadro é estritamente informativo e
+      <strong style="color:#ff7a82;">não constitui recomendação de investimento</strong>. Todos os alvos
+      vêm de instituições com posição comprada no ativo. O mercado de opções precifica ~80% de chance de
+      BTC furar US$ 60 mil no curto prazo. Projeção de longo prazo é narrativa, não garantia.
+      Faça sua própria pesquisa.
+    </div>
+
+    <p style="text-align:center; color:#333; font-size:11px; margin-top:16px;">
+      Fontes: Standard Chartered, Citigroup, JPMorgan, Goldman Sachs, ARK Invest, VanEck, Bitwise, Galaxy Digital, Fidelity, TD Cowen (jun/2026).
+    </p>
+
+  </div>
+</section>
+
+<style>
+@keyframes proj-pulse {
+  0%,100%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.25);opacity:.5}
+}
+.proj-card {
+  background:#15191f; border:1px solid #262d38; border-radius:16px;
+  padding:18px; transition:transform .15s, border-color .2s; cursor:default;
+}
+.proj-card:hover { transform:translateY(-3px); border-color:#F7931A; }
+.proj-inst { font-size:15px; font-weight:700; color:#eaeef3; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.proj-horizon { font-size:11px; color:#555; text-transform:uppercase; letter-spacing:.5px; margin-top:3px; }
+.proj-target { font-size:26px; font-weight:800; color:#F7931A; margin:12px 0 2px; }
+.proj-ret { font-size:14px; font-weight:700; }
+.proj-ret.up { color:#16c784; } .proj-ret.down { color:#ea3943; }
+.proj-bar { height:7px; background:#1c222b; border-radius:99px; margin:12px 0 10px; overflow:hidden; }
+.proj-bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,#F7931A,#f0b90b); }
+.proj-note { font-size:12px; color:#555; border-top:1px solid #262d38; padding-top:10px; line-height:1.5; }
+.proj-tag { font-size:10px; font-weight:700; padding:2px 8px; border-radius:99px; text-transform:uppercase; letter-spacing:.5px; }
+.proj-tag-cons { background:rgba(22,199,132,.15); color:#16c784; }
+.proj-tag-mid  { background:rgba(240,185,11,.15);  color:#f0b90b; }
+.proj-tag-moon { background:rgba(247,147,26,.18);  color:#F7931A; }
+</style>
+
+<script>
+(function(){
+  const DATA = [
+    { inst:"Standard Chartered", target:100000, horizon:"Fim de 2026", tier:"cons",
+      note:"Cortou a meta de US$ 150k → 100k. Diz que \"o fundo está quase feito\"." },
+    { inst:"Galaxy Digital", target:130000, horizon:"Mid-2026 (topo da faixa)", tier:"mid",
+      note:"Faixa US$ 70k–130k. Admite que 2026 é \"volátil demais pra cravar\"." },
+    { inst:"Citigroup", target:143000, horizon:"12 meses (cenário base)", tier:"mid",
+      note:"Bull US$ 189k · Bear US$ 78,5k · Recessivo US$ 58k." },
+    { inst:"VanEck", target:160000, horizon:"Fim de 2026", tier:"mid",
+      note:"Baseado no par BTC/ouro voltar a 35x. Projeta US$ 2,9 milhões em 2050." },
+    { inst:"JPMorgan", target:170000, horizon:"2026", tier:"mid",
+      note:"Mantém bull case mesmo após o crash. Alvo estrutural de longo prazo: US$ 266k." },
+    { inst:"TD Cowen", target:170000, horizon:"2026", tier:"mid",
+      note:"Dentro do cluster US$ 140k–200k do consenso dos grandes bancos." },
+    { inst:"Goldman Sachs", target:200000, horizon:"2026 (topo cluster)", tier:"mid",
+      note:"Faixa US$ 140k–200k, alinhado com Citi e Standard Chartered." },
+    { inst:"Bitwise", target:224000, horizon:"Fair value (ilustrativo)", tier:"mid",
+      note:"Modelo de hedge contra default soberano. Cenário 10 anos: US$ 1 milhão." },
+    { inst:"JPMorgan (estrutural)", target:266000, horizon:"Longo prazo", tier:"mid",
+      note:"Alvo estrutural baseado em paridade de risco com o ouro global." },
+    { inst:"Galaxy Digital", target:250000, horizon:"2027", tier:"mid",
+      note:"Vê 2027 como ano mais plausível que 2026 para o topo do ciclo." },
+    { inst:"ARK Invest", target:1200000, horizon:"2030", tier:"moon",
+      note:"Cathie Wood. Tese de \"ouro digital\" + adoção institucional e soberana." },
+    { inst:"Bitwise", target:1000000, horizon:"~10 anos", tier:"moon",
+      note:"Matt Hougan: US$ 1M conforme BTC absorve parte do mercado global de ouro." },
+  ];
+
+  const tagClass = { cons:"proj-tag-cons", mid:"proj-tag-mid", moon:"proj-tag-moon" };
+  const tagTxt   = { cons:"Conservador",   mid:"Base",        moon:"Moonshot"       };
+  const maxLog   = Math.log10(1200000);
+  const fmt = n => "US$ " + n.toLocaleString("pt-BR");
+
+  function render(base){
+    base = Math.max(1, base);
+    const grid = document.getElementById("proj-grid");
+    const minLog = Math.log10(base);
+    grid.innerHTML = "";
+    DATA.slice().sort((a,b)=>a.target-b.target).forEach(d=>{
+      const ret = ((d.target-base)/base)*100;
+      const up  = ret >= 0;
+      const pct = Math.min(100,Math.max(2,((Math.log10(d.target)-minLog)/(maxLog-minLog))*100));
+      const el  = document.createElement("div");
+      el.className = "proj-card";
+      el.innerHTML = `
+        <div class="proj-inst">${d.inst}
+          <span class="proj-tag ${tagClass[d.tier]}">${tagTxt[d.tier]}</span>
+        </div>
+        <div class="proj-horizon">${d.horizon}</div>
+        <div class="proj-target">${fmt(d.target)}</div>
+        <div class="proj-ret ${up?'up':'down'}">${up?'▲ +':'▼ '}${ret.toFixed(1)}% de ${up?'upside':'downside'}</div>
+        <div class="proj-bar"><div class="proj-bar-fill" style="width:${pct}%"></div></div>
+        <div class="proj-note">${d.note}</div>`;
+      grid.appendChild(el);
+    });
+  }
+
+  const input = document.getElementById("proj-base-price");
+  input.addEventListener("input", ()=> render(Number(input.value)||62000));
+  render(62000);
+
+  // Tenta buscar preço ao vivo da Binance (mesmo endpoint já usado no site)
+  async function fetchLivePrice(){
+    try{
+      const r = await fetch("https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT");
+      const d = await r.json();
+      const p = parseFloat(d.lastPrice);
+      if(!isNaN(p)){
+        document.getElementById("proj-live-price").textContent = "AO VIVO: "+p.toLocaleString("pt-BR",{maximumFractionDigits:0})+" USD";
+        input.value = Math.round(p);
+        render(p);
+      }
+    }catch(e){
+      document.getElementById("proj-live-price").textContent = "AO VIVO: —";
+    }
+  }
+  fetchLivePrice();
+  setInterval(fetchLivePrice, 60000);
+})();
+</script>
+
+<footer>
+  <div class="footer-logo">BITCOIN <span>INICIANTES</span></div>
+  <div class="footer-divider"></div>
+  <p>
+    Assessoria especializada em Bitcoin para indivíduos soberanos<br>
+    📧 <a href="mailto:bitcoiniciantes@proton.me">bitcoiniciantes@proton.me</a><br><br>
+    © 2025 BITCOIN INICIANTES — Todos os direitos reservados.<br>
+    <small>Não somos uma corretora de valores. Não custodiamos ativos de terceiros. Não realizamos aconselhamento financeiro de investimento.</small>
+  </p>
+</footer>
+
+<!-- Google Analytics — carregado por último, sem bloquear renderização -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFP2BB2V0B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WFP2BB2V0B');
+</script>
+
+<!-- Núcleo: config + utilitários + orquestrador (widgets carregam sob demanda) -->
+<script src="assets/js/config.js"></script>
+<script src="assets/js/utils.js"></script>
+<script defer src="assets/js/main.js"></script>
+
+</body>
+</html>
