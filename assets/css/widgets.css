@@ -149,7 +149,7 @@
 .fng-now-label { font-size: 0.82rem; font-weight: 600; color: #333; margin-bottom: 3px; }
 .fng-now-sentiment { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
 .fng-gauge-wrap { position: relative; display: flex; flex-direction: column; align-items: center; flex: 1; margin-top: 0.3rem; }
-.fng-svg { width: 100%; max-width: 100%; }
+.fng-svg { width: 100%; max-width: 260px; }
 .fng-left-footer { font-size: 0.65rem; color: #aaa; margin-top: 0.8rem; display: flex; align-items: center; gap: 5px; line-height: 1.4; }
 .fng-dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
 .fng-dot.live { background: #43A047; animation: pulse-dot 2s infinite; }
