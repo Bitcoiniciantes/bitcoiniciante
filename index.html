@@ -141,6 +141,44 @@
           <li>Educação técnica: da teoria monetária à prática operacional</li>
           <li>Suporte individualizado — focado no seu perfil e privacidade</li>
         </ul>
+
+        <!-- MEMPOOL FEES — coluna esquerda -->
+        <div class="mempool-widget" id="mempool-root" style="margin-top:1.2rem;">
+          <div class="mempool-header">
+            <div class="mempool-header-icon">&#8383;</div>
+            <span class="mempool-header-title">Taxa-transação-blockchain</span>
+            <span class="mempool-live-dot"></span>
+          </div>
+          <div class="mempool-fees">
+            <div class="mempool-fee-col active">
+              <div class="mempool-fee-label">Sem Prioridade</div>
+              <div class="mempool-fee-val" id="mfee-none-val">—</div>
+              <div class="mempool-fee-unit">sat/vB</div>
+              <div class="mempool-fee-usd" id="mfee-none-usd">US$ —</div>
+            </div>
+            <div class="mempool-fee-col">
+              <div class="mempool-fee-label">Prioridade Baixa</div>
+              <div class="mempool-fee-val" id="mfee-low-val">—</div>
+              <div class="mempool-fee-unit">sat/vB</div>
+              <div class="mempool-fee-usd" id="mfee-low-usd">US$ —</div>
+            </div>
+            <div class="mempool-fee-col">
+              <div class="mempool-fee-label">Prioridade Média</div>
+              <div class="mempool-fee-val" id="mfee-med-val">—</div>
+              <div class="mempool-fee-unit">sat/vB</div>
+              <div class="mempool-fee-usd" id="mfee-med-usd">US$ —</div>
+            </div>
+            <div class="mempool-fee-col">
+              <div class="mempool-fee-label">Prioridade Alta</div>
+              <div class="mempool-fee-val" id="mfee-high-val">—</div>
+              <div class="mempool-fee-unit">sat/vB</div>
+              <div class="mempool-fee-usd" id="mfee-high-usd">US$ —</div>
+            </div>
+          </div>
+          <div class="mempool-footer">
+            <span class="mempool-footer-text">Fonte: <a href="https://mempool.space/pt/" target="_blank" rel="noopener">mempool.space</a> · Atualizado a cada 30s</span>
+          </div>
+        </div>
       </div>
 
       <!-- COLUNA DIREITA: WIDGETS -->
@@ -216,43 +254,8 @@
           </div>
         </div>
 
-        <!-- MEMPOOL FEES -->
-        <div class="mempool-widget" id="mempool-root">
-          <div class="mempool-header">
-            <div class="mempool-header-icon">&#8383;</div>
-            <span class="mempool-header-title">Taxa-transação-blockchain</span>
-            <span class="mempool-live-dot"></span>
-          </div>
-          <div class="mempool-fees">
-            <div class="mempool-fee-col active">
-              <div class="mempool-fee-label">Sem Prioridade</div>
-              <div class="mempool-fee-val" id="mfee-none-val">—</div>
-              <div class="mempool-fee-unit">sat/vB</div>
-              <div class="mempool-fee-usd" id="mfee-none-usd">US$ —</div>
-            </div>
-            <div class="mempool-fee-col">
-              <div class="mempool-fee-label">Prioridade Baixa</div>
-              <div class="mempool-fee-val" id="mfee-low-val">—</div>
-              <div class="mempool-fee-unit">sat/vB</div>
-              <div class="mempool-fee-usd" id="mfee-low-usd">US$ —</div>
-            </div>
-            <div class="mempool-fee-col">
-              <div class="mempool-fee-label">Prioridade Média</div>
-              <div class="mempool-fee-val" id="mfee-med-val">—</div>
-              <div class="mempool-fee-unit">sat/vB</div>
-              <div class="mempool-fee-usd" id="mfee-med-usd">US$ —</div>
-            </div>
-            <div class="mempool-fee-col">
-              <div class="mempool-fee-label">Prioridade Alta</div>
-              <div class="mempool-fee-val" id="mfee-high-val">—</div>
-              <div class="mempool-fee-unit">sat/vB</div>
-              <div class="mempool-fee-usd" id="mfee-high-usd">US$ —</div>
-            </div>
-          </div>
-          <div class="mempool-footer">
-            <span class="mempool-footer-text">Fonte: <a href="https://mempool.space/pt/" target="_blank" rel="noopener">mempool.space</a> · Atualizado a cada 30s</span>
-          </div>
-        </div>
+        <!-- HALVING COUNTDOWN -->
+        <div id="halving-root" style="margin-bottom:1.2rem;"></div>
       </div>
     </div>
   </div>
@@ -846,6 +849,7 @@
 <script src="assets/js/config.js"></script>
 <script src="assets/js/utils.js"></script>
 <script defer src="assets/js/main.js"></script>
+<script defer src="assets/js/widgets/halving.js"></script>
 
 </body>
 </html>
