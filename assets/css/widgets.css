@@ -128,7 +128,7 @@
 
 @media (max-width: 640px) {
   .btc-ultra-card { max-width: 100%; padding: 14px; border-radius: 18px; }
-  .btc-price { font-size: 2.7rem; }
+  .btc-price { font-size: 2.3rem; }
 }
 
 /* =====================================================================
