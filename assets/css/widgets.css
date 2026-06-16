@@ -174,7 +174,7 @@
    3. MEMPOOL FEES
    ===================================================================== */
 .mempool-widget {
-  margin-top: 0; border-radius: 16px; border: 1px solid #dde1e7; overflow: hidden;
+  margin-top: 56px; border-radius: 16px; border: 1px solid #dde1e7; overflow: hidden;
   box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: #e0f7fa; font-family: var(--font-body);
 }
 .mempool-header { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0.85rem 1.2rem 0.7rem; border-bottom: 1px solid #e8e8e8; }
