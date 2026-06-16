@@ -220,36 +220,32 @@
 
     const atual = idx === 3; // 4º halving — ciclo em andamento
 
-    const gainRow = h.topoApos
-      ? `<div class="halv__stat-item">
-          <span class="halv__stat-label">Topo pós-halving</span>
-          <span class="halv__stat-val halv__green">${fmtUSD(h.topoApos.preco)}</span>
-          <span class="halv__stat-sub">${fmtMulti(h.precoNoDia, h.topoApos.preco)} · ${h.topoApos.dias} dias · ${h.topoApos.data}</span>
-        </div>
-        <div class="halv__stat-item">
-          <span class="halv__stat-label">Fundo do bear</span>
-          <span class="halv__stat-val halv__red">${fmtUSD(h.fundoApos.preco)}</span>
-          <span class="halv__stat-sub">${h.fundoApos.dias} dias após o topo · ${h.fundoApos.data}</span>
+    const statsRow = h.topoApos
+      ? `<div class="halv__stats-grid">
+          <div class="halv__stat-item">
+            <span class="halv__stat-label">Topo pós-halving</span>
+            <span class="halv__stat-val halv__green">${fmtUSD(h.topoApos.preco)}</span>
+            <span class="halv__stat-sub">${fmtMulti(h.precoNoDia, h.topoApos.preco)} · ${h.topoApos.dias} dias · ${h.topoApos.data}</span>
+          </div>
+          <div class="halv__stat-item">
+            <span class="halv__stat-label">Fundo do bear</span>
+            <span class="halv__stat-val halv__red">${fmtUSD(h.fundoApos.preco)}</span>
+            <span class="halv__stat-sub">${h.fundoApos.dias} dias após o topo · ${h.fundoApos.data}</span>
+          </div>
+          <div class="halv__stat-item">
+            <span class="halv__stat-label">Bull até o topo</span>
+            <span class="halv__stat-val halv__green">${h.bullDuracao} dias</span>
+          </div>
+          <div class="halv__stat-item">
+            <span class="halv__stat-label">Bear topo→fundo</span>
+            <span class="halv__stat-val halv__red">${h.bearDuracao} dias</span>
+          </div>
         </div>`
       : `<div class="halv__stat-item halv__ongoing">
           <span class="halv__stat-label">Ciclo em andamento</span>
           <span class="halv__stat-val" style="color:#F7931A;">↗ Bull em curso</span>
           <span class="halv__stat-sub">Topo e fundo ainda não definidos</span>
         </div>`;
-
-    const durRow = h.bullDuracao
-      ? `<div class="halv__duration-row">
-          <div class="halv__dur-item">
-            <span class="halv__dur-label">Bull até o topo</span>
-            <span class="halv__dur-val halv__green">${h.bullDuracao} dias</span>
-          </div>
-          <div class="halv__dur-div"></div>
-          <div class="halv__dur-item">
-            <span class="halv__dur-label">Bear topo→fundo</span>
-            <span class="halv__dur-val halv__red">${h.bearDuracao} dias</span>
-          </div>
-        </div>`
-      : '';
 
     c.innerHTML = `
 <div class="halv__card">
@@ -273,8 +269,7 @@
       <span class="halv__reward-val">${fmtUSD(h.precoNoDia)}</span>
     </div>
   </div>
-  ${gainRow}
-  ${durRow}
+  ${statsRow}
 </div>`;
   }
 

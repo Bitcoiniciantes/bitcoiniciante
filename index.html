@@ -3,20 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BITCOIN INICIANTES – Assessoria Técnica em Bitcoin para Indivíduos.</title>
+  <title>BITCOIN INICIANTES – Assessoria Técnica em Bitcoin para Indivíduos</title>
   <meta name="description" content="Assessoria técnica especializada em Bitcoin para indivíduos: custódia própria, segurança avançada, planejamento sucessório e educação. Sem custódia de terceiros." />
+  <meta name="keywords" content="bitcoin, assessoria bitcoin, custódia própria, hardware wallet, multisig, planejamento sucessório, segurança bitcoin" />
+  <meta name="author" content="Bitcoin Iniciantes" />
+  <meta name="robots" content="index, follow" />
+  <meta name="googlebot" content="index, follow" />
 
-  <!-- Preconnect para acelerar fontes e APIs críticas -->
+  <!-- Canonical -->
+  <link rel="canonical" href="https://bitcoiniciantes.com.br/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Bitcoin Iniciantes" />
+  <meta property="og:url" content="https://bitcoiniciantes.com.br/" />
+  <meta property="og:title" content="BITCOIN INICIANTES – Assessoria Técnica em Bitcoin" />
+  <meta property="og:description" content="Custódia própria, segurança avançada e educação em Bitcoin. Sem intermediários." />
+  <meta property="og:image" content="https://bitcoiniciantes.com.br/assets/img/og-image.png" />
+  <meta property="og:locale" content="pt_BR" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BITCOIN INICIANTES – Assessoria Técnica em Bitcoin" />
+  <meta name="twitter:description" content="Custódia própria, segurança avançada e educação em Bitcoin. Sem intermediários." />
+  <meta name="twitter:image" content="https://bitcoiniciantes.com.br/assets/img/og-image.png" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+  <meta name="theme-color" content="#F7931A" />
+
+  <!-- Preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://api.binance.com" />
 
-  <!-- Fontes (Instrument Sans + DM Mono, usadas pelos widgets) -->
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-  <!-- Estilos -->
+  <!-- Styles -->
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="assets/css/widgets.css" />
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FinancialService",
+    "name": "Bitcoin Iniciantes",
+    "description": "Assessoria técnica especializada em Bitcoin: custódia própria, segurança avançada e educação.",
+    "url": "https://bitcoiniciantes.com.br",
+    "email": "bitcoiniciantes@proton.me",
+    "areaServed": { "@type": "Country", "name": "Brasil" },
+    "serviceType": ["Assessoria em Bitcoin", "Custódia Própria", "Planejamento Sucessório", "Educação em Bitcoin"]
+  }
+  </script>
 </head>
 
 <body>
@@ -39,7 +79,8 @@
   </ul>
 </nav>
 
-<div style="padding:0 5%;box-sizing:border-box;">
+<!-- HERO -->
+<div class="hero-wrapper">
   <header class="hero">
     <div class="hero-text">
       <span class="hero-badge">Apoio Técnico em Bitcoin para o Investidor Individual</span>
@@ -108,25 +149,11 @@
           <div class="btc-footer-right">TIMEFRAME • 1H</div>
         </div>
       </div>
-
-      <div class="stat-row">
-        <div class="stat-card">
-          <div class="stat-value">Especialistas</div>
-          <div class="stat-label">Dedicados exclusivamente à Rede Bitcoin</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">Direto</div>
-          <div class="stat-label">Sem custodiantes entre você e seu capital</div>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value">Posse Soberana</div>
-        <div class="stat-label">O controle é seu. Chaves privadas sob sua gestão.</div>
-      </div>
     </div>
   </header>
 </div>
 
+<!-- SOBRE -->
 <section class="about" id="sobre">
   <div class="section-inner">
     <div class="about-grid">
@@ -329,8 +356,9 @@
   </div>
 </section>
 
+<!-- INDEPENDÊNCIA FINANCEIRA -->
 <section id="Independenciafinanceira">
-  <div class="section-inner" style="max-width:1200px;">
+  <div class="section-inner">
     <div class="section-tag">Independência Financeira</div>
 
     <div class="fi-dca-row">
@@ -590,8 +618,9 @@
   </div>
 </section>
 
+<!-- FAQ + MURAL -->
 <section id="faq">
-  <div class="section-inner" style="max-width:1200px;">
+  <div class="section-inner">
     <div class="faq-mural-row">
       <!-- COLUNA ESQUERDA: FAQ -->
       <div class="faq-col-left">
@@ -657,173 +686,55 @@
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     SEÇÃO: PROJEÇÕES DE PREÇO DO BITCOIN
-═══════════════════════════════════════════ -->
-<section id="projecoes" style="padding:60px 5%;">
-  <div class="section-inner" style="max-width:1200px;">
+<!-- PROJEÇÕES -->
+<section id="projecoes">
+  <div class="section-inner">
 
     <div class="section-tag" style="color:#F7931A;">Análise de Mercado</div>
-    <h2 class="section-title" style="color:#fff;">Projeções de Preço do Bitcoin</h2>
-    <p style="color:#6b6b6b; font-size:1rem; margin-bottom:0.5rem; max-width:620px; line-height:1.6;">
-      O que os maiores fundos e bancos do mundo projetam — e quanto representa de retorno a partir do preço atual.
-    </p>
+    <h2 class="section-title">Projeções de Preço do Bitcoin</h2>
+    <p class="proj-subtitle">O que os maiores fundos e bancos do mundo projetam — e quanto representa de retorno a partir do preço atual.</p>
 
     <!-- Barra de preço base -->
-    <div id="proj-pricebar" style="
-      display:flex; flex-wrap:wrap; align-items:center; gap:14px;
-      background:#15191f; border:1px solid #262d38; border-radius:14px;
-      padding:16px 22px; margin:24px 0 10px;">
-      <div style="display:flex; flex-direction:column; gap:4px;">
-        <label style="font-size:11px; color:#8a93a2; font-weight:600; letter-spacing:.06em; text-transform:uppercase;">Preço base BTC (US$)</label>
-        <div style="display:flex; align-items:center; gap:8px; background:#0a0a0a; border:1px solid #262d38; border-radius:10px; padding:8px 14px;">
-          <input id="proj-base-price" type="number" value="62000" min="1" step="500"
-            style="width:130px; background:transparent; border:none; color:#F7931A; font-size:20px; font-weight:800; outline:none; font-family:inherit;" />
-          <span style="font-size:12px; color:#555;">USD</span>
+    <div class="proj-pricebar" id="proj-pricebar">
+      <div class="proj-pricebar-input-group">
+        <label class="proj-pricebar-label">Preço base BTC (US$)</label>
+        <div class="proj-pricebar-input-wrap">
+          <input id="proj-base-price" type="number" value="62000" min="1" step="500" class="proj-pricebar-input" />
+          <span class="proj-pricebar-unit">USD</span>
         </div>
       </div>
-      <span style="font-size:12px; color:#555; max-width:300px; line-height:1.5;">
-        Ajuste o preço atual do BTC — os retornos potenciais recalculam automaticamente.
-      </span>
-      <div id="proj-live-badge" style="margin-left:auto; display:flex; align-items:center; gap:7px;
-        background:rgba(0,255,174,.08); border:1px solid rgba(0,255,174,.2); border-radius:99px; padding:5px 13px;">
-        <span style="width:7px;height:7px;border-radius:50%;background:#00ffae;display:inline-block;animation:proj-pulse 1.4s infinite;"></span>
-        <span id="proj-live-price" style="font-size:12px; font-weight:700; color:#00ffae;">Carregando...</span>
+      <span class="proj-pricebar-hint">Ajuste o preço atual do BTC — os retornos potenciais recalculam automaticamente.</span>
+      <div class="proj-live-badge" id="proj-live-badge">
+        <span class="proj-live-dot"></span>
+        <span id="proj-live-price">Carregando...</span>
       </div>
     </div>
 
     <!-- Legenda tiers -->
-    <div style="display:flex; flex-wrap:wrap; gap:14px; margin-bottom:22px; font-size:12px; color:#555;">
-      <span style="display:inline-flex;align-items:center;gap:6px;"><i style="width:10px;height:10px;border-radius:99px;background:#16c784;display:inline-block;"></i> Conservador (até +100%)</span>
-      <span style="display:inline-flex;align-items:center;gap:6px;"><i style="width:10px;height:10px;border-radius:99px;background:#f0b90b;display:inline-block;"></i> Base (+100% a +350%)</span>
-      <span style="display:inline-flex;align-items:center;gap:6px;"><i style="width:10px;height:10px;border-radius:99px;background:#F7931A;display:inline-block;"></i> Moonshot (+350% ou mais)</span>
+    <div class="proj-legend">
+      <span class="proj-legend-item"><i class="proj-legend-dot" style="background:#16c784;"></i> Conservador (até +100%)</span>
+      <span class="proj-legend-item"><i class="proj-legend-dot" style="background:#f0b90b;"></i> Base (+100% a +350%)</span>
+      <span class="proj-legend-item"><i class="proj-legend-dot" style="background:#F7931A;"></i> Moonshot (+350% ou mais)</span>
     </div>
 
     <!-- Grid de cards -->
-    <div id="proj-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:16px;"></div>
+    <div id="proj-grid" class="proj-grid"></div>
 
     <!-- Disclaimer -->
-    <div style="margin-top:28px; background:rgba(234,57,67,.07); border:1px solid rgba(234,57,67,.25);
-      border-radius:12px; padding:14px 18px; font-size:12.5px; color:#f3b6ba; line-height:1.6;">
-      <strong style="color:#ff7a82;">⚠️ Aviso:</strong> Este quadro é estritamente informativo e
-      <strong style="color:#ff7a82;">não constitui recomendação de investimento</strong>. Todos os alvos
+    <div class="proj-disclaimer">
+      <strong>⚠️ Aviso:</strong> Este quadro é estritamente informativo e
+      <strong>não constitui recomendação de investimento</strong>. Todos os alvos
       vêm de instituições com posição comprada no ativo. O mercado de opções precifica ~80% de chance de
       BTC furar US$ 60 mil no curto prazo. Projeção de longo prazo é narrativa, não garantia.
       Faça sua própria pesquisa.
     </div>
 
-    <p style="text-align:center; color:#333; font-size:11px; margin-top:16px;">
+    <p class="proj-sources">
       Fontes: Standard Chartered, Citigroup, JPMorgan, Goldman Sachs, ARK Invest, VanEck, Bitwise, Galaxy Digital, Fidelity, TD Cowen (jun/2026).
     </p>
 
   </div>
 </section>
-
-<style>
-@keyframes proj-pulse {
-  0%,100%{transform:scale(1);opacity:1}
-  50%{transform:scale(1.25);opacity:.5}
-}
-.proj-card {
-  background:#15191f; border:1px solid #262d38; border-radius:16px;
-  padding:18px; transition:transform .15s, border-color .2s; cursor:default;
-}
-.proj-card:hover { transform:translateY(-3px); border-color:#F7931A; }
-.proj-inst { font-size:15px; font-weight:700; color:#eaeef3; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-.proj-horizon { font-size:11px; color:#555; text-transform:uppercase; letter-spacing:.5px; margin-top:3px; }
-.proj-target { font-size:26px; font-weight:800; color:#F7931A; margin:12px 0 2px; }
-.proj-ret { font-size:14px; font-weight:700; }
-.proj-ret.up { color:#16c784; } .proj-ret.down { color:#ea3943; }
-.proj-bar { height:7px; background:#1c222b; border-radius:99px; margin:12px 0 10px; overflow:hidden; }
-.proj-bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,#F7931A,#f0b90b); }
-.proj-note { font-size:12px; color:#555; border-top:1px solid #262d38; padding-top:10px; line-height:1.5; }
-.proj-tag { font-size:10px; font-weight:700; padding:2px 8px; border-radius:99px; text-transform:uppercase; letter-spacing:.5px; }
-.proj-tag-cons { background:rgba(22,199,132,.15); color:#16c784; }
-.proj-tag-mid  { background:rgba(240,185,11,.15);  color:#f0b90b; }
-.proj-tag-moon { background:rgba(247,147,26,.18);  color:#F7931A; }
-</style>
-
-<script>
-(function(){
-  const DATA = [
-    { inst:"Standard Chartered", target:100000, horizon:"Fim de 2026", tier:"cons",
-      note:"Cortou a meta de US$ 150k → 100k. Diz que \"o fundo está quase feito\"." },
-    { inst:"Galaxy Digital", target:130000, horizon:"Mid-2026 (topo da faixa)", tier:"mid",
-      note:"Faixa US$ 70k–130k. Admite que 2026 é \"volátil demais pra cravar\"." },
-    { inst:"Citigroup", target:143000, horizon:"12 meses (cenário base)", tier:"mid",
-      note:"Bull US$ 189k · Bear US$ 78,5k · Recessivo US$ 58k." },
-    { inst:"VanEck", target:160000, horizon:"Fim de 2026", tier:"mid",
-      note:"Baseado no par BTC/ouro voltar a 35x. Projeta US$ 2,9 milhões em 2050." },
-    { inst:"JPMorgan", target:170000, horizon:"2026", tier:"mid",
-      note:"Mantém bull case mesmo após o crash. Alvo estrutural de longo prazo: US$ 266k." },
-    { inst:"TD Cowen", target:170000, horizon:"2026", tier:"mid",
-      note:"Dentro do cluster US$ 140k–200k do consenso dos grandes bancos." },
-    { inst:"Goldman Sachs", target:200000, horizon:"2026 (topo cluster)", tier:"mid",
-      note:"Faixa US$ 140k–200k, alinhado com Citi e Standard Chartered." },
-    { inst:"Bitwise", target:224000, horizon:"Fair value (ilustrativo)", tier:"mid",
-      note:"Modelo de hedge contra default soberano. Cenário 10 anos: US$ 1 milhão." },
-    { inst:"JPMorgan (estrutural)", target:266000, horizon:"Longo prazo", tier:"mid",
-      note:"Alvo estrutural baseado em paridade de risco com o ouro global." },
-    { inst:"Galaxy Digital", target:250000, horizon:"2027", tier:"mid",
-      note:"Vê 2027 como ano mais plausível que 2026 para o topo do ciclo." },
-    { inst:"ARK Invest", target:1200000, horizon:"2030", tier:"moon",
-      note:"Cathie Wood. Tese de \"ouro digital\" + adoção institucional e soberana." },
-    { inst:"Bitwise", target:1000000, horizon:"~10 anos", tier:"moon",
-      note:"Matt Hougan: US$ 1M conforme BTC absorve parte do mercado global de ouro." },
-  ];
-
-  const tagClass = { cons:"proj-tag-cons", mid:"proj-tag-mid", moon:"proj-tag-moon" };
-  const tagTxt   = { cons:"Conservador",   mid:"Base",        moon:"Moonshot"       };
-  const maxLog   = Math.log10(1200000);
-  const fmt = n => "US$ " + n.toLocaleString("pt-BR");
-
-  function render(base){
-    base = Math.max(1, base);
-    const grid = document.getElementById("proj-grid");
-    const minLog = Math.log10(base);
-    grid.innerHTML = "";
-    DATA.slice().sort((a,b)=>a.target-b.target).forEach(d=>{
-      const ret = ((d.target-base)/base)*100;
-      const up  = ret >= 0;
-      const pct = Math.min(100,Math.max(2,((Math.log10(d.target)-minLog)/(maxLog-minLog))*100));
-      const el  = document.createElement("div");
-      el.className = "proj-card";
-      el.innerHTML = `
-        <div class="proj-inst">${d.inst}
-          <span class="proj-tag ${tagClass[d.tier]}">${tagTxt[d.tier]}</span>
-        </div>
-        <div class="proj-horizon">${d.horizon}</div>
-        <div class="proj-target">${fmt(d.target)}</div>
-        <div class="proj-ret ${up?'up':'down'}">${up?'▲ +':'▼ '}${ret.toFixed(1)}% de ${up?'upside':'downside'}</div>
-        <div class="proj-bar"><div class="proj-bar-fill" style="width:${pct}%"></div></div>
-        <div class="proj-note">${d.note}</div>`;
-      grid.appendChild(el);
-    });
-  }
-
-  const input = document.getElementById("proj-base-price");
-  input.addEventListener("input", ()=> render(Number(input.value)||62000));
-  render(62000);
-
-  // Tenta buscar preço ao vivo da Binance (mesmo endpoint já usado no site)
-  async function fetchLivePrice(){
-    try{
-      const r = await fetch("https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT");
-      const d = await r.json();
-      const p = parseFloat(d.lastPrice);
-      if(!isNaN(p)){
-        document.getElementById("proj-live-price").textContent = "AO VIVO: "+p.toLocaleString("pt-BR",{maximumFractionDigits:0})+" USD";
-        input.value = Math.round(p);
-        render(p);
-      }
-    }catch(e){
-      document.getElementById("proj-live-price").textContent = "AO VIVO: —";
-    }
-  }
-  fetchLivePrice();
-  setInterval(fetchLivePrice, 60000);
-})();
-</script>
 
 <footer>
   <div class="footer-inner">
@@ -832,7 +743,7 @@
     <p>
       Assessoria especializada em Bitcoin para indivíduos soberanos<br>
       📧 <a href="mailto:bitcoiniciantes@proton.me">bitcoiniciantes@proton.me</a><br><br>
-      © 2025 BITCOIN INICIANTES — Todos os direitos reservados.<br>
+      © 2026 BITCOIN INICIANTES — Todos os direitos reservados.<br>
       <small>Não somos uma corretora de valores. Não custodiamos ativos de terceiros. Não realizamos aconselhamento financeiro de investimento.</small>
     </p>
   </div>
@@ -847,10 +758,11 @@
   gtag('config', 'G-WFP2BB2V0B');
 </script>
 
-<!-- Núcleo: config + utilitários + orquestrador (widgets carregam sob demanda) -->
+<!-- Scripts -->
 <script src="assets/js/config.js"></script>
 <script src="assets/js/utils.js"></script>
 <script defer src="assets/js/main.js"></script>
+<script defer src="assets/js/projections.js"></script>
 <script defer src="assets/js/widgets/halving.js"></script>
 
 </body>
