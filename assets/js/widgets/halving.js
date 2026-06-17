@@ -11,54 +11,63 @@
     {
       n: 1,
       label: '1º Halving',
-      date: '2012-11-28',
+      date: '28-11-2012',
       block: 210000,
       rewardAntes: 50,
       rewardDepois: 25,
       precoNoDia: 12.35,
-      topoApos: { preco: 1163, dias: 371, data: '2013-11-30' },
-      fundoApos: { preco: 152, dias: 422, data: '2015-01-14' },
-      bearDuracao: 406, // dias do topo ao fundo
-      bullDuracao: 371, // dias do halving ao topo
+      topoApos: { preco: 1163, dias: 371, data: '30-11-2013' },
+      fundoApos: { preco: 152, dias: 422, data: '14-01-2015' },
+      bearDuracao: 406,
+      bullDuracao: 743,
+      multiFundoTopo: '560,7x',
+      quedaTopoFundo: '-85%',
     },
     {
       n: 2,
       label: '2º Halving',
-      date: '2016-07-09',
+      date: '09-07-2016',
       block: 420000,
       rewardAntes: 25,
       rewardDepois: 12.5,
       precoNoDia: 650,
-      topoApos: { preco: 19891, dias: 526, data: '2017-12-17' },
-      fundoApos: { preco: 3128, dias: 364, data: '2018-12-15' },
+      topoApos: { preco: 19891, dias: 526, data: '17-12-2017' },
+      fundoApos: { preco: 3128, dias: 364, data: '15-12-2018' },
       bearDuracao: 364,
-      bullDuracao: 526,
+      bullDuracao: 1067,
+      multiFundoTopo: '129,4x',
+      quedaTopoFundo: '-84%',
     },
     {
       n: 3,
       label: '3º Halving',
-      date: '2020-05-11',
+      date: '11-05-2020',
       block: 630000,
       rewardAntes: 12.5,
       rewardDepois: 6.25,
       precoNoDia: 8821,
-      topoApos: { preco: 69000, dias: 549, data: '2021-11-10' },
-      fundoApos: { preco: 15476, dias: 376, data: '2022-11-21' },
+      topoApos: { preco: 69000, dias: 549, data: '10-11-2021' },
+      fundoApos: { preco: 15476, dias: 376, data: '21-11-2022' },
       bearDuracao: 376,
-      bullDuracao: 549,
+      bullDuracao: 1061,
+      multiFundoTopo: '22,1x',
+      quedaTopoFundo: '-78%',
     },
     {
       n: 4,
       label: '4º Halving',
-      date: '2024-04-20',
+      date: '20-04-2024',
       block: 840000,
       rewardAntes: 6.25,
       rewardDepois: 3.125,
       precoNoDia: 64258,
-      topoApos: null, // ciclo em andamento
-      fundoApos: null,
-      bearDuracao: null,
-      bullDuracao: null,
+      topoApos: { preco: 126200, dias: 535, data: '06-10-2025' },
+      fundoApos: { preco: null, dias: 376, data: '17-10-2026' },
+      bearDuracao: 376,
+      bullDuracao: 1050,
+      multiFundoTopo: '8,15x',
+      quedaTopoFundo: '-51% (parcial)',
+      projected: true,
     },
   ];
 
@@ -159,10 +168,10 @@
 
   <!-- Tabs -->
   <div class="halv__tabs" id="halv-tabs">
-    <button class="halv__tab active" data-tab="0">1º</button>
+    <button class="halv__tab" data-tab="0">1º</button>
     <button class="halv__tab" data-tab="1">2º</button>
     <button class="halv__tab" data-tab="2">3º</button>
-    <button class="halv__tab" data-tab="3">4º ↗</button>
+    <button class="halv__tab active" data-tab="3">4º ↘</button>
   </div>
 
   <!-- Tab content -->
@@ -170,8 +179,8 @@
 
 </div>`;
 
-    // Render tab content
-    renderTab(0);
+    // Render tab content — default: 4º halving
+    renderTab(3);
 
     // Tab switching
     el.querySelectorAll('.halv__tab').forEach(btn => {
@@ -218,10 +227,51 @@
     const c = document.getElementById('halv-tab-content');
     if (!c) return;
 
-    const atual = idx === 3; // 4º halving — ciclo em andamento
+    const atual = idx === 3;
+    const isProjected = h.projected;
 
-    const statsRow = h.topoApos
-      ? `<div class="halv__stats-grid">
+    let statsRow;
+    if (isProjected && h.topoApos) {
+      const topoData = h.topoApos.data;
+      const fundoData = h.fundoApos ? h.fundoApos.data : '?';
+      const topoPreco = h.topoApos.preco;
+      const fundoPreco = h.fundoApos && h.fundoApos.preco ? h.fundoApos.preco : null;
+      
+      // Topo já passou (06/11/2025) — calcula dias até o fundo projetado (17/11/2026)
+      const fundoDate = new Date(2026, 9, 17); // 17/10/2026
+      const diasFaltamFundo = Math.max(0, Math.round((fundoDate - new Date()) / 86400000));
+      const statusAtual = 'BEAR';
+
+      statsRow = `
+        <div class="halv__status-bar">
+          <span class="halv__status-dot halv__status-dot--bear"></span>
+          <span>Estamos em: <strong style="color:#ef4444;">${statusAtual}</strong></span>
+          <span class="halv__faltam-badge">Faltam <strong>${diasFaltamFundo}</strong> dias para o fundo projetado</span>
+        </div>
+        <div class="halv__stats-grid">
+          <div class="halv__stat-item">
+            <span class="halv__stat-label">Topo pós-halving</span>
+            <span class="halv__stat-val halv__green">${fmtUSD(topoPreco)}</span>
+            <span class="halv__stat-sub">${fmtMulti(h.precoNoDia, topoPreco)} · ${h.topoApos.dias} dias · ${topoData}</span>
+          </div>
+          <div class="halv__stat-item">
+            <span class="halv__stat-label">Fundo do bear (projetado)</span>
+            <span class="halv__stat-val halv__red">US$ ?</span>
+            <span class="halv__stat-sub">376 dias após o topo · ${fundoData}</span>
+          </div>
+          <div class="halv__stat-item">
+            <span class="halv__stat-label">Fundo ao Topo</span>
+            <span class="halv__stat-val halv__green">${h.bullDuracao} dias</span>
+            <span class="halv__stat-sub">valorizou ${h.multiFundoTopo}</span>
+          </div>
+          <div class="halv__stat-item">
+            <span class="halv__stat-label">Topo ao Fundo</span>
+            <span class="halv__stat-val halv__red">${h.bearDuracao} dias em média</span>
+            <span class="halv__stat-sub">${h.quedaTopoFundo}</span>
+          </div>
+        </div>`;
+    } else if (h.topoApos) {
+      statsRow = `<div class="halv__stats-grid">
           <div class="halv__stat-item">
             <span class="halv__stat-label">Topo pós-halving</span>
             <span class="halv__stat-val halv__green">${fmtUSD(h.topoApos.preco)}</span>
@@ -233,19 +283,23 @@
             <span class="halv__stat-sub">${h.fundoApos.dias} dias após o topo · ${h.fundoApos.data}</span>
           </div>
           <div class="halv__stat-item">
-            <span class="halv__stat-label">Bull até o topo</span>
+            <span class="halv__stat-label">Fundo ao Topo</span>
             <span class="halv__stat-val halv__green">${h.bullDuracao} dias</span>
+            <span class="halv__stat-sub">valorizou ${h.multiFundoTopo}</span>
           </div>
           <div class="halv__stat-item">
-            <span class="halv__stat-label">Bear topo→fundo</span>
+            <span class="halv__stat-label">Topo ao Fundo</span>
             <span class="halv__stat-val halv__red">${h.bearDuracao} dias</span>
+            <span class="halv__stat-sub">${h.quedaTopoFundo}</span>
           </div>
-        </div>`
-      : `<div class="halv__stat-item halv__ongoing">
+        </div>`;
+    } else {
+      statsRow = `<div class="halv__stat-item halv__ongoing">
           <span class="halv__stat-label">Ciclo em andamento</span>
           <span class="halv__stat-val" style="color:#F7931A;">↗ Bull em curso</span>
           <span class="halv__stat-sub">Topo e fundo ainda não definidos</span>
         </div>`;
+    }
 
     c.innerHTML = `
 <div class="halv__card">
