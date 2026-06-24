@@ -125,7 +125,7 @@
     if (precoAtual == null || !h.topoApos) return '—';
     const variacao = ((precoAtual - h.topoApos.preco) / h.topoApos.preco) * 100;
     const sinal = variacao < 0 ? '' : '+';
-    return sinal + variacao.toFixed(0) + '% (parcial)';
+    return sinal + variacao.toFixed(0) + '%';
   }
 
   /* ── Render countdown ── */
@@ -300,7 +300,7 @@
           <div class="halv__stat-item">
             <span class="halv__stat-label">Topo ao Fundo</span>
             <span class="halv__stat-val halv__red">${h.bearDuracao} dias em média</span>
-            <span class="halv__stat-sub halv__red" id="halv-quedatopofundo" style="font-size:13px; font-weight:700;">${calcQuedaTopoFundo(h, ultimoPrecoBtc)}</span>
+            <span class="halv__stat-sub halv__red" style="font-size:14px; font-weight:800; line-height:1.3; margin-top:3px;">Variação: <span id="halv-quedatopofundo">${calcQuedaTopoFundo(h, ultimoPrecoBtc)}</span></span>
           </div>
         </div>`;
     } else if (h.topoApos) {
