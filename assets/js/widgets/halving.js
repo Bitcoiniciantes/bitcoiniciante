@@ -66,7 +66,6 @@
       bearDuracao: 376,
       bullDuracao: 1050,
       multiFundoTopo: '8,15x',
-      quedaTopoFundo: '-51% (parcial)',
       projected: true,
     },
   ];
@@ -103,6 +102,30 @@
     } catch {
       return null;
     }
+  }
+
+  /* ── Busca cotação BTC/USD ao vivo (mesmo endpoint Binance usado no resto do site) ── */
+  async function fetchBtcLivePrice() {
+    try {
+      const r = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
+      if (!r.ok) throw new Error();
+      const d = await r.json();
+      const p = parseFloat(d.lastPrice);
+      return isNaN(p) ? null : p;
+    } catch {
+      return null;
+    }
+  }
+
+  let ultimoPrecoBtc = null; // cache do último preço ao vivo recebido
+
+  /* ── Calcula "Topo → Fundo" do 4º halving (estático para 1º-3º, ao vivo para o 4º) ── */
+  function calcQuedaTopoFundo(h, precoAtual) {
+    if (!h.projected) return h.quedaTopoFundo; // ciclos históricos: valor fixo
+    if (precoAtual == null || !h.topoApos) return '—';
+    const variacao = ((precoAtual - h.topoApos.preco) / h.topoApos.preco) * 100;
+    const sinal = variacao < 0 ? '' : '+';
+    return sinal + variacao.toFixed(0) + '% (parcial)';
   }
 
   /* ── Render countdown ── */
@@ -202,6 +225,16 @@
     tick();
     setInterval(tick, 1000);
 
+    // Atualiza periodicamente o % "topo→fundo (parcial)" do 4º halving (mesmo intervalo do resto do site)
+    setInterval(() => {
+      fetchBtcLivePrice().then(preco => {
+        if (preco == null) return;
+        ultimoPrecoBtc = preco;
+        const el = document.getElementById('halv-quedatopofundo');
+        if (el) el.textContent = calcQuedaTopoFundo(HALVINGS[3], ultimoPrecoBtc);
+      });
+    }, 60000);
+
     // Fetch bloco atual
     fetchCurrentBlock().then(block => {
       if (!block) return;
@@ -267,7 +300,7 @@
           <div class="halv__stat-item">
             <span class="halv__stat-label">Topo ao Fundo</span>
             <span class="halv__stat-val halv__red">${h.bearDuracao} dias em média</span>
-            <span class="halv__stat-sub">${h.quedaTopoFundo}</span>
+            <span class="halv__stat-sub" id="halv-quedatopofundo">${calcQuedaTopoFundo(h, ultimoPrecoBtc)}</span>
           </div>
         </div>`;
     } else if (h.topoApos) {
@@ -325,6 +358,15 @@
   </div>
   ${statsRow}
 </div>`;
+
+    // Se for o 4º halving (ciclo em andamento), busca a cotação ao vivo e atualiza o % "topo→fundo (parcial)"
+    if (isProjected) {
+      fetchBtcLivePrice().then(preco => {
+        if (preco != null) ultimoPrecoBtc = preco;
+        const el = document.getElementById('halv-quedatopofundo');
+        if (el) el.textContent = calcQuedaTopoFundo(h, ultimoPrecoBtc);
+      });
+    }
   }
 
   /* ── Init ── */
