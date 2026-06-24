@@ -37,9 +37,10 @@ window.BIWidgets.btcTicker = function initBtcTicker() {
     if (!topVariationEl || !currentPrice) return;
     var pct = ((currentPrice - TOP_REFERENCE) / TOP_REFERENCE) * 100;
     var arrow = pct >= 0 ? '\u25B2 +' : '\u25BC ';
-    topVariationEl.textContent = 'Varia\u00e7\u00e3o do topo at\u00e9 o momento: ' + arrow + pct.toFixed(2) + '%';
+    var color = pct >= 0 ? '#00ffae' : '#ff4d6d';
+    topVariationEl.innerHTML = 'Varia\u00e7\u00e3o do topo at\u00e9 o momento: ' +
+      '<span style="color:' + color + '">' + arrow + pct.toFixed(2) + '%</span>';
     topVariationEl.className = 'btc-top-variation ' + (pct >= 0 ? 'up' : 'down');
-    topVariationEl.style.color = pct >= 0 ? '#00ffae' : '#ff4d6d';
   }
 
   function drawChart() {
