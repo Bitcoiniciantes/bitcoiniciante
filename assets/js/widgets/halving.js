@@ -124,8 +124,9 @@
     if (!h.projected) return h.quedaTopoFundo; // ciclos históricos: valor fixo
     if (precoAtual == null || !h.topoApos) return '—';
     const variacao = ((precoAtual - h.topoApos.preco) / h.topoApos.preco) * 100;
+    const seta = variacao < 0 ? '▼' : '▲';
     const sinal = variacao < 0 ? '' : '+';
-    return sinal + variacao.toFixed(0) + '%';
+    return seta + ' ' + sinal + variacao.toFixed(2) + '%';
   }
 
   /* ── Render countdown ── */
