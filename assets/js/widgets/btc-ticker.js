@@ -9,6 +9,9 @@ window.BIWidgets.btcTicker = function initBtcTicker() {
   'use strict';
   var CFG = window.BI_CONFIG;
 
+  // Topo de referência travado (ATH) em USD — usado para calcular a variação do rodapé
+  var TOP_REFERENCE = 126200;
+
   var candles = [];
   var lastPrice = null;
 
@@ -26,8 +29,17 @@ window.BIWidgets.btcTicker = function initBtcTicker() {
   var mstrChangeEl = document.getElementById('mstrChange');
   var dotEl = document.getElementById('btcDot');
   var statusEl = document.getElementById('btcStatusTxt');
+  var topVariationEl = document.getElementById('btcTopVariation');
 
   var flashTimer = null;
+
+  function updateTopVariation(currentPrice) {
+    if (!topVariationEl || !currentPrice) return;
+    var pct = ((currentPrice - TOP_REFERENCE) / TOP_REFERENCE) * 100;
+    var arrow = pct >= 0 ? '\u25B2 +' : '\u25BC ';
+    topVariationEl.textContent = 'Varia\u00e7\u00e3o do topo at\u00e9 o momento: ' + arrow + pct.toFixed(2) + '%';
+    topVariationEl.className = 'btc-top-variation ' + (pct >= 0 ? 'up' : 'down');
+  }
 
   function drawChart() {
     if (!ctx || candles.length < 2) return;
@@ -140,6 +152,7 @@ window.BIWidgets.btcTicker = function initBtcTicker() {
           change24hEl.textContent = (pct >= 0 ? '\u25B2 +' : '\u25BC ') + pct.toFixed(2) + '% 24h';
           change24hEl.className = 'btc-change-badge ' + (pct >= 0 ? 'up' : 'down');
         }
+        updateTopVariation(p);
         if (flashTimer) clearTimeout(flashTimer);
         flashTimer = setTimeout(function () { if (priceEl) priceEl.className = 'btc-price'; }, 700);
       }
