@@ -300,7 +300,7 @@
           <div class="halv__stat-item">
             <span class="halv__stat-label">Topo ao Fundo</span>
             <span class="halv__stat-val halv__red">${h.bearDuracao} dias em média</span>
-            <span class="halv__stat-sub" id="halv-quedatopofundo">${calcQuedaTopoFundo(h, ultimoPrecoBtc)}</span>
+            <span class="halv__stat-sub halv__red" id="halv-quedatopofundo" style="font-size:13px; font-weight:700;">${calcQuedaTopoFundo(h, ultimoPrecoBtc)}</span>
           </div>
         </div>`;
     } else if (h.topoApos) {
