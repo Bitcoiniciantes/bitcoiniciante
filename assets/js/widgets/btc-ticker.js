@@ -39,6 +39,7 @@ window.BIWidgets.btcTicker = function initBtcTicker() {
     var arrow = pct >= 0 ? '\u25B2 +' : '\u25BC ';
     topVariationEl.textContent = 'Varia\u00e7\u00e3o do topo at\u00e9 o momento: ' + arrow + pct.toFixed(2) + '%';
     topVariationEl.className = 'btc-top-variation ' + (pct >= 0 ? 'up' : 'down');
+    topVariationEl.style.color = pct >= 0 ? '#00ffae' : '#ff4d6d';
   }
 
   function drawChart() {
