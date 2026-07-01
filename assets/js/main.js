@@ -12,13 +12,15 @@
   var navList = document.getElementById('nav-list');
   if (mobileMenu && navList) {
     mobileMenu.addEventListener('click', function () {
-      mobileMenu.classList.toggle('active');
+      var active = mobileMenu.classList.toggle('active');
       navList.classList.toggle('active');
+      mobileMenu.setAttribute('aria-expanded', active);
     });
     document.querySelectorAll('#nav-list a').forEach(function (link) {
       link.addEventListener('click', function () {
         mobileMenu.classList.remove('active');
         navList.classList.remove('active');
+        mobileMenu.setAttribute('aria-expanded', false);
       });
     });
   }
@@ -108,4 +110,5 @@
   lazyWidget('sif-root', 'assets/js/widgets/sif.js', 'sif');
   lazyWidget('dca-root', 'assets/js/widgets/dca.js', 'dca');
   lazyWidget('mural-root', 'assets/js/widgets/mural.js', 'mural');
+  lazyWidget('halving-root', 'assets/js/widgets/halving.js', 'halving');
 })();
