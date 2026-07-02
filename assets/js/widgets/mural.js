@@ -10,6 +10,9 @@ window.BIWidgets.mural = async function initMural() {
   function $(id) { return document.getElementById(id); }
   if (!$('mural-root')) return;
 
+  var MAX_CHARS = 300;
+  var POST_COOLDOWN_MS = 30000; // 30s entre posts — só mitigação client-side, não substitui regra no Firebase
+
   // Carrega Firebase sob demanda
   try {
     if (typeof window.firebase === 'undefined') {
@@ -38,6 +41,17 @@ window.BIWidgets.mural = async function initMural() {
   }
   var VISITOR_ID = getVisitorId();
 
+  // Cooldown entre posts (mitigação client-side — não impede alguém escrevendo
+  // direto na API do Firebase; a proteção real precisa estar nas Security Rules).
+  function getRemainingCooldownMs() {
+    var last = Number(localStorage.getItem('mural_last_post_ts') || 0);
+    var elapsed = Date.now() - last;
+    return elapsed < POST_COOLDOWN_MS ? (POST_COOLDOWN_MS - elapsed) : 0;
+  }
+  function markPosted() {
+    localStorage.setItem('mural_last_post_ts', String(Date.now()));
+  }
+
   // Preço BTC para carimbar nos posts
   BI.fetchJSON(CFG.api.coingeckoSimple + '?ids=bitcoin&vs_currencies=usd', { timeout: 8000, retries: 1 })
     .then(function (d) { if (d && d.bitcoin) currentBtcPrice = d.bitcoin.usd; })
@@ -53,7 +67,7 @@ window.BIWidgets.mural = async function initMural() {
 
   var textarea = $('mural-texto');
   var charCount = $('mural-chars');
-  textarea.addEventListener('input', function () { charCount.textContent = this.value.length + '/280'; });
+  textarea.addEventListener('input', function () { charCount.textContent = this.value.length + '/' + MAX_CHARS; });
 
   function formatDate(iso) {
     var d = new Date(iso);
@@ -190,15 +204,27 @@ window.BIWidgets.mural = async function initMural() {
     if (!apelido) { errorEl.textContent = 'Informe seu apelido.'; errorEl.style.display = 'block'; return; }
     if (!selectedMood) { errorEl.textContent = 'Selecione um sentimento.'; errorEl.style.display = 'block'; return; }
     if (!texto) { errorEl.textContent = 'Escreva algo antes de publicar.'; errorEl.style.display = 'block'; return; }
+    if (texto.length > MAX_CHARS) {
+      errorEl.textContent = 'Seu texto tem ' + texto.length + ' caracteres — o limite é ' + MAX_CHARS + '.';
+      errorEl.style.display = 'block';
+      return;
+    }
+    var remaining = getRemainingCooldownMs();
+    if (remaining > 0) {
+      errorEl.textContent = 'Aguarde ' + Math.ceil(remaining / 1000) + 's antes de publicar novamente.';
+      errorEl.style.display = 'block';
+      return;
+    }
 
     muralRef.push({
       apelido: apelido, mood: selectedMood, texto: texto,
       date: new Date().toISOString(), btcPrice: currentBtcPrice,
       editado: false, authorId: VISITOR_ID
     });
+    markPosted();
 
     $('mural-texto').value = '';
-    $('mural-chars').textContent = '0/280';
+    $('mural-chars').textContent = '0/' + MAX_CHARS;
     document.querySelectorAll('.mural__mood-btn').forEach(function (b) { b.classList.remove('selected'); });
     selectedMood = '';
   });
