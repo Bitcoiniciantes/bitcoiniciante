@@ -611,7 +611,7 @@
           <p class="form-note">📧 Sua mensagem será enviada com sigilo para bitcoiniciantes@proton.me</p>
           <div class="form-error-msg" id="formErrorMsg"></div>
         </form>
-        <div class="form-success" id="formSuccess">
+        <div class="form-success" id="formSuccess" style="display:none;">
           <div class="success-icon">✅</div>
           <h4>Solicitação recebida!</h4>
           <p>Nossos consultores analisarão seus dados em <strong>bitcoiniciantes@proton.me</strong> e entrarão em contato em breve. Agradecemos sua confiança!</p>
@@ -760,6 +760,7 @@
   (function() {
     function loadCount() {
       var path = (window.goatcounter && window.goatcounter.get_data) ? window.goatcounter.get_data()['p'] : location.pathname;
+      path = path.replace(/index\.html$/, '');
       var r = new XMLHttpRequest();
       r.addEventListener('load', function() {
         try {
