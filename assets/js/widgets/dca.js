@@ -1,29 +1,47 @@
 /* =====================================================================
-   Widget: Simulador DCA em Bitcoin 
-   - Ticker ao vivo via Binance nativo
-   - Histórico desde 2014 via JSON estático do GitHub Actions
+   Widget: Simulador DCA em Bitcoin - EDIÇÃO BLINDADA
+   - Ticker ao vivo nativo
+   - Histórico JSON com tripla tentativa (Fail-safe)
+   - Proteção contra congelamento de botão
    ===================================================================== */
 window.BIWidgets = window.BIWidgets || {};
 
 window.BIWidgets.dca = function initDca() {
   'use strict';
   
-  var CFG = window.BI_CONFIG;
+  // Proteção: Se o config.js falhar, não quebra o código todo
+  var CFG = window.BI_CONFIG || { api: { binanceTicker24h: 'https://api.binance.com/api/v3/ticker/24hr' } };
   var dcaChart = null;
 
   function $(id) { return document.getElementById(id); }
   
-  // Se não encontrar o botão, aborta por segurança
   if (!$('dca-btn-simulate')) return;
 
-  // Preenche a data final padrão com o mês atual (Isto voltará a funcionar!)
+  // Força o preenchimento da data final (se estiver vazio)
   var now = new Date();
   var endInput = $('dca-end');
   if (endInput && !endInput.value) {
     endInput.value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
   }
 
-  /* -------------------- Ticker BTC/BRL (Cotação ao vivo) -------------------- */
+  /* -------------------- Helpers de Erro -------------------- */
+  function showError(msg) {
+    var errEl = $('dca-error');
+    if (errEl) {
+      errEl.textContent = '⚠️ Erro: ' + msg;
+      errEl.style.display = 'block';
+    }
+  }
+
+  function hideError() {
+    var errEl = $('dca-error');
+    if (errEl) {
+      errEl.style.display = 'none';
+      errEl.textContent = '';
+    }
+  }
+
+  /* -------------------- Ticker BTC/BRL (Ao vivo) -------------------- */
   async function fetchBtcTicker() {
     try {
       const [resUsd, resBrl] = await Promise.all([
@@ -38,156 +56,158 @@ window.BIWidgets.dca = function initDca() {
       var precoBrl = parseFloat(dataBrl.lastPrice);
       var variacao = parseFloat(dataBrl.priceChangePercent);
 
-      // ⚠️ ATENÇÃO: Se as cotações continuarem em branco, é porque no seu index.html 
-      // as IDs não são essas abaixo. Se for o caso, me avise ou troque aqui:
-      var elUsd = $('dca-price-usd');
-      var elBrl = $('dca-price-brl');
+      if ($('dca-price-usd')) $('dca-price-usd').textContent = '$ ' + precoUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      if ($('dca-price-brl')) $('dca-price-brl').textContent = 'R$ ' + precoBrl.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      
       var elVar = $('dca-price-var');
-
-      if (elUsd) elUsd.textContent = '$ ' + precoUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      if (elBrl) elBrl.textContent = 'R$ ' + precoBrl.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       if (elVar) {
         elVar.textContent = (variacao >= 0 ? '+' : '') + variacao.toFixed(2) + '%';
         elVar.className = 'dca-live-var ' + (variacao >= 0 ? 'positive' : 'negative');
       }
     } catch (e) {
-      console.error('Erro no ticker ao vivo:', e);
+      console.error('Ticker falhou:', e);
     }
   }
 
-  /* -------------------- Helpers de Erro -------------------- */
-  function showError(msg) {
-    var errEl = $('dca-error');
-    if (errEl) {
-      errEl.textContent = msg;
-      errEl.style.display = 'block';
-    }
-  }
-
-  function hideError() {
-    var errEl = $('dca-error');
-    if (errEl) {
-      errEl.style.display = 'none';
-      errEl.textContent = '';
-    }
-  }
-
-  /* -------------------- Leitura do Histórico JSON -------------------- */
+  /* -------------------- Tripla tentativa do JSON -------------------- */
   async function carregarHistorico() {
-    try {
-      const urlDireta = 'https://raw.githubusercontent.com/Bitcoiniciantes/bitcoiniciante/main/dados/historico_dca.json';
-      const response = await fetch(urlDireta);
-      if (!response.ok) throw new Error("Erro na rede");
-      return await response.json();
-    } catch (e) {
-      console.error("Erro ao carregar os dados:", e);
-      showError("Não foi possível carregar os dados históricos.");
-      return null;
+    let urls = [
+      './dados/historico_dca.json', // 1. Tenta o local do GitHub Pages
+      'https://raw.githubusercontent.com/Bitcoiniciantes/bitcoiniciante/main/dados/historico_dca.json', // 2. Tenta o raw da Main
+      'https://raw.githubusercontent.com/Bitcoiniciantes/bitcoiniciante/master/dados/historico_dca.json' // 3. Tenta o raw da Master
+    ];
+
+    for (let url of urls) {
+      try {
+        let response = await fetch(url);
+        if (response.ok) {
+          return await response.json();
+        }
+      } catch (e) {
+        // Ignora e tenta o próximo URL
+      }
     }
+    throw new Error("O ficheiro de histórico não foi encontrado no servidor.");
   }
 
-  /* -------------------- Lógica do Simulador DCA -------------------- */
+  /* -------------------- Simulador Principal -------------------- */
   async function simulateDca() {
     var btn = $('dca-btn-simulate');
     if (!btn) return;
 
-    btn.disabled = true;
-    btn.textContent = 'Calculando...';
-    hideError();
+    try {
+      btn.disabled = true;
+      btn.textContent = 'Calculando...';
+      hideError();
 
-    var amountInput = $('dca-amount');
-    var startInput = $('dca-start');
-    var endDate = $('dca-end').value;
-    var startDate = startInput.value;
-    var monthlyInvestment = parseFloat((amountInput.value || '0').replace(/\./g, '').replace(',', '.'));
+      // Verifica se o HTML existe antes de tentar ler
+      if (!$('dca-amount')) throw new Error("Campo de valor (dca-amount) em falta no HTML.");
+      if (!$('dca-start')) throw new Error("Campo de data inicial (dca-start) em falta no HTML.");
+      if (!$('dca-end')) throw new Error("Campo de data final (dca-end) em falta no HTML.");
 
-    if (isNaN(monthlyInvestment) || monthlyInvestment <= 0) {
-      showError('Por favor, insira um valor mensal válido.');
-      btn.disabled = false;
-      btn.textContent = 'Simular \u2192';
-      return;
-    }
-    if (startDate > endDate) {
-      showError('A data inicial não pode ser maior que a data final.');
-      btn.disabled = false;
-      btn.textContent = 'Simular \u2192';
-      return;
-    }
+      var amountInput = $('dca-amount');
+      var startDate = $('dca-start').value;
+      var endDate = $('dca-end').value;
+      
+      if (!startDate || !endDate) {
+          throw new Error("As datas não podem estar vazias.");
+      }
 
-    var historico = await carregarHistorico();
-    if (!historico) {
-      btn.disabled = false;
-      btn.textContent = 'Simular \u2192';
-      return;
-    }
+      var monthlyInvestment = parseFloat((amountInput.value || '0').replace(/\./g, '').replace(',', '.'));
 
-    var dadosFiltrados = historico.filter(function(item) {
-      return item.mes >= startDate && item.mes <= endDate;
-    });
+      if (isNaN(monthlyInvestment) || monthlyInvestment <= 0) {
+        throw new Error("Insira um valor mensal válido.");
+      }
+      if (startDate > endDate) {
+        throw new Error("A data inicial não pode ser maior que a final.");
+      }
 
-    if (dadosFiltrados.length === 0) {
-      showError('Não há dados disponíveis para este período específico.');
-      btn.disabled = false;
-      btn.textContent = 'Simular \u2192';
-      return;
-    }
+      var historico = await carregarHistorico();
+      if (!historico || historico.length === 0) {
+        throw new Error("O ficheiro JSON está vazio ou corrompido.");
+      }
 
-    var totalInvested = 0;
-    var totalBtc = 0;
-    var labels = [];
-    var dcaValues = [];
-    var investedValues = [];
-
-    dadosFiltrados.forEach(function(item) {
-      var precoBtc = item.precoBtcBrl;
-      var btcCompradoMês = monthlyInvestment / precoBtc;
-      totalInvested += monthlyInvestment;
-      totalBtc += btcCompradoMês;
-      var valorPosicaoEmReais = totalBtc * precoBtc;
-
-      var partesData = item.mes.split('-');
-      labels.push(partesData[1] + '/' + partesData[0]); 
-      dcaValues.push(valorPosicaoEmReais);
-      investedValues.push(totalInvested);
-    });
-
-    var precoFinal = dadosFiltrados[dadosFiltrados.length - 1].precoBtcBrl;
-    var finalBrlValue = totalBtc * precoFinal;
-    var roi = ((finalBrlValue - totalInvested) / totalInvested) * 100;
-
-    $('dca-result-invested').textContent = 'R$ ' + totalInvested.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    $('dca-result-total').textContent = 'R$ ' + finalBrlValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    
-    var roiEl = $('dca-result-roi');
-    roiEl.textContent = (roi >= 0 ? '+' : '') + roi.toFixed(2) + '%';
-    roiEl.className = roi >= 0 ? 'dca-roi-positive' : 'dca-roi-negative';
-
-    var ctx = $('dcaChart');
-    if (ctx) {
-      if (dcaChart) dcaChart.destroy();
-      dcaChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [
-            { label: 'DCA Bitcoin (R$)', data: dcaValues, borderColor: '#F7931A', borderWidth: 2, fill: true, backgroundColor: 'rgba(247,147,26,0.08)', tension: 0.3, pointRadius: 0 },
-            { label: 'Total Investido (R$)', data: investedValues, borderColor: '#555', borderWidth: 1.5, borderDash: [4, 4], fill: false, tension: 0, pointRadius: 0 }
-          ]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: '#aaa', font: { size: 10 }, boxWidth: 12 } } },
-          scales: {
-            x: { ticks: { maxTicksLimit: 5, font: { size: 9 }, color: '#666' }, grid: { display: false } },
-            y: { ticks: { font: { size: 9 }, color: '#666', callback: function (v) { return 'R$' + Math.round(v / 1000) + 'k'; } }, grid: { color: 'rgba(255,255,255,0.05)' } }
-          }
-        }
+      var dadosFiltrados = historico.filter(function(item) {
+        return item.mes >= startDate && item.mes <= endDate;
       });
-    }
 
-    $('dca-result-box').style.display = 'block';
-    btn.disabled = false;
-    btn.textContent = 'Simular \u2192';
+      if (dadosFiltrados.length === 0) {
+        throw new Error("Não existem dados disponíveis para este período (" + startDate + " a " + endDate + ").");
+      }
+
+      var totalInvested = 0;
+      var totalBtc = 0;
+      var labels = [];
+      var dcaValues = [];
+      var investedValues = [];
+
+      dadosFiltrados.forEach(function(item) {
+        var precoBtc = item.precoBtcBrl;
+        var btcCompradoMês = monthlyInvestment / precoBtc;
+        totalInvested += monthlyInvestment;
+        totalBtc += btcCompradoMês;
+        var valorPosicaoEmReais = totalBtc * precoBtc;
+
+        var partesData = item.mes.split('-');
+        labels.push(partesData[1] + '/' + partesData[0]); 
+        dcaValues.push(valorPosicaoEmReais);
+        investedValues.push(totalInvested);
+      });
+
+      var precoFinal = dadosFiltrados[dadosFiltrados.length - 1].precoBtcBrl;
+      var finalBrlValue = totalBtc * precoFinal;
+      var roi = ((finalBrlValue - totalInvested) / totalInvested) * 100;
+
+      if ($('dca-result-invested')) $('dca-result-invested').textContent = 'R$ ' + totalInvested.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      if ($('dca-result-total')) $('dca-result-total').textContent = 'R$ ' + finalBrlValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      
+      var roiEl = $('dca-result-roi');
+      if (roiEl) {
+        roiEl.textContent = (roi >= 0 ? '+' : '') + roi.toFixed(2) + '%';
+        roiEl.className = roi >= 0 ? 'dca-roi-positive' : 'dca-roi-negative';
+      }
+
+      // Previne que a falta do Chart.js congele o processo
+      if (typeof Chart === 'undefined') {
+          throw new Error("A biblioteca Chart.js não foi carregada na página.");
+      }
+
+      var ctx = $('dcaChart');
+      if (ctx) {
+        if (dcaChart) dcaChart.destroy();
+        dcaChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+              { label: 'DCA Bitcoin (R$)', data: dcaValues, borderColor: '#F7931A', borderWidth: 2, fill: true, backgroundColor: 'rgba(247,147,26,0.08)', tension: 0.3, pointRadius: 0 },
+              { label: 'Total Investido (R$)', data: investedValues, borderColor: '#555', borderWidth: 1.5, borderDash: [4, 4], fill: false, tension: 0, pointRadius: 0 }
+            ]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#aaa', font: { size: 10 }, boxWidth: 12 } } },
+            scales: {
+              x: { ticks: { maxTicksLimit: 5, font: { size: 9 }, color: '#666' }, grid: { display: false } },
+              y: { ticks: { font: { size: 9 }, color: '#666', callback: function (v) { return 'R$' + Math.round(v / 1000) + 'k'; } }, grid: { color: 'rgba(255,255,255,0.05)' } }
+            }
+          }
+        });
+      }
+
+      if ($('dca-result-box')) $('dca-result-box').style.display = 'block';
+
+      // Liberta o botão com sucesso
+      btn.disabled = false;
+      btn.textContent = 'Simular \u2192';
+
+    } catch (e) {
+      // Se algo falhar, liberta o botão e exibe o erro exato na tela
+      console.error(e);
+      showError(e.message);
+      btn.disabled = false;
+      btn.textContent = 'Simular \u2192';
+    }
   }
 
   var btnSimulate = $('dca-btn-simulate');
@@ -200,10 +220,9 @@ window.BIWidgets.dca = function initDca() {
 };
 
 // =====================================================================
-// INICIALIZAÇÃO BLINDADA (Resolve o problema da data em branco)
+// INICIALIZAÇÃO SEGURA
 // =====================================================================
 function arrancarScript() {
-  // Se o HTML da calculadora ainda não existir, tenta de novo em meio segundo
   if (!document.getElementById('dca-btn-simulate')) {
     setTimeout(arrancarScript, 500);
     return;
