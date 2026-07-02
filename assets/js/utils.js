@@ -58,6 +58,11 @@ window.BI = (function () {
       s.onload = resolve;
       s.onerror = function () { reject(new Error('Falha ao carregar ' + src)); };
       document.head.appendChild(s);
+    }).catch(function (err) {
+      // Não deixa uma falha temporária (rede instável, hiccup) ficar em cache
+      // para sempre — remove a entrada para permitir nova tentativa depois.
+      delete _scriptCache[src];
+      throw err;
     });
     return _scriptCache[src];
   }
