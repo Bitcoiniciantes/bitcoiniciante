@@ -200,13 +200,24 @@ window.BIWidgets.dca = function initDca() {
             ]
           },
           options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { labels: { color: '#aaa', font: { size: 10 } } } },
-            scales: {
-              x: { ticks: { maxTicksLimit: 5, font: { size: 9 }, color: '#666' }, grid: { display: false } },
-              y: { ticks: { font: { size: 9 }, color: '#666', callback: function (v) { return 'R$ ' + v.toLocaleString('pt-BR'); } }, grid: { color: 'rgba(255,255,255,0.05)' } }
-            }
-          }
+  responsive: true, maintainAspectRatio: false,
+  plugins: { 
+    legend: { labels: { color: '#aaa', font: { size: 10 } } },
+    // NOVO: Código adicionado para formatar a caixinha do mouse com 2 casas decimais
+    tooltip: {
+      callbacks: {
+        label: function(context) {
+          var valor = context.parsed.y;
+          return context.dataset.label + ': R$ ' + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+      }
+    }
+  },
+  scales: {
+    x: { ticks: { maxTicksLimit: 5, font: { size: 9 }, color: '#666' }, grid: { display: false } },
+    y: { ticks: { font: { size: 9 }, color: '#666', callback: function (v) { return 'R$ ' + v.toLocaleString('pt-BR'); } }, grid: { color: 'rgba(255,255,255,0.05)' } }
+  }
+}
         });
       }
 
