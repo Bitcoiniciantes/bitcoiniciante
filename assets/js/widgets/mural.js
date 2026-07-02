@@ -127,7 +127,7 @@ window.BIWidgets.mural = async function initMural() {
     card.innerHTML =
       '<div class="mural__card-top">' +
         '<div class="mural__card-left">' +
-          '<span class="mural__card-mood">' + (entry.mood || '\u20BF') + '</span>' +
+          '<span class="mural__card-mood">' + BI.escapeHtml(entry.mood || '\u20BF') + '</span>' +
           '<span class="mural__card-apelido">' + BI.escapeHtml(entry.apelido) + '</span>' +
         '</div>' +
         '<div class="mural__card-meta">' +
