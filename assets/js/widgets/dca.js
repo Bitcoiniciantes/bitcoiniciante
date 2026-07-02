@@ -1,5 +1,5 @@
 /* =====================================================================
-   Widget: Simulador DCA em Bitcoin - EXORCISTA E ANTI-ADBLOCK
+   Widget: Simulador DCA em Bitcoin - VERSÃO CORRIGIDA E LIMPA
    ===================================================================== */
 window.BIWidgets = window.BIWidgets || {};
 
@@ -13,6 +13,7 @@ window.BIWidgets.dca = function initDca() {
   
   if (!$('dca-btn-simulate')) return;
 
+  // Preenche a data final com o mês atual por padrão
   var now = new Date();
   var endInput = $('dca-end');
   if (endInput && !endInput.value) {
@@ -35,87 +36,62 @@ window.BIWidgets.dca = function initDca() {
     }
   }
 
-  // Auto-carregamento do Chart.js
-  function loadChartJS() {
-    return new Promise(function(resolve, reject) {
-      if (typeof Chart !== 'undefined') return resolve();
-      var script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
-      script.onload = resolve;
-      script.onerror = function() { reject(new Error("Falha ao descarregar o Chart.js.")); };
-      document.head.appendChild(script);
-    });
-  }
-
-  function atualizarTelaTicker(usd, brl, varPercent) {
-    var precoUsd = parseFloat(usd);
-    var precoBrl = parseFloat(brl);
-    var variacao = parseFloat(varPercent);
-
-    if ($('dca-btc-price-usd')) $('dca-btc-price-usd').textContent = '$ ' + precoUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    if ($('dca-btc-price')) $('dca-btc-price').textContent = 'R$ ' + precoBrl.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    
-    var elVar = $('dca-btc-change');
-    if (elVar) {
-      elVar.textContent = (variacao >= 0 ? '+' : '') + variacao.toFixed(2) + '%';
-      elVar.style.color = variacao >= 0 ? '#10B981' : '#EF4444';
-    }
-  }
-
-  /* -------------------- Ticker Anti-AdBlock -------------------- */
+  /* -------------------- Ticker BTC ao Vivo -------------------- */
   async function fetchBtcTicker() {
     try {
-      // 1. Tenta a Binance primeiro
       const [resUsd, resBrl] = await Promise.all([
         fetch(CFG.api.binanceTicker24h + '?symbol=BTCUSDT'),
         fetch(CFG.api.binanceTicker24h + '?symbol=BTCBRL')
       ]);
-      if (!resUsd.ok || !resBrl.ok) throw new Error("Binance bloqueada");
-      
+
       const dataUsd = await resUsd.json();
       const dataBrl = await resBrl.json();
-      atualizarTelaTicker(dataUsd.lastPrice, dataBrl.lastPrice, dataBrl.priceChangePercent);
+
+      var precoUsd = parseFloat(dataUsd.lastPrice);
+      var precoBrl = parseFloat(dataBrl.lastPrice);
+      var variacao = parseFloat(dataBrl.priceChangePercent);
+
+      // Injeta os dados nas IDs exatas do teu HTML
+      if ($('dca-btc-price-usd')) $('dca-btc-price-usd').textContent = '$ ' + precoUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      if ($('dca-btc-price')) $('dca-btc-price').textContent = 'R$ ' + precoBrl.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       
-    } catch (e) {
-      try {
-        // 2. Se falhar (AdBlock), o CoinGecko entra em ação silenciosamente
-        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,brl&include_24hr_change=true');
-        const data = await res.json();
-        atualizarTelaTicker(data.bitcoin.usd, data.bitcoin.brl, data.bitcoin.brl_24h_change);
-      } catch (err) {
-        console.error('Ticker falhou em ambas as APIs.');
+      var elVar = $('dca-btc-change');
+      if (elVar) {
+        elVar.textContent = (variacao >= 0 ? '+' : '') + variacao.toFixed(2) + '%';
+        elVar.style.color = variacao >= 0 ? '#10B981' : '#EF4444';
       }
+    } catch (e) {
+      console.error('Erro ao carregar o ticker ao vivo:', e);
     }
   }
 
-  /* -------------------- Busca do Histórico -------------------- */
+  /* -------------------- Carregar Histórico -------------------- */
   async function carregarHistorico() {
-    let urls = [
-      './dados/historico_dca.json',
-      'https://raw.githubusercontent.com/Bitcoiniciantes/bitcoiniciante/main/dados/historico_dca.json'
-    ];
-    for (let url of urls) {
-      try {
-        let response = await fetch(url);
-        if (response.ok) return await response.json();
-      } catch (e) {}
+    try {
+      const urlDireta = 'https://raw.githubusercontent.com/Bitcoiniciantes/bitcoiniciante/main/dados/historico_dca.json';
+      const response = await fetch(urlDireta);
+      if (!response.ok) throw new Error("Erro ao ler o ficheiro.");
+      return await response.json();
+    } catch (e) {
+      console.error("Erro no histórico:", e);
+      showError("Não foi possível carregar os dados históricos.");
+      return null;
     }
-    throw new Error("O ficheiro de histórico JSON não foi encontrado.");
   }
 
-  /* -------------------- Simulador Principal -------------------- */
+  /* -------------------- Lógica do Simulador -------------------- */
   async function simulateDca() {
+    var btn = $('dca-btn-simulate');
     var loading = $('dca-loading');
     var resultsBox = $('dca-results');
-    var btn = $('dca-btn-simulate');
     
+    if (!btn) return;
+
     try {
-      if (btn) btn.disabled = true;
+      btn.disabled = true;
       if (loading) loading.style.display = 'flex';
       if (resultsBox) resultsBox.style.display = 'none';
       hideError();
-
-      await loadChartJS();
 
       var amountInput = $('dca-monthly');
       var startDate = $('dca-start').value;
@@ -123,11 +99,13 @@ window.BIWidgets.dca = function initDca() {
       var monthlyInvestment = parseFloat(amountInput.value);
 
       var historico = await carregarHistorico();
+      if (!historico) return;
+
       var dadosFiltrados = historico.filter(function(item) {
         return item.mes >= startDate && item.mes <= endDate;
       });
 
-      if (dadosFiltrados.length === 0) throw new Error("Não existem dados disponíveis para este período.");
+      if (dadosFiltrados.length === 0) throw new Error("Sem dados para este período.");
 
       var totalInvested = 0;
       var totalBtc = 0;
@@ -137,11 +115,14 @@ window.BIWidgets.dca = function initDca() {
 
       dadosFiltrados.forEach(function(item) {
         var precoBtc = item.precoBtcBrl;
-        var btcCompradoMês = monthlyInvestment / precoBtc;
+        var btcCompradoMes = monthlyInvestment / precoBtc;
         totalInvested += monthlyInvestment;
-        totalBtc += btcCompradoMês;
+        totalBtc += btcCompradoMes;
         
-        labels.push(item.mes.split('-').reverse().join('/')); 
+        // CORREÇÃO DA DATA: Transforma "2024-01" em "01/2024"
+        var partes = item.mes.split('-'); 
+        labels.push(partes[1] + '/' + partes[0]); 
+        
         dcaValues.push(totalBtc * precoBtc);
         investedValues.push(totalInvested);
       });
@@ -150,6 +131,7 @@ window.BIWidgets.dca = function initDca() {
       var finalBrlValue = totalBtc * precoFinal;
       var roi = ((finalBrlValue - totalInvested) / totalInvested) * 100;
 
+      // Atualiza a tabela de resultados do teu HTML
       var grid = $('dca-result-grid');
       if (grid) {
         grid.innerHTML = `
@@ -168,8 +150,9 @@ window.BIWidgets.dca = function initDca() {
         `;
       }
 
+      // Desenha o gráfico na ID correta (dca-mini-chart)
       var ctx = $('dca-mini-chart');
-      if (ctx) {
+      if (ctx && typeof Chart !== 'undefined') {
         if (dcaChart) dcaChart.destroy();
         dcaChart = new Chart(ctx, {
           type: 'line',
@@ -186,7 +169,6 @@ window.BIWidgets.dca = function initDca() {
             scales: {
               x: { ticks: { maxTicksLimit: 5, font: { size: 9 }, color: '#666' }, grid: { display: false } },
               y: { ticks: { font: { size: 9 }, color: '#666', callback: function (v) { return 'R$' + Math.round(v / 1000) + 'k'; } }, grid: { color: 'rgba(255,255,255,0.05)' } }
-            }
           }
         });
       }
@@ -198,40 +180,21 @@ window.BIWidgets.dca = function initDca() {
       showError(e.message);
     } finally {
       if (loading) loading.style.display = 'none';
-      if (btn) btn.disabled = false;
+      btn.disabled = false;
     }
   }
 
-  var slider = $('dca-monthly');
-  var sliderVal = $('dca-val-monthly');
-  if (slider && sliderVal) {
-    slider.addEventListener('input', function() {
-      sliderVal.textContent = parseFloat(this.value).toLocaleString('pt-BR');
-    });
-  }
+  var btnSimulate = $('dca-btn-simulate');
+  if (btnSimulate) btnSimulate.addEventListener('click', simulateDca);
 
-  // === O HACK CLONE: Mata qualquer fantasma do código antigo ===
-  var oldBtn = $('dca-btn-simulate');
-  if (oldBtn) {
-    var newBtn = oldBtn.cloneNode(true);
-    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
-    newBtn.addEventListener('click', simulateDca);
-  }
-
+  // Inicializa o Ticker
   fetchBtcTicker();
   setInterval(fetchBtcTicker, 60000);
 };
 
-function arrancarScript() {
-  if (!document.getElementById('dca-btn-simulate')) {
-    setTimeout(arrancarScript, 500);
-    return;
-  }
-  window.BIWidgets.dca();
-}
-
+// Inicialização segura
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', arrancarScript);
+  document.addEventListener('DOMContentLoaded', window.BIWidgets.dca);
 } else {
-  arrancarScript();
+  window.BIWidgets.dca();
 }
