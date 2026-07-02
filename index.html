@@ -477,21 +477,21 @@
               <div class="dca__ctrl-top"><span class="dca__ctrl-label">Investimento Mensal (R$)</span><span class="dca__ctrl-val" id="dca-val-monthly">1.000</span></div>
               <input class="dca__slider" type="range" id="dca-monthly" min="100" max="10000" step="100" value="1000">
             </div>
-            <div class="dca__row-2col">
-              <div class="dca__control-row">
-                <div class="dca__ctrl-top"><span class="dca__ctrl-label">De</span></div>
-                <input class="dca__input" type="month" id="dca-start" value="2026-01">
-              </div>
-              <div class="dca__control-row">
-                <div class="dca__ctrl-top"><span class="dca__ctrl-label">Até</span></div>
-                <input class="dca__input" type="month" id="dca-end">
-              </div>
-            </div>
-            <button class="dca__btn" id="dca-btn-simulate">Simular →</button>
-          </div>
+           <div class="dca__row-2col">
+  <div class="dca__control-row">
+    <div class="dca__ctrl-top"><span class="dca__ctrl-label">De</span></div>
+    <input class="dca__input" type="text" id="dca-start" value="01/01/2026" placeholder="DD/MM/AAAA">
+  </div>
+  <div class="dca__control-row">
+    <div class="dca__ctrl-top"><span class="dca__ctrl-label">Até</span></div>
+    <input class="dca__input" type="text" id="dca-end" placeholder="DD/MM/AAAA">
+  </div>
+</div>
+<button class="dca__btn" id="dca-btn-simulate">Simular →</button>
+</div>
 
-          <div class="dca__loading" id="dca-loading" style="display:none;">
-            <div class="dca__spinner"></div>
+<div class="dca__loading" id="dca-loading" style="display:none;">
+  <div class="dca__spinner"></div>
             <span>Buscando dados...</span>
           </div>
 
