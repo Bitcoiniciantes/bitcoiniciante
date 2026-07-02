@@ -80,6 +80,48 @@ window.BIWidgets.dca = function initDca() {
     return parseFloat(last[4]); // close do último candle
   }
 
+  // A BTCBRL só tem histórico curto na Binance. BTCUSDT tem candles desde
+  // ago/2017 (fundação da Binance), então é a fonte confiável para períodos longos.
+  var MIN_START_MONTH = '2017-08';
+
+  function toPtaxDate(ms) {
+    var d = new Date(ms);
+    var mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+    var dd = String(d.getUTCDate()).padStart(2, '0');
+    return mm + '-' + dd + '-' + d.getUTCFullYear();
+  }
+
+  // Busca o câmbio oficial USD/BRL (PTAX, Banco Central) para todo o período.
+  // Histórico completo, sem chave e sem limite de datas — ao contrário de APIs
+  // de cripto gratuitas (CoinGecko público, por ex., limita a 365 dias).
+  async function fetchUsdBrlRates(startMs, endMs) {
+    var target = CFG.api.ptaxPeriodo
+      + "?@dataInicial='" + toPtaxDate(startMs) + "'"
+      + "&@dataFinalCotacao='" + toPtaxDate(endMs) + "'"
+      + '&$top=10000'
+      + "&$filter=tipoBoletim eq 'Fechamento'"
+      + '&$format=json';
+    var proxied = CFG.api.corsProxy + encodeURIComponent(target);
+    var resp = await BI.fetchJSON(proxied, { timeout: 15000, retries: 1 });
+    if (!resp || !resp.contents) throw new Error('Não foi possível obter o câmbio USD/BRL (PTAX/BCB).');
+    var json = JSON.parse(resp.contents);
+    var rows = json && json.value;
+    if (!rows || rows.length === 0) throw new Error('Sem cotações PTAX para o período.');
+    return rows.map(function (r) {
+      return { t: new Date(r.dataHoraCotacao.replace(' ', 'T') + 'Z').getTime(), rate: r.cotacaoCompra };
+    }).sort(function (a, b) { return a.t - b.t; });
+  }
+
+  function rateForMonth(rates, year, month) {
+    var target = Date.UTC(year, month - 1, 1);
+    var closest = rates[0], minD = Math.abs(rates[0].t - target);
+    for (var i = 1; i < rates.length; i++) {
+      var d = Math.abs(rates[i].t - target);
+      if (d < minD) { minD = d; closest = rates[i]; }
+    }
+    return closest.rate;
+  }
+
   /* -------------------- Simulação -------------------- */
   async function dcaSimulate() {
     var monthly = parseInt($('dca-monthly').value, 10);
@@ -101,6 +143,13 @@ window.BIWidgets.dca = function initDca() {
         await BI.loadScript(CFG.cdn.chartjs);
       }
 
+      // Ajusta automaticamente para a data mínima com dados confiáveis
+      var clampedNote = null;
+      if (startDate < MIN_START_MONTH) {
+        clampedNote = 'Dados disponíveis a partir de 08/2017 (início do par BTC/USDT na Binance). Data inicial ajustada automaticamente.';
+        startDate = MIN_START_MONTH;
+      }
+
       var months = getDcaMonths(startDate, endDate);
 
       // Validação: período no futuro não tem dado.
@@ -114,28 +163,37 @@ window.BIWidgets.dca = function initDca() {
       var endMs = Date.now();
 
       // Binance klines: 1 candle/mês, máx 1000 — sobra muito.
-      var url = CFG.api.binanceKlinesBase
-        + '?symbol=BTCBRL&interval=1M'
+      // BTCUSDT (não BTCBRL) porque tem histórico completo desde 2017.
+      var klinesUrl = CFG.api.binanceKlinesBase
+        + '?symbol=BTCUSDT&interval=1M'
         + '&startTime=' + startMs
         + '&endTime=' + endMs
         + '&limit=1000';
 
-      var klines = await BI.fetchJSON(url, { timeout: 12000, retries: 1 });
+      var results = await Promise.all([
+        BI.fetchJSON(klinesUrl, { timeout: 12000, retries: 1 }),
+        fetchUsdBrlRates(startMs, endMs)
+      ]);
+      var klines = results[0];
+      var rates = results[1];
+
       if (!klines || klines.length === 0) {
-        throw new Error('Sem dados para o período.');
+        throw new Error('Sem dados de preço para o período.');
       }
 
-      // DCA: compra no preço de abertura de cada mês
+      // DCA: compra no preço de abertura de cada mês (BTC/USD × câmbio do mês = BTC/BRL)
       var totalInvested = 0, totalCoins = 0;
       var dcaValues = [];
       for (var i = 0; i < months.length; i++) {
         var monthMs = Date.UTC(months[i].year, months[i].month - 1, 1);
         if (monthMs > endMs) break; // ignora meses que ainda não aconteceram
-        var price = priceForMonth(klines, months[i].year, months[i].month);
-        if (!price || isNaN(price)) continue;
-        totalCoins += monthly / price;
+        var priceUsd = priceForMonth(klines, months[i].year, months[i].month);
+        var rate = rateForMonth(rates, months[i].year, months[i].month);
+        if (!priceUsd || isNaN(priceUsd) || !rate || isNaN(rate)) continue;
+        var priceBrl = priceUsd * rate;
+        totalCoins += monthly / priceBrl;
         totalInvested += monthly;
-        dcaValues.push(totalCoins * price);
+        dcaValues.push(totalCoins * priceBrl);
       }
 
       if (dcaValues.length === 0) {
@@ -143,7 +201,7 @@ window.BIWidgets.dca = function initDca() {
       }
 
       // Reavalia o último ponto com o preço atual (fim do período pedido)
-      var current = latestPrice(klines);
+      var current = latestPrice(klines) * rates[rates.length - 1].rate;
       dcaValues[dcaValues.length - 1] = totalCoins * current;
       var finalValue = dcaValues[dcaValues.length - 1];
 
@@ -151,7 +209,7 @@ window.BIWidgets.dca = function initDca() {
       var years = dcaValues.length / 12;
       var cagr = years > 0 ? (Math.pow(finalValue / totalInvested, 1 / years) - 1) * 100 : 0;
 
-      displayResults(totalInvested, finalValue, pctTotal, cagr, dcaValues.length);
+      displayResults(totalInvested, finalValue, pctTotal, cagr, dcaValues.length, clampedNote);
       renderChart(months.slice(0, dcaValues.length), dcaValues, totalInvested);
       showResults(true);
     } catch (e) {
@@ -162,7 +220,7 @@ window.BIWidgets.dca = function initDca() {
   }
 
   /* -------------------- Render -------------------- */
-  function displayResults(invested, final, pctTotal, cagr, numMonths) {
+  function displayResults(invested, final, pctTotal, cagr, numMonths, clampedNote) {
     var grid = $('dca-result-grid');
     var cls = pctTotal >= 0 ? 'positive' : 'negative';
     var sign = pctTotal >= 0 ? '+' : '';
@@ -172,7 +230,11 @@ window.BIWidgets.dca = function initDca() {
       '<div class="dca__result-item"><div class="dca__result-label">Valor Hoje</div><div class="dca__result-value ' + cls + '">R$ ' + Math.round(final).toLocaleString('pt-BR') + '</div></div>' +
       '<div class="dca__result-item"><div class="dca__result-label">Retorno Total</div><div class="dca__result-value ' + cls + '">' + sign + pctTotal.toFixed(1) + '%</div></div>' +
       '<div class="dca__result-item"><div class="dca__result-label">Retorno Anual (CAGR)</div><div class="dca__result-value ' + cls + '">' + signCagr + cagr.toFixed(1) + '% a.a.</div><div class="dca__result-sub">' + numMonths + ' meses</div></div>';
-    $('dca-results-title').textContent = 'Resultado — DCA em Bitcoin (Binance)';
+    var titleHtml = 'Resultado — DCA em Bitcoin (BTC/USDT Binance \u00d7 PTAX/BCB)';
+    if (clampedNote) {
+      titleHtml += '<br><small style="font-weight:400;opacity:.75;">' + BI.escapeHtml(clampedNote) + '</small>';
+    }
+    $('dca-results-title').innerHTML = titleHtml;
   }
 
   function renderChart(months, dcaValues, totalInvested) {
