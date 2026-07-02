@@ -1,0 +1,24 @@
+name: Atualizar Historico DCA
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: node scripts/gerar_historico.js
+      - run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
+          git add dados/historico_dca.json
+          git commit -m "Atualiza historico do DCA" || echo "Sem mudanças"
+          git push
