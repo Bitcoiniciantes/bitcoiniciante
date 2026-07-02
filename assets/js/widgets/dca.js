@@ -13,10 +13,14 @@ window.BIWidgets.dca = function initDca() {
   
   if (!$('dca-btn-simulate')) return;
 
+  // ALTERAÇÃO: Define a data inicial padrão no formato brasileiro (dia/mês/ano)
   var now = new Date();
   var endInput = $('dca-end');
   if (endInput && !endInput.value) {
-    endInput.value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    var dia = String(now.getDate()).padStart(2, '0');
+    var mes = String(now.getMonth() + 1).padStart(2, '0');
+    var ano = now.getFullYear();
+    endInput.value = dia + '/' + mes + '/' + ano;
   }
 
   function showError(msg) {
@@ -118,9 +122,23 @@ window.BIWidgets.dca = function initDca() {
       await loadChartJS();
 
       var amountInput = $('dca-monthly');
-      var startDate = $('dca-start').value;
-      var endDate = $('dca-end').value;
+      var rawStart = $('dca-start').value;
+      var rawEnd = $('dca-end').value;
       var monthlyInvestment = parseFloat(amountInput.value);
+
+      // ALTERAÇÃO: Função interna para converter o formato PT-BR (DD/MM/AAAA) para o formato do JSON (AAAA-MM)
+      function brToIsoMonth(dateStr) {
+        if (!dateStr) return '';
+        var parts = dateStr.split('/');
+        // Se o usuário digitou DD/MM/AAAA, pega o Ano e o Mês
+        if (parts.length === 3) return parts[2] + '-' + parts[1];
+        // Se o usuário digitou apenas MM/AAAA, ajusta também
+        if (parts.length === 2) return parts[1] + '-' + parts[0];
+        return dateStr;
+      }
+
+      var startDate = brToIsoMonth(rawStart);
+      var endDate = brToIsoMonth(rawEnd);
 
       var historico = await carregarHistorico();
       var dadosFiltrados = historico.filter(function(item) {
@@ -141,6 +159,7 @@ window.BIWidgets.dca = function initDca() {
         totalInvested += monthlyInvestment;
         totalBtc += btcCompradoMês;
         
+        // Mantém a exibição dos meses no gráfico em formato MM/AAAA
         labels.push(item.mes.split('-').reverse().join('/')); 
         dcaValues.push(totalBtc * precoBtc);
         investedValues.push(totalInvested);
