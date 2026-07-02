@@ -13,9 +13,10 @@ window.BIWidgets.dca = function initDca() {
 
   function $(id) { return document.getElementById(id); }
   
+  // Se não encontrar o botão, aborta por segurança
   if (!$('dca-btn-simulate')) return;
 
-  // Preenche a data final padrão com o mês atual
+  // Preenche a data final padrão com o mês atual (Isto voltará a funcionar!)
   var now = new Date();
   var endInput = $('dca-end');
   if (endInput && !endInput.value) {
@@ -37,22 +38,20 @@ window.BIWidgets.dca = function initDca() {
       var precoBrl = parseFloat(dataBrl.lastPrice);
       var variacao = parseFloat(dataBrl.priceChangePercent);
 
-      if ($('dca-price-usd')) {
-        $('dca-price-usd').textContent = '$ ' + precoUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      }
-      if ($('dca-price-brl')) {
-        $('dca-price-brl').textContent = 'R$ ' + precoBrl.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      }
-      
-      var varEl = $('dca-price-var');
-      if (varEl) {
-        varEl.textContent = (variacao >= 0 ? '+' : '') + variacao.toFixed(2) + '%';
-        varEl.className = 'dca-live-var ' + (variacao >= 0 ? 'positive' : 'negative');
+      // ⚠️ ATENÇÃO: Se as cotações continuarem em branco, é porque no seu index.html 
+      // as IDs não são essas abaixo. Se for o caso, me avise ou troque aqui:
+      var elUsd = $('dca-price-usd');
+      var elBrl = $('dca-price-brl');
+      var elVar = $('dca-price-var');
+
+      if (elUsd) elUsd.textContent = '$ ' + precoUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      if (elBrl) elBrl.textContent = 'R$ ' + precoBrl.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      if (elVar) {
+        elVar.textContent = (variacao >= 0 ? '+' : '') + variacao.toFixed(2) + '%';
+        elVar.className = 'dca-live-var ' + (variacao >= 0 ? 'positive' : 'negative');
       }
     } catch (e) {
       console.error('Erro no ticker ao vivo:', e);
-      if ($('dca-price-usd')) $('dca-price-usd').textContent = '$ --';
-      if ($('dca-price-brl')) $('dca-price-brl').textContent = 'R$ --';
     }
   }
 
@@ -76,14 +75,10 @@ window.BIWidgets.dca = function initDca() {
   /* -------------------- Leitura do Histórico JSON -------------------- */
   async function carregarHistorico() {
     try {
-      // Puxa direto do código fonte do GitHub (infalível, não sofre com atraso do Pages)
       const urlDireta = 'https://raw.githubusercontent.com/Bitcoiniciantes/bitcoiniciante/main/dados/historico_dca.json';
       const response = await fetch(urlDireta);
-      
       if (!response.ok) throw new Error("Erro na rede");
-      
-      const historicoCompleto = await response.json();
-      return historicoCompleto;
+      return await response.json();
     } catch (e) {
       console.error("Erro ao carregar os dados:", e);
       showError("Não foi possível carregar os dados históricos.");
@@ -106,7 +101,6 @@ window.BIWidgets.dca = function initDca() {
     var startDate = startInput.value;
     var monthlyInvestment = parseFloat((amountInput.value || '0').replace(/\./g, '').replace(',', '.'));
 
-    // Validações básicas
     if (isNaN(monthlyInvestment) || monthlyInvestment <= 0) {
       showError('Por favor, insira um valor mensal válido.');
       btn.disabled = false;
@@ -120,16 +114,13 @@ window.BIWidgets.dca = function initDca() {
       return;
     }
 
-    // 1. Busca os dados do seu arquivo
     var historico = await carregarHistorico();
-    
     if (!historico) {
       btn.disabled = false;
       btn.textContent = 'Simular \u2192';
       return;
     }
 
-    // 2. Filtra o intervalo de datas escolhido pelo usuário
     var dadosFiltrados = historico.filter(function(item) {
       return item.mes >= startDate && item.mes <= endDate;
     });
@@ -141,10 +132,8 @@ window.BIWidgets.dca = function initDca() {
       return;
     }
 
-    // 3. Faz a matemática do DCA
     var totalInvested = 0;
     var totalBtc = 0;
-    
     var labels = [];
     var dcaValues = [];
     var investedValues = [];
@@ -152,25 +141,20 @@ window.BIWidgets.dca = function initDca() {
     dadosFiltrados.forEach(function(item) {
       var precoBtc = item.precoBtcBrl;
       var btcCompradoMês = monthlyInvestment / precoBtc;
-      
       totalInvested += monthlyInvestment;
       totalBtc += btcCompradoMês;
-      
       var valorPosicaoEmReais = totalBtc * precoBtc;
 
-      // Monta os arrays para o gráfico
-      var partesData = item.mes.split('-'); // ex: 2014-09
+      var partesData = item.mes.split('-');
       labels.push(partesData[1] + '/' + partesData[0]); 
       dcaValues.push(valorPosicaoEmReais);
       investedValues.push(totalInvested);
     });
 
-    // 4. Calcula o Resultado Final e o ROI
     var precoFinal = dadosFiltrados[dadosFiltrados.length - 1].precoBtcBrl;
     var finalBrlValue = totalBtc * precoFinal;
     var roi = ((finalBrlValue - totalInvested) / totalInvested) * 100;
 
-    // Atualiza a tela com os valores
     $('dca-result-invested').textContent = 'R$ ' + totalInvested.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     $('dca-result-total').textContent = 'R$ ' + finalBrlValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     
@@ -178,11 +162,9 @@ window.BIWidgets.dca = function initDca() {
     roiEl.textContent = (roi >= 0 ? '+' : '') + roi.toFixed(2) + '%';
     roiEl.className = roi >= 0 ? 'dca-roi-positive' : 'dca-roi-negative';
 
-    // 5. Monta o Gráfico Chart.js
     var ctx = $('dcaChart');
     if (ctx) {
       if (dcaChart) dcaChart.destroy();
-      
       dcaChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -203,26 +185,34 @@ window.BIWidgets.dca = function initDca() {
       });
     }
 
-    // Mostra a caixa de resultados e restaura o botão
     $('dca-result-box').style.display = 'block';
     btn.disabled = false;
     btn.textContent = 'Simular \u2192';
   }
 
-  // Ativa os eventos
   var btnSimulate = $('dca-btn-simulate');
   if (btnSimulate) {
     btnSimulate.addEventListener('click', simulateDca);
   }
 
-  // Inicia o Ticker ao vivo e atualiza a cada 60 segundos
   fetchBtcTicker();
   setInterval(fetchBtcTicker, 60000);
 };
 
-// Se o script for carregado após o DOM, já inicializa
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
+// =====================================================================
+// INICIALIZAÇÃO BLINDADA (Resolve o problema da data em branco)
+// =====================================================================
+function arrancarScript() {
+  // Se o HTML da calculadora ainda não existir, tenta de novo em meio segundo
+  if (!document.getElementById('dca-btn-simulate')) {
+    setTimeout(arrancarScript, 500);
+    return;
+  }
   window.BIWidgets.dca();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', arrancarScript);
 } else {
-  document.addEventListener('DOMContentLoaded', window.BIWidgets.dca);
+  arrancarScript();
 }
