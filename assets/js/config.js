@@ -19,8 +19,9 @@ window.BI_CONFIG = {
     coingeckoSimple: 'https://api.coingecko.com/api/v3/simple/price',
     coingeckoMarketChart: 'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart',
     mstrYahoo: 'https://query1.finance.yahoo.com/v8/finance/chart/MSTR?region=US&lang=en-US&interval=1m&range=1d',
-    // PTAX (Banco Central do Brasil) — câmbio oficial USD/BRL, histórico completo, sem chave e sem limite de período
-    ptaxPeriodo: 'https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)',
+    // AwesomeAPI (BR) — câmbio USD/BRL histórico, CORS nativo (sem proxy), sem chave.
+    // Máximo 360 registros por requisição, por isso buscamos em blocos anuais.
+    awesomeApiDaily: 'https://economia.awesomeapi.com.br/json/daily/USD-BRL/360',
     corsProxy: 'https://api.allorigins.win/get?url='
   },
 
