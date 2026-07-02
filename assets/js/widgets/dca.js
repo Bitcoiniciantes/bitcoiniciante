@@ -204,7 +204,7 @@ window.BIWidgets.dca = function initDca() {
             plugins: { legend: { labels: { color: '#aaa', font: { size: 10 } } } },
             scales: {
               x: { ticks: { maxTicksLimit: 5, font: { size: 9 }, color: '#666' }, grid: { display: false } },
-              y: { ticks: { font: { size: 9 }, color: '#666', callback: function (v) { return 'R$' + Math.round(v / 1000) + 'k'; } }, grid: { color: 'rgba(255,255,255,0.05)' } }
+              y: { ticks: { font: { size: 9 }, color: '#666', callback: function (v) { return 'R$ ' + v.toLocaleString('pt-BR'); } }, grid: { color: 'rgba(255,255,255,0.05)' } }
             }
           }
         });
