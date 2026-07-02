@@ -84,32 +84,48 @@ window.BIWidgets.dca = function initDca() {
   // ago/2017 (fundação da Binance), então é a fonte confiável para períodos longos.
   var MIN_START_MONTH = '2017-08';
 
-  function toPtaxDate(ms) {
+  function toAwesomeDate(ms) {
     var d = new Date(ms);
     var mm = String(d.getUTCMonth() + 1).padStart(2, '0');
     var dd = String(d.getUTCDate()).padStart(2, '0');
-    return mm + '-' + dd + '-' + d.getUTCFullYear();
+    return '' + d.getUTCFullYear() + mm + dd;
   }
 
-  // Busca o câmbio oficial USD/BRL (PTAX, Banco Central) para todo o período.
-  // Histórico completo, sem chave e sem limite de datas — ao contrário de APIs
-  // de cripto gratuitas (CoinGecko público, por ex., limita a 365 dias).
+  // O timestamp vem em segundos OU ms dependendo do registro; create_date é mais confiável.
+  function parseAwesomeTimestamp(r) {
+    if (r.create_date) {
+      return new Date(r.create_date.replace(' ', 'T') + '-03:00').getTime();
+    }
+    var ts = Number(r.timestamp);
+    return ts > 1e12 ? ts : ts * 1000;
+  }
+
+  // Busca o câmbio USD/BRL (AwesomeAPI) para todo o período, em blocos anuais
+  // (a API limita a 360 registros por requisição). CORS nativo — sem proxy.
   async function fetchUsdBrlRates(startMs, endMs) {
-    var target = CFG.api.ptaxPeriodo
-      + "?@dataInicial='" + toPtaxDate(startMs) + "'"
-      + "&@dataFinalCotacao='" + toPtaxDate(endMs) + "'"
-      + '&$top=10000'
-      + "&$filter=tipoBoletim eq 'Fechamento'"
-      + '&$format=json';
-    var proxied = CFG.api.corsProxy + encodeURIComponent(target);
-    var resp = await BI.fetchJSON(proxied, { timeout: 15000, retries: 1 });
-    if (!resp || !resp.contents) throw new Error('Não foi possível obter o câmbio USD/BRL (PTAX/BCB).');
-    var json = JSON.parse(resp.contents);
-    var rows = json && json.value;
-    if (!rows || rows.length === 0) throw new Error('Sem cotações PTAX para o período.');
-    return rows.map(function (r) {
-      return { t: new Date(r.dataHoraCotacao.replace(' ', 'T') + 'Z').getTime(), rate: r.cotacaoCompra };
-    }).sort(function (a, b) { return a.t - b.t; });
+    var startYear = new Date(startMs).getUTCFullYear();
+    var endYear = new Date(endMs).getUTCFullYear();
+    var requests = [];
+    for (var y = startYear; y <= endYear; y++) {
+      var from = (y === startYear) ? startMs : Date.UTC(y, 0, 1);
+      var to = (y === endYear) ? endMs : Date.UTC(y, 11, 31);
+      var url = CFG.api.awesomeApiDaily + '?start_date=' + toAwesomeDate(from) + '&end_date=' + toAwesomeDate(to);
+      requests.push(
+        BI.fetchJSON(url, { timeout: 10000, retries: 1 }).catch(function () { return []; })
+      );
+    }
+    var chunks = await Promise.all(requests);
+    var rates = [];
+    chunks.forEach(function (arr) {
+      (arr || []).forEach(function (r) {
+        var bid = parseFloat(r.bid);
+        if (!bid || isNaN(bid)) return;
+        rates.push({ t: parseAwesomeTimestamp(r), rate: bid });
+      });
+    });
+    if (rates.length === 0) throw new Error('Não foi possível obter o câmbio USD/BRL (AwesomeAPI).');
+    rates.sort(function (a, b) { return a.t - b.t; });
+    return rates;
   }
 
   function rateForMonth(rates, year, month) {
@@ -230,7 +246,7 @@ window.BIWidgets.dca = function initDca() {
       '<div class="dca__result-item"><div class="dca__result-label">Valor Hoje</div><div class="dca__result-value ' + cls + '">R$ ' + Math.round(final).toLocaleString('pt-BR') + '</div></div>' +
       '<div class="dca__result-item"><div class="dca__result-label">Retorno Total</div><div class="dca__result-value ' + cls + '">' + sign + pctTotal.toFixed(1) + '%</div></div>' +
       '<div class="dca__result-item"><div class="dca__result-label">Retorno Anual (CAGR)</div><div class="dca__result-value ' + cls + '">' + signCagr + cagr.toFixed(1) + '% a.a.</div><div class="dca__result-sub">' + numMonths + ' meses</div></div>';
-    var titleHtml = 'Resultado — DCA em Bitcoin (BTC/USDT Binance \u00d7 PTAX/BCB)';
+    var titleHtml = 'Resultado — DCA em Bitcoin (BTC/USDT Binance \u00d7 USD/BRL AwesomeAPI)';
     if (clampedNote) {
       titleHtml += '<br><small style="font-weight:400;opacity:.75;">' + BI.escapeHtml(clampedNote) + '</small>';
     }
