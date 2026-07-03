@@ -517,26 +517,31 @@
               <canvas id="dca-mini-chart" height="140"></canvas>
             </div>
 
-            <!-- Nova Tabela de Histórico -->
+            <!-- Tabela de Histórico Otimizada com Paginação -->
             <div class="dca__history-wrap" style="margin-top: 20px;">
-              <button id="dca-history-toggle" style="width: 100%; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 13px; transition: background 0.2s;">
-                ▾ Expandir Histórico de Compras individuais
-              </button>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: background 0.2s;" id="dca-history-toggle">
+                <span style="font-size: 13px; font-weight: 600; color: #ccc; text-transform: uppercase;">Histórico de Compras</span>
+                <span style="font-size: 13px; color: #888;" id="dca-history-arrow">▾ Expandir</span>
+              </div>
               
-              <div id="dca-history-container" style="display: none; max-height: 250px; overflow-y: auto; margin-top: 10px; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; scrollbar-width: thin; scrollbar-color: #555 #1a1a1a;">
-                <table style="width: 100%; text-align: left; border-collapse: collapse; font-size: 11px; color: #aaa;">
-                  <thead style="position: sticky; top: 0; background: #1a1a1a; z-index: 1;">
+              <div id="dca-history-container" style="display: none; max-height: 350px; overflow-x: auto; overflow-y: auto; margin-top: 5px; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; scrollbar-width: thin; scrollbar-color: #555 #1a1a1a;">
+                <table style="width: 100%; min-width: 500px; text-align: left; border-collapse: collapse; font-size: 11px; white-space: nowrap;">
+                  <thead style="position: sticky; top: 0; background: #1a1a1a; z-index: 1; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">
                     <tr>
-                      <th style="padding: 10px; border-bottom: 1px solid #333;">Data</th>
-                      <th style="padding: 10px; border-bottom: 1px solid #333;">Preço BTC</th>
-                      <th style="padding: 10px; border-bottom: 1px solid #333;">Aporte</th>
-                      <th style="padding: 10px; border-bottom: 1px solid #333;">Sats Acumulados</th>
+                      <th style="padding: 12px 10px; border-bottom: 1px solid #333; color: #8892b0;">Data</th>
+                      <th style="padding: 12px 10px; border-bottom: 1px solid #333; color: #8892b0;">Preço BTC</th>
+                      <th style="padding: 12px 10px; border-bottom: 1px solid #333; color: #8892b0;">Aporte</th>
+                      <th style="padding: 12px 10px; border-bottom: 1px solid #333; color: #60a5fa;">BTC Comprado</th>
+                      <th style="padding: 12px 10px; border-bottom: 1px solid #333; color: #60a5fa;">BTC Acumulado</th>
                     </tr>
                   </thead>
                   <tbody id="dca-history-tbody">
                     <!-- Preenchido via JS -->
                   </tbody>
                 </table>
+                <div id="dca-load-more-container" style="text-align: center; padding: 15px; display: none; background: #1a1a1a; position: sticky; bottom: 0; border-top: 1px solid #333;">
+                   <button id="dca-btn-load-more" style="background: transparent; color: #F7931A; border: 1px solid rgba(247,147,26,0.5); padding: 8px 20px; border-radius: 5px; cursor: pointer; font-size: 12px; transition: all 0.2s;">Carregar mais 50 ↓</button>
+                </div>
               </div>
             </div>
 
