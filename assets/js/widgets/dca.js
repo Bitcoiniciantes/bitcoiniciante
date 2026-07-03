@@ -5,7 +5,7 @@ window.BIWidgets = window.BIWidgets || {};
 
 window.BIWidgets.dca = function initDca() {
   'use strict';
-  console.log("[DCA] Widget iniciado com sucesso!");
+  console.log("✅ [DCA] Widget iniciado com sucesso!");
 
   var CFG = window.BI_CONFIG || { api: { binanceTicker24h: 'https://api.binance.com/api/v3/ticker/24hr' } };
   var dcaChart = null;
@@ -14,11 +14,6 @@ window.BIWidgets.dca = function initDca() {
   var historicoDiarioPromise = null;
 
   function $(id) { return document.getElementById(id); }
-
-  if (!$('dca-btn-simulate') && !$('dca-hist-btn-consultar')) {
-    console.log("[DCA] Botões não encontrados, abortando.");
-    return;
-  }
 
   // ==========================================================
   // Datas preenchidas conforme o "Type" do HTML
@@ -112,13 +107,11 @@ window.BIWidgets.dca = function initDca() {
     historicoDiarioPromise = (async function() {
       for (let url of urls) {
         try {
-          console.log("[DCA] Tentando buscar JSON do histórico: " + url);
           let response = await fetch(url);
           if (response.ok) {
             let json = await response.json();
             json.sort(function(a, b) { return a.data < b.data ? -1 : (a.data > b.data ? 1 : 0); });
             historicoDiarioCache = json;
-            console.log("[DCA] JSON de histórico carregado com sucesso (" + json.length + " linhas).");
             return json;
           }
         } catch (e) {}
@@ -187,7 +180,6 @@ window.BIWidgets.dca = function initDca() {
 
       var startDate = getIsoMonth(rawStart);
       var endDate = getIsoMonth(rawEnd);
-      console.log("[DCA] Procurando datas entre:", startDate, "e", endDate);
 
       var historicoDiario = await carregarHistoricoDiario();
       var historico = agruparPorMes(historicoDiario);
@@ -264,7 +256,6 @@ window.BIWidgets.dca = function initDca() {
       }
 
       if (resultsBox) resultsBox.style.display = 'block';
-      console.log("[DCA] Processo do Simulador concluído.");
 
     } catch (e) {
       console.error("[DCA] Erro no simulador:", e);
@@ -290,7 +281,6 @@ window.BIWidgets.dca = function initDca() {
     return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  // NOVA LÓGICA: Tudo é convertido para BTC garantindo as casas decimais necessárias (até 8)
   function formatarSats(sats) {
     var btc = sats / 100000000;
     return btc.toLocaleString('pt-BR', { maximumFractionDigits: 8 }) + ' BTC';
@@ -298,7 +288,7 @@ window.BIWidgets.dca = function initDca() {
 
   async function consultarHistorico(e) {
     if (e) e.preventDefault();
-    console.log("[DCA] Consulta Histórica acionada pelo botão.");
+    console.log("[DCA] Consulta Histórica acionada.");
 
     var btn = $('dca-hist-btn-consultar');
     var resultsBox = $('dca-hist-results');
@@ -312,7 +302,6 @@ window.BIWidgets.dca = function initDca() {
 
       var rawData = $('dca-hist-data').value;
       var valor = parseFloat($('dca-hist-valor').value);
-      console.log("[DCA] Lendo os dados: Data = " + rawData + " | Reais = " + valor);
 
       if (!rawData) throw new Error("Escolha uma data.");
       if (!valor || valor <= 0) throw new Error("Digite um valor em reais válido.");
@@ -322,7 +311,7 @@ window.BIWidgets.dca = function initDca() {
       var registroData = precoMaisProximo(historicoDiario, rawData);
       var registroHoje = historicoDiario[historicoDiario.length - 1];
 
-      if (!registroData) throw new Error("Não há dados para essa data (antes do início do histórico).");
+      if (!registroData) throw new Error("Não há dados para essa data.");
 
       var precoData = registroData.precoBtcBrl;
       var precoHoje = registroHoje.precoBtcBrl;
@@ -355,10 +344,8 @@ window.BIWidgets.dca = function initDca() {
       }
 
       if (resultsBox) resultsBox.style.display = 'block';
-      console.log("[DCA] Consulta Histórica concluída.");
 
     } catch (e) {
-      console.error("[DCA] Erro na consulta histórica:", e);
       showHistError(e.message);
     } finally {
       if (loading) loading.style.display = 'none';
@@ -374,28 +361,27 @@ window.BIWidgets.dca = function initDca() {
     });
   }
 
-  // Ancoragem e purificação dos botões (evita bugs de clicks duplos)
-  var oldBtn = $('dca-btn-simulate');
-  if (oldBtn) {
-    var newBtn = oldBtn.cloneNode(true);
-    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
-    newBtn.addEventListener('click', simulateDca);
-    console.log("[DCA] Botão 'Simular' atrelado ao JS com sucesso.");
+  // ====================================================================
+  // FORÇANDO A CONEXÃO DIRETA DOS BOTÕES
+  // ====================================================================
+  var histBtn = document.getElementById('dca-hist-btn-consultar');
+  if (histBtn) {
+    histBtn.onclick = consultarHistorico;
+    console.log("✅ [DCA] Botão Consulta Histórica conectado!");
+  } else {
+    console.error("❌ [DCA] Botão 'dca-hist-btn-consultar' não encontrado.");
   }
 
-  var oldHistBtn = $('dca-hist-btn-consultar');
-  if (oldHistBtn) {
-    var newHistBtn = oldHistBtn.cloneNode(true);
-    oldHistBtn.parentNode.replaceChild(newHistBtn, oldHistBtn);
-    newHistBtn.addEventListener('click', consultarHistorico);
-    console.log("[DCA] Botão 'Consultar' atrelado ao JS com sucesso.");
+  var dcaBtn = document.getElementById('dca-btn-simulate');
+  if (dcaBtn) {
+    dcaBtn.onclick = simulateDca;
+    console.log("✅ [DCA] Botão Simulador conectado!");
   }
 
   fetchBtcTicker();
   setInterval(fetchBtcTicker, 60000);
 };
 
-// Aguarda os elementos existirem na tela para iniciar
 function arrancarScript() {
   if (!document.getElementById('dca-btn-simulate') && !document.getElementById('dca-hist-btn-consultar')) {
     setTimeout(arrancarScript, 500);
