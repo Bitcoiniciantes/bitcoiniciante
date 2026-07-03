@@ -163,72 +163,159 @@ window.BIWidgets.dca = function initDca() {
       await loadChartJS();
 
       var amountInput = $('dca-monthly');
+      var freqSelect = $('dca-frequencia');
       var rawStart = $('dca-start').value;
       var rawEnd = $('dca-end').value;
-      var monthlyInvestment = parseFloat(amountInput.value);
+      
+      var aporte = parseFloat(amountInput.value);
+      var frequencia = freqSelect ? freqSelect.value : 'mensal';
 
-      function getIsoMonth(dateStr) {
-        if (!dateStr) return '';
-        if (dateStr.includes('/')) {
-          var parts = dateStr.split('/');
-          if (parts.length === 3) return parts[2] + '-' + parts[1];
-          if (parts.length === 2) return parts[1] + '-' + parts[0];
+      // Converte DD/MM/AAAA para objeto Date
+      function parseDateBR(dateStr) {
+        if (!dateStr) return new Date();
+        var parts = dateStr.split('/');
+        if (parts.length === 3) return new Date(parts[2], parts[1] - 1, parts[0]);
+        if (dateStr.includes('-')) {
+          var dParts = dateStr.split('-');
+          return new Date(dParts[0], dParts[1] - 1, dParts[2] || 1);
         }
-        if (dateStr.includes('-')) return dateStr.substring(0, 7);
-        return dateStr;
+        return new Date();
       }
 
-      var startDate = getIsoMonth(rawStart);
-      var endDate = getIsoMonth(rawEnd);
+      var currentDate = parseDateBR(rawStart);
+      var endDateObj = parseDateBR(rawEnd);
+
+      if (currentDate > endDateObj) throw new Error("A data de início não pode ser maior que a data final.");
 
       var historicoDiario = await carregarHistoricoDiario();
-      var historico = agruparPorMes(historicoDiario);
-
-      var dadosFiltrados = historico.filter(function(item) {
-        return item.mes >= startDate && item.mes <= endDate;
-      });
-
-      if (dadosFiltrados.length === 0) throw new Error("Não existem dados disponíveis para este período.");
-
+      
       var totalInvested = 0;
       var totalBtc = 0;
+      var historyTableData = [];
+      
+      // Variáveis para o gráfico (agrupamos por mês para não travar a renderização com milhares de pontos)
       var labels = [];
       var dcaValues = [];
       var investedValues = [];
+      var lastChartMonth = "";
 
-      dadosFiltrados.forEach(function(item) {
-        var precoBtc = item.precoBtcBrl;
-        var btcCompradoMês = monthlyInvestment / precoBtc;
-        totalInvested += monthlyInvestment;
-        totalBtc += btcCompradoMês;
+      // Loop do motor de aportes
+      while (currentDate <= endDateObj) {
+        var isoDate = currentDate.getFullYear() + '-' + String(currentDate.getMonth() + 1).padStart(2, '0') + '-' + String(currentDate.getDate()).padStart(2, '0');
+        
+        // Busca o preço no dia exato ou o pregão anterior mais próximo
+        var registro = precoMaisProximo(historicoDiario, isoDate);
+        
+        if (registro) {
+          var precoBtc = registro.precoBtcBrl;
+          var btcComprado = aporte / precoBtc;
+          
+          totalInvested += aporte;
+          totalBtc += btcComprado;
 
-        labels.push(item.mes.split('-').reverse().join('/'));
-        dcaValues.push(totalBtc * precoBtc);
-        investedValues.push(totalInvested);
-      });
+          // Salva para a tabela (adiciona no início para os mais recentes ficarem no topo)
+          historyTableData.unshift({
+            dataFormated: String(currentDate.getDate()).padStart(2, '0') + '/' + String(currentDate.getMonth() + 1).padStart(2, '0') + '/' + currentDate.getFullYear(),
+            preco: precoBtc,
+            aporte: aporte,
+            btcComprado: btcComprado,
+            btcAcumulado: totalBtc
+          });
 
-      var precoFinal = dadosFiltrados[dadosFiltrados.length - 1].precoBtcBrl;
+          // Plota no gráfico apenas uma vez por mês para otimizar performance visual
+          var mesAtual = isoDate.substring(0, 7);
+          if (mesAtual !== lastChartMonth || frequencia === 'mensal') {
+            labels.push(mesAtual.split('-').reverse().join('/'));
+            dcaValues.push(totalBtc * precoBtc);
+            investedValues.push(totalInvested);
+            lastChartMonth = mesAtual;
+          }
+        }
+
+        // Lógica do salto (Step)
+        if (frequencia === 'diario') {
+          currentDate.setDate(currentDate.getDate() + 1);
+        } else if (frequencia === 'semanal') {
+          currentDate.setDate(currentDate.getDate() + 7);
+        } else {
+          currentDate.setMonth(currentDate.getMonth() + 1);
+        }
+      }
+
+      if (historyTableData.length === 0) throw new Error("Não existem dados disponíveis para este período.");
+
+      // Cálculos finais para o Grid
+      var precoFinal = historicoDiario[historicoDiario.length - 1].precoBtcBrl;
       var finalBrlValue = totalBtc * precoFinal;
       var roi = ((finalBrlValue - totalInvested) / totalInvested) * 100;
+      var precoMedio = totalInvested / totalBtc;
+      var roiPrecoMedio = ((precoFinal - precoMedio) / precoMedio) * 100;
 
+      // Renderiza os 6 cards
       var grid = $('dca-result-grid');
       if (grid) {
         grid.innerHTML = `
           <div style="display:flex; flex-direction:column; gap:4px;">
-            <span style="font-size:12px; color:#aaa;">Total Investido</span>
-            <strong style="color:#fff; font-size:16px;">R$ ${totalInvested.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+            <span style="font-size:11px; color:#aaa;">Total Investido</span>
+            <strong style="color:#fff; font-size:15px;">R$ ${totalInvested.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
           </div>
           <div style="display:flex; flex-direction:column; gap:4px;">
-            <span style="font-size:12px; color:#aaa;">Valor Atual</span>
-            <strong style="color:#fff; font-size:16px;">R$ ${finalBrlValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+            <span style="font-size:11px; color:#aaa;">BTC Acumulado</span>
+            <strong style="color:#F7931A; font-size:15px;">${totalBtc.toFixed(8)}</strong>
           </div>
           <div style="display:flex; flex-direction:column; gap:4px;">
-            <span style="font-size:12px; color:#aaa;">Retorno</span>
-            <strong style="font-size:16px; color:${roi >= 0 ? '#10B981' : '#EF4444'};">${roi >= 0 ? '+' : ''}${roi.toFixed(2)}%</strong>
+            <span style="font-size:11px; color:#aaa;">Valor Atual</span>
+            <strong style="color:#fff; font-size:15px;">R$ ${finalBrlValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <span style="font-size:11px; color:#aaa;">Preço Médio</span>
+            <strong style="color:#fff; font-size:15px;">R$ ${precoMedio.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <span style="font-size:11px; color:#aaa;">Retorno Total</span>
+            <strong style="font-size:15px; color:${roi >= 0 ? '#10B981' : '#EF4444'};">${roi >= 0 ? '+' : ''}${roi.toFixed(2)}%</strong>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <span style="font-size:11px; color:#aaa;">Média vs Atual</span>
+            <strong style="font-size:15px; color:${roiPrecoMedio >= 0 ? '#10B981' : '#EF4444'};">${roiPrecoMedio >= 0 ? '+' : ''}${roiPrecoMedio.toFixed(2)}%</strong>
           </div>
         `;
       }
 
+      // Preenche a Tabela de Histórico
+      var tbody = $('dca-history-tbody');
+      if (tbody) {
+        var tableHTML = '';
+        historyTableData.forEach(function(row) {
+          var sats = (row.btcAcumulado * 100000000).toLocaleString('pt-BR', {maximumFractionDigits: 0});
+          tableHTML += `
+            <tr>
+              <td style="padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">${row.dataFormated}</td>
+              <td style="padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">R$ ${row.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style="padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">R$ ${row.aporte.toLocaleString('pt-BR')}</td>
+              <td style="padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); color:#F7931A;">${sats} sats</td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = tableHTML;
+      }
+
+      // Configura evento de Expandir/Recolher Tabela (evitando múltiplos binds)
+      var toggleBtn = $('dca-history-toggle');
+      var histContainer = $('dca-history-container');
+      if (toggleBtn && histContainer) {
+        toggleBtn.onclick = function() {
+          if (histContainer.style.display === 'none') {
+            histContainer.style.display = 'block';
+            toggleBtn.innerHTML = '▴ Recolher Histórico';
+          } else {
+            histContainer.style.display = 'none';
+            toggleBtn.innerHTML = '▾ Expandir Histórico de Compras individuais';
+          }
+        };
+      }
+
+      // Gráfico
       var ctx = $('dca-mini-chart');
       if (ctx) {
         if (dcaChart) dcaChart.destroy();
