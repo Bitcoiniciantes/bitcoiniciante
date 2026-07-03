@@ -12,6 +12,10 @@ window.BIWidgets.dca = function initDca() {
 
   var historicoDiarioCache = null;
   var historicoDiarioPromise = null;
+  
+  // Variáveis para a paginação da Tabela de Histórico
+  var dcaFullHistoryData = [];
+  var dcaRenderLimit = 50;
 
   function $(id) { return document.getElementById(id); }
 
@@ -122,18 +126,6 @@ window.BIWidgets.dca = function initDca() {
     return historicoDiarioPromise;
   }
 
-  function agruparPorMes(historicoDiario) {
-    var porMes = {};
-    for (var i = 0; i < historicoDiario.length; i++) {
-      var item = historicoDiario[i];
-      var mes = item.data.slice(0, 7); 
-      if (!porMes[mes]) { porMes[mes] = { mes: mes, precoBtcBrl: item.precoBtcBrl }; }
-    }
-    var lista = Object.keys(porMes).map(function(k) { return porMes[k]; });
-    lista.sort(function(a, b) { return a.mes < b.mes ? -1 : (a.mes > b.mes ? 1 : 0); });
-    return lista;
-  }
-
   function precoMaisProximo(historicoDiario, dataAlvoIso) {
     var alvo = new Date(dataAlvoIso + 'T00:00:00');
     var melhor = null;
@@ -143,6 +135,34 @@ window.BIWidgets.dca = function initDca() {
       if (d <= alvo) { melhor = item; } else { break; }
     }
     return melhor;
+  }
+
+  // Lógica de Renderização e Paginação da Tabela
+  function renderHistoryTable() {
+    var tbody = $('dca-history-tbody');
+    var loadMoreContainer = $('dca-load-more-container');
+    if (!tbody) return;
+
+    var tableHTML = '';
+    var itemsToRender = dcaFullHistoryData.slice(0, dcaRenderLimit);
+
+    itemsToRender.forEach(function(row) {
+      tableHTML += `
+        <tr style="font-family: 'DM Mono', monospace; font-weight: 500;">
+          <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #fff;">${row.dataFormated}</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #fff;">R$ ${row.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #fff;">R$ ${row.aporte.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #fff;">${row.btcComprado.toFixed(8)}</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #fff;">${row.btcAcumulado.toFixed(8)}</td>
+        </tr>
+      `;
+    });
+    
+    tbody.innerHTML = tableHTML;
+
+    if (loadMoreContainer) {
+      loadMoreContainer.style.display = (dcaFullHistoryData.length > dcaRenderLimit) ? 'block' : 'none';
+    }
   }
 
   /* ================= SIMULADOR DCA ================= */
@@ -170,7 +190,6 @@ window.BIWidgets.dca = function initDca() {
       var aporte = parseFloat(amountInput.value);
       var frequencia = freqSelect ? freqSelect.value : 'mensal';
 
-      // Converte DD/MM/AAAA para objeto Date
       function parseDateBR(dateStr) {
         if (!dateStr) return new Date();
         var parts = dateStr.split('/');
@@ -191,9 +210,9 @@ window.BIWidgets.dca = function initDca() {
       
       var totalInvested = 0;
       var totalBtc = 0;
-      var historyTableData = [];
+      dcaFullHistoryData = []; // Zera o array global de histórico
+      dcaRenderLimit = 50; // Reseta a paginação
       
-      // Variáveis para o gráfico (agrupamos por mês para não travar a renderização com milhares de pontos)
       var labels = [];
       var dcaValues = [];
       var investedValues = [];
@@ -203,7 +222,6 @@ window.BIWidgets.dca = function initDca() {
       while (currentDate <= endDateObj) {
         var isoDate = currentDate.getFullYear() + '-' + String(currentDate.getMonth() + 1).padStart(2, '0') + '-' + String(currentDate.getDate()).padStart(2, '0');
         
-        // Busca o preço no dia exato ou o pregão anterior mais próximo
         var registro = precoMaisProximo(historicoDiario, isoDate);
         
         if (registro) {
@@ -213,8 +231,8 @@ window.BIWidgets.dca = function initDca() {
           totalInvested += aporte;
           totalBtc += btcComprado;
 
-          // Salva para a tabela (adiciona no início para os mais recentes ficarem no topo)
-          historyTableData.unshift({
+          // Salva para a tabela (unshift coloca os mais recentes no topo)
+          dcaFullHistoryData.unshift({
             dataFormated: String(currentDate.getDate()).padStart(2, '0') + '/' + String(currentDate.getMonth() + 1).padStart(2, '0') + '/' + currentDate.getFullYear(),
             preco: precoBtc,
             aporte: aporte,
@@ -222,7 +240,6 @@ window.BIWidgets.dca = function initDca() {
             btcAcumulado: totalBtc
           });
 
-          // Plota no gráfico apenas uma vez por mês para otimizar performance visual
           var mesAtual = isoDate.substring(0, 7);
           if (mesAtual !== lastChartMonth || frequencia === 'mensal') {
             labels.push(mesAtual.split('-').reverse().join('/'));
@@ -232,7 +249,6 @@ window.BIWidgets.dca = function initDca() {
           }
         }
 
-        // Lógica do salto (Step)
         if (frequencia === 'diario') {
           currentDate.setDate(currentDate.getDate() + 1);
         } else if (frequencia === 'semanal') {
@@ -242,7 +258,7 @@ window.BIWidgets.dca = function initDca() {
         }
       }
 
-      if (historyTableData.length === 0) throw new Error("Não existem dados disponíveis para este período.");
+      if (dcaFullHistoryData.length === 0) throw new Error("Não existem dados disponíveis para este período.");
 
       // Cálculos finais para o Grid
       var precoFinal = historicoDiario[historicoDiario.length - 1].precoBtcBrl;
@@ -282,35 +298,21 @@ window.BIWidgets.dca = function initDca() {
         `;
       }
 
-      // Preenche a Tabela de Histórico
-      var tbody = $('dca-history-tbody');
-      if (tbody) {
-        var tableHTML = '';
-        historyTableData.forEach(function(row) {
-          var sats = (row.btcAcumulado * 100000000).toLocaleString('pt-BR', {maximumFractionDigits: 0});
-          tableHTML += `
-            <tr>
-              <td style="padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">${row.dataFormated}</td>
-              <td style="padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">R$ ${row.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-              <td style="padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">R$ ${row.aporte.toLocaleString('pt-BR')}</td>
-              <td style="padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); color:#F7931A;">${sats} sats</td>
-            </tr>
-          `;
-        });
-        tbody.innerHTML = tableHTML;
-      }
+      // Renderiza a tabela inicial com limite
+      renderHistoryTable();
 
-      // Configura evento de Expandir/Recolher Tabela (evitando múltiplos binds)
+      // Configura evento de Expandir/Recolher Tabela
       var toggleBtn = $('dca-history-toggle');
       var histContainer = $('dca-history-container');
-      if (toggleBtn && histContainer) {
+      var histArrow = $('dca-history-arrow');
+      if (toggleBtn && histContainer && histArrow) {
         toggleBtn.onclick = function() {
           if (histContainer.style.display === 'none') {
             histContainer.style.display = 'block';
-            toggleBtn.innerHTML = '▴ Recolher Histórico';
+            histArrow.innerHTML = '▴ Recolher';
           } else {
             histContainer.style.display = 'none';
-            toggleBtn.innerHTML = '▾ Expandir Histórico de Compras individuais';
+            histArrow.innerHTML = '▾ Expandir';
           }
         };
       }
@@ -463,6 +465,15 @@ window.BIWidgets.dca = function initDca() {
   if (dcaBtn) {
     dcaBtn.onclick = simulateDca;
     console.log("✅ [DCA] Botão Simulador conectado!");
+  }
+
+  // Ação do Botão "Carregar Mais"
+  var btnLoadMore = document.getElementById('dca-btn-load-more');
+  if (btnLoadMore) {
+    btnLoadMore.onclick = function() {
+      dcaRenderLimit += 50;
+      renderHistoryTable();
+    };
   }
 
   fetchBtcTicker();
