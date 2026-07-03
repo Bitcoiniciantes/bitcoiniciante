@@ -2,14 +2,16 @@
    Widget: Cotação BTC ao vivo (hero)
    - mini gráfico de velas (canvas) com histórico Binance
    - WebSocket Binance para BTC/USD, BTC/BRL, USD/BRL em tempo real
-   - MSTR via CoinGecko (estável)
+   - MSTR via Yahoo Finance (com proxy CORS, falha silenciosa)
    ===================================================================== */
 window.BIWidgets = window.BIWidgets || {};
 window.BIWidgets.btcTicker = function initBtcTicker() {
   'use strict';
   var CFG = window.BI_CONFIG;
 
+  // Topo de referência travado (ATH) em USD — usado para calcular a variação do rodapé
   var TOP_REFERENCE = 126200;
+
   var candles = [];
   var lastPrice = null;
 
@@ -94,18 +96,26 @@ window.BIWidgets.btcTicker = function initBtcTicker() {
     } catch (e) { /* falha silenciosa */ }
   }
 
-  // --- FUNÇÃO MSTR BLINDADA ---
   async function fetchMSTR() {
     try {
-      // Agora usamos a função que criamos no utils_2.js[cite: 6]
-      var price = await BI.fetchMstrPrice();
-      if (price !== null && mstrEl) {
-        mstrEl.textContent = '$ ' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        if (mstrChangeEl) mstrChangeEl.textContent = '—';
+      var url = CFG.api.corsProxy + encodeURIComponent(CFG.api.mstrYahoo);
+      var data = await BI.fetchJSON(url, { timeout: 9000, retries: 0 });
+      if (data && data.contents) {
+        var json = JSON.parse(data.contents);
+        var result = json.chart.result[0];
+        var price = result.meta.regularMarketPrice;
+        var prevClose = result.meta.chartPreviousClose || result.meta.previousClose;
+        if (price && mstrEl) {
+          mstrEl.textContent = '$ ' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          if (prevClose && mstrChangeEl) {
+            var pct = ((price - prevClose) / prevClose) * 100;
+            mstrChangeEl.textContent = (pct >= 0 ? '\u25B2 +' : '\u25BC ') + pct.toFixed(2) + '%';
+            mstrChangeEl.className = 'bci-change ' + (pct >= 0 ? 'up' : 'down');
+          }
+        }
       }
     } catch (e) {
-      if (mstrEl) mstrEl.textContent = '$ —-';
-      console.warn("Erro ao buscar MSTR, ignorando:", e);
+      if (mstrEl) mstrEl.textContent = '$ —';
     }
   }
 
