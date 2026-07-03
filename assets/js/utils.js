@@ -1,5 +1,10 @@
 /* =====================================================================
-   Utilitários compartilhados (ATUALIZADO PARA MSTR VIA COINGECKO)
+   Utilitários compartilhados
+   - formatação de moeda
+   - fetch com timeout + retry
+   - carregamento de scripts sob demanda
+   - lazy-load de widgets via IntersectionObserver
+   - BUSCA MSTR (Blindada)
    ===================================================================== */
 window.BI = (function () {
   'use strict';
@@ -14,12 +19,18 @@ window.BI = (function () {
   function formatPct(pct) {
     return (pct >= 0 ? '\u25B2 +' : '\u25BC ') + Number(pct).toFixed(2) + '%';
   }
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
 
   /* ---------- Fetch resiliente ---------- */
   async function fetchJSON(url, opts) {
     opts = opts || {};
     var timeout = opts.timeout || 8000;
     var retries = opts.retries != null ? opts.retries : 1;
+
     for (var attempt = 0; attempt <= retries; attempt++) {
       var controller = new AbortController();
       var timer = setTimeout(function () { controller.abort(); }, timeout);
@@ -36,37 +47,57 @@ window.BI = (function () {
     }
   }
 
-  /* ---------- NOVA: Fetch específico para MSTR (CoinGecko) ---------- */
+  /* ---------- Função MSTR (Blindada) ---------- */
   async function fetchMstrPrice() {
     try {
       const data = await fetchJSON('https://api.coingecko.com/api/v3/simple/price?ids=microstrategy&vs_currencies=usd');
-      return data.microstrategy.usd;
+      // Verificação de segurança para evitar erro de leitura (TypeError)
+      if (data && data.microstrategy && typeof data.microstrategy.usd !== 'undefined') {
+        return data.microstrategy.usd;
+      } else {
+        console.warn("Resposta da API recebida, mas campo USD não encontrado:", data);
+        return null;
+      }
     } catch (e) {
       console.error("Erro ao buscar MSTR na CoinGecko:", e);
       return null;
     }
   }
 
-  /* ---------- Carregamento de scripts externos ---------- */
+  /* ---------- Carregamento de scripts externos sob demanda ---------- */
   var _scriptCache = {};
   function loadScript(src) {
     if (_scriptCache[src]) return _scriptCache[src];
     _scriptCache[src] = new Promise(function (resolve, reject) {
       var s = document.createElement('script');
-      s.src = src; s.async = true;
+      s.src = src;
+      s.async = true;
       s.onload = resolve;
       s.onerror = function () { reject(new Error('Falha ao carregar ' + src)); };
       document.head.appendChild(s);
-    }).catch(function (err) { delete _scriptCache[src]; throw err; });
+    }).catch(function (err) {
+      delete _scriptCache[src];
+      throw err;
+    });
     return _scriptCache[src];
   }
 
+  async function loadScripts(list) {
+    for (var i = 0; i < list.length; i++) {
+      await loadScript(list[i]);
+    }
+  }
+
+  /* ---------- Lazy-load de widget ---------- */
   function onVisible(el, cb, rootMargin) {
     if (!el) return;
     if (!('IntersectionObserver' in window)) { cb(); return; }
     var obs = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        if (entry.isIntersecting) { obs.unobserve(entry.target); cb(); }
+        if (entry.isIntersecting) {
+          obs.unobserve(entry.target);
+          cb();
+        }
       });
     }, { rootMargin: rootMargin || '200px' });
     obs.observe(el);
@@ -76,9 +107,11 @@ window.BI = (function () {
     formatUSD: formatUSD,
     formatBRL: formatBRL,
     formatPct: formatPct,
+    escapeHtml: escapeHtml,
     fetchJSON: fetchJSON,
-    fetchMstrPrice: fetchMstrPrice, // Nova função exportada
+    fetchMstrPrice: fetchMstrPrice, // Exportando a função nova
     loadScript: loadScript,
+    loadScripts: loadScripts,
     onVisible: onVisible
   };
 })();
