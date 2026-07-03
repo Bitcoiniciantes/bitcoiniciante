@@ -1,5 +1,9 @@
 /* =====================================================================
-   Utilitários compartilhados (BLINDADO)
+   Utilitários compartilhados
+   - formatação de moeda
+   - fetch com timeout + retry
+   - carregamento de scripts sob demanda
+   - lazy-load de widgets via IntersectionObserver
    ===================================================================== */
 window.BI = (function () {
   'use strict';
@@ -21,6 +25,7 @@ window.BI = (function () {
   }
 
   /* ---------- Fetch resiliente ---------- */
+  // fetch com timeout (AbortController) e uma tentativa de retry
   async function fetchJSON(url, opts) {
     opts = opts || {};
     var timeout = opts.timeout || 8000;
@@ -42,45 +47,43 @@ window.BI = (function () {
     }
   }
 
-  /* ---------- Função MSTR (BLINDADA E SEGURA) ---------- */
-  async function fetchMstrPrice() {
-    try {
-      const data = await fetchJSON('https://api.coingecko.com/api/v3/simple/price?ids=microstrategy&vs_currencies=usd');
-      
-      // LOG DE SEGURANÇA: Isso vai aparecer no seu Console (F12) e nos mostrar o que a API respondeu
-      console.log("DEBUG MSTR:", data);
-
-      // Verificação ultra-segura: só acessa o valor se TUDO existir
-      if (data && data.microstrategy && data.microstrategy.usd) {
-        return data.microstrategy.usd;
-      }
-      return null; // Retorna null silenciosamente se o dado não estiver lá
-    } catch (e) {
-      console.warn("API MSTR indisponível ou dado inválido, ignorando erro.");
-      return null;
-    }
-  }
-
-  /* ---------- Carregamento de scripts externos ---------- */
+  /* ---------- Carregamento de scripts externos sob demanda ---------- */
   var _scriptCache = {};
   function loadScript(src) {
     if (_scriptCache[src]) return _scriptCache[src];
     _scriptCache[src] = new Promise(function (resolve, reject) {
       var s = document.createElement('script');
-      s.src = src; s.async = true;
+      s.src = src;
+      s.async = true;
       s.onload = resolve;
       s.onerror = function () { reject(new Error('Falha ao carregar ' + src)); };
       document.head.appendChild(s);
-    }).catch(function (err) { delete _scriptCache[src]; throw err; });
+    }).catch(function (err) {
+      // Não deixa uma falha temporária (rede instável, hiccup) ficar em cache
+      // para sempre — remove a entrada para permitir nova tentativa depois.
+      delete _scriptCache[src];
+      throw err;
+    });
     return _scriptCache[src];
   }
+  // Carrega scripts em sequência (mantém ordem de dependência)
+  async function loadScripts(list) {
+    for (var i = 0; i < list.length; i++) {
+      await loadScript(list[i]);
+    }
+  }
 
+  /* ---------- Lazy-load de widget quando entra na viewport ---------- */
+  // Dispara `cb` uma única vez quando o elemento aproxima-se da tela.
   function onVisible(el, cb, rootMargin) {
     if (!el) return;
     if (!('IntersectionObserver' in window)) { cb(); return; }
     var obs = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        if (entry.isIntersecting) { obs.unobserve(entry.target); cb(); }
+        if (entry.isIntersecting) {
+          obs.unobserve(entry.target);
+          cb();
+        }
       });
     }, { rootMargin: rootMargin || '200px' });
     obs.observe(el);
@@ -92,8 +95,8 @@ window.BI = (function () {
     formatPct: formatPct,
     escapeHtml: escapeHtml,
     fetchJSON: fetchJSON,
-    fetchMstrPrice: fetchMstrPrice,
     loadScript: loadScript,
+    loadScripts: loadScripts,
     onVisible: onVisible
   };
 })();
