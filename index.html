@@ -452,64 +452,76 @@
         </div>
       </div>
 
-      <!-- COLUNA DIREITA: Simulador DCA -->
-      <div class="fi-col-right">
-        <div class="dca__wrap" id="dca-root">
-          <div class="dca__ticker">
-            <div class="dca__ticker-left">
-              <span class="dca__ticker-icon" aria-hidden="true">&#8383;</span>
-              <span class="dca__ticker-name">Bitcoin</span>
-            </div>
-            <div class="dca__ticker-right">
-              <span class="dca__ticker-price-usd" id="dca-btc-price-usd">$ —</span>
-              <span class="dca__ticker-price" id="dca-btc-price">R$ —</span>
-              <span class="dca__ticker-change" id="dca-btc-change">—</span>
-            </div>
-          </div>
-
-          <div class="dca__header">
-            <div class="dca__title">📊 Simulador DCA em Bitcoin</div>
-            <div class="dca__sub">Se eu tivesse investido todo mês, quanto teria hoje?</div>
-          </div>
-
-          <div class="dca__controls">
+     <div class="dca__controls">
             <div class="dca__control-row">
-              <div class="dca__ctrl-top"><span class="dca__ctrl-label">Investimento Mensal (R$)</span><span class="dca__ctrl-val" id="dca-val-monthly">1.000</span></div>
-              <input class="dca__slider" type="range" id="dca-monthly" min="100" max="10000" step="100" value="1000">
+              <div class="dca__ctrl-top">
+                <span class="dca__ctrl-label">Valor do Aporte (R$)</span>
+                <span class="dca__ctrl-val" id="dca-val-monthly">1.000</span>
+              </div>
+              <input class="dca__slider" type="range" id="dca-monthly" min="10" max="10000" step="10" value="1000">
             </div>
-           <div class="dca__row-2col">
-  <div class="dca__control-row">
-    <div class="dca__ctrl-top"><span class="dca__ctrl-label">De</span></div>
-    <input class="dca__input" type="text" id="dca-start" value="01/01/2026" placeholder="DD/MM/AAAA">
-  </div>
-  <div class="dca__control-row">
-    <div class="dca__ctrl-top"><span class="dca__ctrl-label">Até</span></div>
-    <input class="dca__input" type="text" id="dca-end" placeholder="DD/MM/AAAA">
-  </div>
-</div>
-<button class="dca__btn" id="dca-btn-simulate">Simular →</button>
-</div>
+            
+            <div class="dca__control-row" style="margin-bottom: 15px;">
+              <div class="dca__ctrl-top"><span class="dca__ctrl-label">Frequência do Aporte</span></div>
+              <select class="dca__input" id="dca-frequencia" style="width: 100%; cursor: pointer;">
+                <option value="mensal">Mensal</option>
+                <option value="semanal">Semanal</option>
+                <option value="diario">Diário</option>
+              </select>
+            </div>
 
-<div class="dca__loading" id="dca-loading" style="display:none;">
-  <div class="dca__spinner"></div>
-            <span>Buscando dados...</span>
+            <div class="dca__row-2col">
+              <div class="dca__control-row">
+                <div class="dca__ctrl-top"><span class="dca__ctrl-label">De</span></div>
+                <input class="dca__input" type="text" id="dca-start" value="01/01/2020" placeholder="DD/MM/AAAA">
+              </div>
+              <div class="dca__control-row">
+                <div class="dca__ctrl-top"><span class="dca__ctrl-label">Até</span></div>
+                <input class="dca__input" type="text" id="dca-end" placeholder="DD/MM/AAAA">
+              </div>
+            </div>
+            <button class="dca__btn" id="dca-btn-simulate">Simular →</button>
+          </div>
+
+          <div class="dca__loading" id="dca-loading" style="display:none;">
+            <div class="dca__spinner"></div>
+            <span>Buscando dados e calculando...</span>
           </div>
 
           <div class="dca__results" id="dca-results" style="display:none;">
             <div class="dca__results-title" id="dca-results-title">Resultado — DCA em Bitcoin</div>
-            <div class="dca__result-grid" id="dca-result-grid"></div>
+            
+            <!-- O grid agora receberá 6 itens no JS -->
+            <div class="dca__result-grid" id="dca-result-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;"></div>
+            
             <div class="dca__chart-box">
               <canvas id="dca-mini-chart" height="140"></canvas>
             </div>
+
+            <!-- Nova Tabela de Histórico -->
+            <div class="dca__history-wrap" style="margin-top: 20px;">
+              <button id="dca-history-toggle" style="width: 100%; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 13px; transition: background 0.2s;">
+                ▾ Expandir Histórico de Compras individuais
+              </button>
+              
+              <div id="dca-history-container" style="display: none; max-height: 250px; overflow-y: auto; margin-top: 10px; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; scrollbar-width: thin; scrollbar-color: #555 #1a1a1a;">
+                <table style="width: 100%; text-align: left; border-collapse: collapse; font-size: 11px; color: #aaa;">
+                  <thead style="position: sticky; top: 0; background: #1a1a1a; z-index: 1;">
+                    <tr>
+                      <th style="padding: 10px; border-bottom: 1px solid #333;">Data</th>
+                      <th style="padding: 10px; border-bottom: 1px solid #333;">Preço BTC</th>
+                      <th style="padding: 10px; border-bottom: 1px solid #333;">Aporte</th>
+                      <th style="padding: 10px; border-bottom: 1px solid #333;">Sats Acumulados</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dca-history-tbody">
+                    <!-- Preenchido via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
-
-          <div class="dca__error" id="dca-error" style="display:none;"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- CONSULTA HISTÓRICA DE PREÇO -->
 <section id="consulta-historica">
   <div class="section-inner">
