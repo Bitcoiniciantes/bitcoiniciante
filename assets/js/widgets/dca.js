@@ -137,7 +137,7 @@ window.BIWidgets.dca = function initDca() {
     return melhor;
   }
 
-  // Lógica de Renderização e Paginação da Tabela
+// Lógica de Renderização e Paginação da Tabela
   function renderHistoryTable() {
     var tbody = $('dca-history-tbody');
     var loadMoreContainer = $('dca-load-more-container');
@@ -150,8 +150,8 @@ window.BIWidgets.dca = function initDca() {
       tableHTML += `
         <tr style="font-family: 'DM Mono', monospace; font-weight: 500;">
           <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #fff;">${row.dataFormated}</td>
-          <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #fff;">R$ ${row.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #fff;">R$ ${row.aporte.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #fff;">R$ ${row.preco.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #fff;">R$ ${row.aporte.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}</td>
           <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #fff;">${row.btcComprado.toFixed(8)}</td>
           <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #fff;">${row.btcAcumulado.toFixed(8)}</td>
         </tr>
