@@ -108,7 +108,7 @@ window.BIWidgets.btcTicker = function initBtcTicker() {
         mstrChangeEl.textContent = '—'; 
       }
     } catch (e) {
-      if (mstrEl) mstrEl.textContent = '$ —';
+      if (mstrEl) mstrEl.textContent = '$ —.';
       console.error("Erro ao atualizar MSTR:", e);
     }
   }
