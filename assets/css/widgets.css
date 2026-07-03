@@ -269,16 +269,39 @@
 .dca__title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 3px; }
 .dca__sub { font-size: 11px; color: #8a8f9e; }
 .dca__controls { display: flex; flex-direction: column; gap: 12px; }
-.dca__control-row { display: flex; flex-direction: column; gap: 5px; }
+.dca__control-row { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .dca__ctrl-top { display: flex; justify-content: space-between; align-items: center; }
 .dca__ctrl-label { font-size: 11px; color: #aaa; font-weight: 500; }
 .dca__ctrl-val { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: #fff; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 2px 8px; }
 .dca__slider { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.12); outline: none; cursor: pointer; }
 .dca__slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #F7931A; cursor: pointer; }
 .dca__slider::-moz-range-thumb { width: 14px; height: 14px; border: none; border-radius: 50%; background: #F7931A; cursor: pointer; }
-.dca__input { width: 100%; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 8px 10px; font-family: var(--font-body); font-size: 12px; color: #fff; background: rgba(255,255,255,0.04); outline: none; }
+.dca__input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: #fff;
+  background: rgba(255,255,255,0.04);
+  outline: none;
+}
 .dca__input:focus { border-color: #F7931A; }
-.dca__row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* Grid de 2 colunas (Data / Valor, De / Até).
+   min-width:0 evita que os inputs (principalmente type="date")
+   forcem a coluna a crescer além do espaço disponível. */
+.dca__row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  min-width: 0;
+}
+.dca__row-2col .dca__control-row { min-width: 0; }
+.dca__row-2col .dca__input { min-width: 0; }
+
 .dca__btn { width: 100%; margin-top: 8px; background: #F7931A; color: white; border: none; padding: 11px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: background .2s, transform .15s; }
 .dca__btn:hover { background: #e8860f; transform: translateY(-1px); }
 .dca__btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
@@ -297,6 +320,15 @@
 .dca__chart-box { border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px; background: rgba(255,255,255,0.02); }
 .dca__error { background: rgba(255,77,109,0.08); border: 1px solid rgba(255,77,109,0.2); border-radius: 8px; padding: 10px; color: #ff4d6d; font-size: 11px; text-align: center; margin-top: 12px; }
 @media (max-width: 500px) { .dca__result-grid { grid-template-columns: 1fr 1fr; } }
+
+/* Empilha "Data / Valor" e "De / Até" em telas de celular,
+   evitando que os retângulos se sobreponham/espremam. */
+@media (max-width: 480px) {
+  .dca__row-2col {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
 
 /* =====================================================================
    6. MURAL DE SENTIMENTOS (tema escuro)
