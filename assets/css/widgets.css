@@ -260,8 +260,8 @@
 .dca__ticker-icon { width: 28px; height: 28px; background: #F7931A; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 0.85rem; }
 .dca__ticker-name { font-size: 13px; font-weight: 700; color: #fff; }
 .dca__ticker-right { display: flex; align-items: center; gap: 10px; }
-.dca__ticker-price-usd { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: #00ffae; white-space: nowrap; }
-.dca__ticker-price { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: #fff; white-space: nowrap; }
+.dca__ticker-price-usd { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: #00ffae; white-space: nowrap; }
+.dca__ticker-price { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: #fff; white-space: nowrap; }
 .dca__ticker-change { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,0.06); color: #888; }
 .dca__ticker-change.up { background: rgba(0,255,174,0.12); color: #00ffae; }
 .dca__ticker-change.down { background: rgba(255,77,109,0.12); color: #ff4d6d; }
