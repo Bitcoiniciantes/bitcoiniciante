@@ -96,26 +96,20 @@ window.BIWidgets.btcTicker = function initBtcTicker() {
     } catch (e) { /* falha silenciosa */ }
   }
 
-  async function fetchMSTR() {
+ async function fetchMSTR() {
     try {
-      var url = CFG.api.corsProxy + encodeURIComponent(CFG.api.mstrYahoo);
-      var data = await BI.fetchJSON(url, { timeout: 9000, retries: 0 });
-      if (data && data.contents) {
-        var json = JSON.parse(data.contents);
-        var result = json.chart.result[0];
-        var price = result.meta.regularMarketPrice;
-        var prevClose = result.meta.chartPreviousClose || result.meta.previousClose;
-        if (price && mstrEl) {
-          mstrEl.textContent = '$ ' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-          if (prevClose && mstrChangeEl) {
-            var pct = ((price - prevClose) / prevClose) * 100;
-            mstrChangeEl.textContent = (pct >= 0 ? '\u25B2 +' : '\u25BC ') + pct.toFixed(2) + '%';
-            mstrChangeEl.className = 'bci-change ' + (pct >= 0 ? 'up' : 'down');
-          }
-        }
+      // Usa a nova função que criamos no utils.js para buscar direto da CoinGecko
+      var price = await BI.fetchMstrPrice();
+      
+      if (price && mstrEl) {
+        mstrEl.textContent = '$ ' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        // Nota: Como a CoinGecko via simple/price não retorna o prevClose facilmente, 
+        // mantivemos o estilo limpo. Se precisar da variação, a lógica seria expandida.
+        mstrChangeEl.textContent = '—'; 
       }
     } catch (e) {
       if (mstrEl) mstrEl.textContent = '$ —';
+      console.error("Erro ao atualizar MSTR:", e);
     }
   }
 
