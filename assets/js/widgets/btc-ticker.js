@@ -2,16 +2,14 @@
    Widget: Cotação BTC ao vivo (hero)
    - mini gráfico de velas (canvas) com histórico Binance
    - WebSocket Binance para BTC/USD, BTC/BRL, USD/BRL em tempo real
-   - MSTR via Yahoo Finance (com proxy CORS, falha silenciosa)
+   - MSTR via CoinGecko (estável)
    ===================================================================== */
 window.BIWidgets = window.BIWidgets || {};
 window.BIWidgets.btcTicker = function initBtcTicker() {
   'use strict';
   var CFG = window.BI_CONFIG;
 
-  // Topo de referência travado (ATH) em USD — usado para calcular a variação do rodapé
   var TOP_REFERENCE = 126200;
-
   var candles = [];
   var lastPrice = null;
 
@@ -96,20 +94,18 @@ window.BIWidgets.btcTicker = function initBtcTicker() {
     } catch (e) { /* falha silenciosa */ }
   }
 
- async function fetchMSTR() {
+  // --- FUNÇÃO MSTR BLINDADA ---
+  async function fetchMSTR() {
     try {
-      // Usa a nova função que criamos no utils.js para buscar direto da CoinGecko
+      // Agora usamos a função que criamos no utils_2.js[cite: 6]
       var price = await BI.fetchMstrPrice();
-      
-      if (price && mstrEl) {
+      if (price !== null && mstrEl) {
         mstrEl.textContent = '$ ' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        // Nota: Como a CoinGecko via simple/price não retorna o prevClose facilmente, 
-        // mantivemos o estilo limpo. Se precisar da variação, a lógica seria expandida.
-        mstrChangeEl.textContent = '—'; 
+        if (mstrChangeEl) mstrChangeEl.textContent = '—';
       }
     } catch (e) {
-      if (mstrEl) mstrEl.textContent = '$ —.';
-      console.error("Erro ao atualizar MSTR:", e);
+      if (mstrEl) mstrEl.textContent = '$ —';
+      console.warn("Erro ao buscar MSTR, ignorando:", e);
     }
   }
 
