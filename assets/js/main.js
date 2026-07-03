@@ -108,7 +108,7 @@
   lazyWidget('fng-root', 'assets/js/widgets/fear-greed.js', 'fearGreed');
   lazyWidget('mempool-root', 'assets/js/widgets/mempool.js', 'mempool');
   lazyWidget('sif-root', 'assets/js/widgets/sif.js', 'sif');
-  lazyWidget('dca-root', 'assets/js/widgets/dca.js', 'dca');
+  lazyWidget('dca-root', 'assets/js/widgets/dca.js?v=99', 'dca');
   lazyWidget('mural-root', 'assets/js/widgets/mural.js', 'mural');
   lazyWidget('halving-root', 'assets/js/widgets/halving.js', 'halving');
 })();
