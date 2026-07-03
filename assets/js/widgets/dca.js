@@ -21,7 +21,7 @@ window.BIWidgets.dca = function initDca() {
   }
 
   // ==========================================================
-  // CORREÇÃO: Datas preenchidas conforme o "Type" do HTML
+  // Datas preenchidas conforme o "Type" do HTML
   // ==========================================================
   var now = new Date();
   var yyyy = now.getFullYear();
@@ -290,13 +290,10 @@ window.BIWidgets.dca = function initDca() {
     return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  // Conversão inteligente Sats -> BTC[cite: 1]
+  // NOVA LÓGICA: Tudo é convertido para BTC garantindo as casas decimais necessárias (até 8)
   function formatarSats(sats) {
-    if (sats >= 100000000) {
-      var btc = sats / 100000000;
-      return btc.toLocaleString('pt-BR', { maximumFractionDigits: 8 }) + ' BTC';
-    }
-    return Math.round(sats).toLocaleString('pt-BR') + ' sats';
+    var btc = sats / 100000000;
+    return btc.toLocaleString('pt-BR', { maximumFractionDigits: 8 }) + ' BTC';
   }
 
   async function consultarHistorico(e) {
