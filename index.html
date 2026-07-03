@@ -510,6 +510,45 @@
   </div>
 </section>
 
+<!-- CONSULTA HISTÓRICA DE PREÇO -->
+<section id="consulta-historica">
+  <div class="section-inner">
+    <div class="dca__wrap" id="dca-hist-root" style="max-width:none;">
+
+      <div class="dca__header">
+        <div class="dca__title">🔍 Consulta Histórica de Preço</div>
+        <div class="dca__sub">Veja o preço do Bitcoin em qualquer data e quantos satoshis um valor compraria.</div>
+      </div>
+
+      <div class="dca__controls">
+        <div class="dca__row-2col">
+          <div class="dca__control-row">
+            <div class="dca__ctrl-top"><span class="dca__ctrl-label">Data</span></div>
+            <input class="dca__input" type="date" id="dca-hist-data" min="2014-09-17">
+          </div>
+          <div class="dca__control-row">
+            <div class="dca__ctrl-top"><span class="dca__ctrl-label">Valor (R$)</span></div>
+            <input class="dca__input" type="number" id="dca-hist-valor" value="1000" min="1" placeholder="1.000">
+          </div>
+        </div>
+        <button class="dca__btn" id="dca-hist-btn-consultar">Consultar →</button>
+      </div>
+
+      <div class="dca__loading" id="dca-hist-loading" style="display:none;">
+        <div class="dca__spinner"></div>
+        <span>Buscando dados...</span>
+      </div>
+
+      <div class="dca__results" id="dca-hist-results" style="display:none;">
+        <div class="dca__result-grid" id="dca-hist-result-grid"></div>
+      </div>
+
+      <div class="dca__error" id="dca-hist-error" style="display:none;"></div>
+
+    </div>
+  </div>
+</section>
+
 <section class="nfe">
   <div class="section-inner">
     <div class="section-tag" style="color:#F97316;">Critérios de Atendimento</div>
