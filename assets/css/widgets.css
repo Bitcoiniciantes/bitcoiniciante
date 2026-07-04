@@ -317,12 +317,19 @@ select.dca__input {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+  /* Altura fixa + line-height igual centraliza o texto sem depender
+     do padding vertical, que o Safari iOS costuma ignorar/sobrescrever
+     em <select>. Isso é o que resolve o "gordo/comprido" no iPhone real
+     (o emulador de mobile do Chrome não reproduz esse comportamento). */
+  height: 38px;
+  min-height: 38px;
+  max-height: 38px;
+  line-height: 38px;
+  padding: 0 30px 0 10px;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='%23F7931A' d='M6 8.4 1.2 3.6h9.6z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 10px;
-  padding-right: 30px;
-  line-height: normal;
   cursor: pointer;
 }
 select.dca__input::-ms-expand { display: none; }
