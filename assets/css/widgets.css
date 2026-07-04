@@ -317,7 +317,7 @@
 .dca__row-2col {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 24px;
   min-width: 0;
 }
 .dca__row-2col .dca__control-row { min-width: 0; }
@@ -347,7 +347,7 @@
 @media (max-width: 480px) {
   .dca__row-2col {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 16px;
   }
 }
 
