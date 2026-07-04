@@ -335,6 +335,32 @@ select.dca__input {
 select.dca__input::-ms-expand { display: none; }
 select.dca__input option { background: #111; color: #fff; }
 
+/* NOVO: Reseta a aparência nativa de campos de data no iOS para 
+   igualar a altura e largura com os campos de texto padrão */
+input[type="date"].dca__input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  
+  /* Força a mesma altura cravada do select e outros inputs */
+  height: 38px;
+  min-height: 38px;
+  max-height: 38px;
+  line-height: 38px;
+  
+  /* Garante que respeite a largura do container */
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+
+/* Centraliza o texto nativo do iOS verticalmente */
+input[type="date"].dca__input::-webkit-date-and-time-value {
+  margin: 0;
+  padding: 0;
+  line-height: 38px;
+}
+
 /* Grid de 2 colunas (Data / Valor, De / Até).
    min-width:0 evita que os inputs (principalmente type="date")
    forcem a coluna a crescer além do espaço disponível. */
@@ -490,3 +516,5 @@ select.dca__input option { background: #111; color: #fff; }
 .halv__status-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
 .halv__status-dot--bear { background:#ef4444; animation:pulse 1.4s infinite; }
 .halv__faltam-badge { margin-left:auto; background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.25); border-radius:4px; padding:3px 8px; font-size:11px; color:#fca5a5; }
+
+}
