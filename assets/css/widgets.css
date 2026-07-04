@@ -311,6 +311,23 @@
 }
 .dca__input:focus { border-color: #F7931A; }
 
+/* Reseta a aparência nativa do <select> (iOS/Safari deixa o elemento
+   mais alto/largo que um input comum, mesmo com a mesma classe). */
+select.dca__input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='%23F7931A' d='M6 8.4 1.2 3.6h9.6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+  padding-right: 30px;
+  line-height: normal;
+  cursor: pointer;
+}
+select.dca__input::-ms-expand { display: none; }
+select.dca__input option { background: #111; color: #fff; }
+
 /* Grid de 2 colunas (Data / Valor, De / Até).
    min-width:0 evita que os inputs (principalmente type="date")
    forcem a coluna a crescer além do espaço disponível. */
