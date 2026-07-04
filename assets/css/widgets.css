@@ -288,7 +288,7 @@
 .dca__ticker-change.down { background: rgba(255,77,109,0.12); color: #ff4d6d; }
 .dca__header { margin-bottom: 16px; }
 .dca__title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 3px; }
-.dca__sub { font-size: 11px; color: #8a8f9e; }
+.dca__sub { font-size: 12px; color: #8a8f9e; }
 .dca__controls { display: flex; flex-direction: column; gap: 12px; }
 .dca__control-row { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .dca__ctrl-top { display: flex; justify-content: space-between; align-items: center; }
