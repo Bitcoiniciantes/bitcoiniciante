@@ -375,6 +375,10 @@ window.BIWidgets.dca = function initDca() {
     return btc.toLocaleString('pt-BR', { maximumFractionDigits: 8 }) + ' BTC';
   }
 
+  function formatarUSD(v) {
+    return '$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
   async function consultarHistorico(e) {
     if (e) e.preventDefault();
     console.log("[DCA] Consulta Histórica acionada.");
@@ -390,7 +394,8 @@ window.BIWidgets.dca = function initDca() {
       hideHistError();
 
       var rawData = $('dca-hist-data').value;
-      var valor = parseFloat($('dca-hist-valor').value);
+      var valorDigitado = $('dca-hist-valor').value.replace(/\D/g, '');
+      var valor = parseFloat(valorDigitado);
 
       if (!rawData) throw new Error("Escolha uma data.");
       if (!valor || valor <= 0) throw new Error("Digite um valor em reais válido.");
@@ -414,7 +419,10 @@ window.BIWidgets.dca = function initDca() {
         grid.innerHTML = `
           <div style="display:flex; flex-direction:column; gap:4px;">
             <span style="font-size:12px; color:#aaa;">Preço na data</span>
-            <strong style="color:#fff; font-size:16px;">${formatarBRL(precoData)}</strong>
+            <strong style="color:#fff; font-size:16px; white-space:nowrap;">
+              <span style="color:#00ffae;">${formatarUSD(registroData.precoBtcUsd)}</span>
+              <span style="color:#555; font-weight:400;"> &nbsp;/&nbsp; </span>${formatarBRL(precoData)}
+            </strong>
           </div>
           <div style="display:flex; flex-direction:column; gap:4px;">
             <span style="font-size:12px; color:#aaa;">Compraria na data</span>
@@ -449,6 +457,18 @@ window.BIWidgets.dca = function initDca() {
       sliderVal.textContent = parseFloat(this.value).toLocaleString('pt-BR');
     });
   }
+
+  // Máscara de milhar para inputs de valor em texto (ex: 1000 -> 1.000)
+  function mascararMilhar(el) {
+    if (!el) return;
+    function aplicar() {
+      var raw = el.value.replace(/\D/g, '');
+      el.value = raw ? parseInt(raw, 10).toLocaleString('pt-BR') : '';
+    }
+    aplicar();
+    el.addEventListener('input', aplicar);
+  }
+  mascararMilhar($('dca-hist-valor'));
 
   // ====================================================================
   // FORÇANDO A CONEXÃO DIRETA DOS BOTÕES
