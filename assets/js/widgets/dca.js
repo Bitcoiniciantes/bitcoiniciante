@@ -417,11 +417,11 @@ window.BIWidgets.dca = function initDca() {
             <strong style="color:#fff; font-size:16px;">${formatarBRL(precoData)}</strong>
           </div>
           <div style="display:flex; flex-direction:column; gap:4px;">
-            <span style="font-size:12px; color:#aaa;">Compraria</span>
+            <span style="font-size:12px; color:#aaa;">Compraria na data</span>
             <strong style="color:#F7931A; font-size:16px;">${formatarSats(satsCompraria)}</strong>
           </div>
           <div style="display:flex; flex-direction:column; gap:4px;">
-            <span style="font-size:12px; color:#aaa;">Hoje</span>
+            <span style="font-size:12px; color:#aaa;">Compraria Hoje</span>
             <strong style="color:#10B981; font-size:16px;">${formatarSats(satsHoje)}</strong>
             <span style="font-size:11px; color:${diferenca >= 0 ? '#10B981' : '#EF4444'};">${diferenca >= 0 ? '+' : ''}${diferenca.toFixed(1)}% vs. essa data</span>
           </div>
