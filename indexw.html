@@ -32,37 +32,37 @@
   </a>
 </nav>
 
+
 <!-- HERO -->
-<div class="hero-wrapper" style="width: 100%; max-width: 1100px; margin: 0 auto; box-sizing: border-box;">
-  <header class="hero" style="width: 100%;">
+<div class="hero-wrapper" style="width: 100%; max-width: 1200px !important; margin: 0 auto; padding-top: 10px;">
+  <!-- O max-width: 100% !important abaixo quebra a trava que estava espremendo os painéis -->
+  <header class="hero" style="width: 100%; max-width: 100% !important;">
     
-    <!-- Estilo inteligente que impede os elementos de serem espremidos -->
+    <!-- Estilo "blindado" para garantir os painéis lado a lado -->
     <style>
-      .hero-flex-container {
-        display: flex;
-        flex-wrap: wrap;
+      .hero-layout-grid {
+        display: grid;
+        /* Cria duas colunas exatas de até 500px, centralizadas */
+        grid-template-columns: minmax(0, 500px) minmax(0, 500px);
+        gap: 24px;
         justify-content: center;
         align-items: start;
-        gap: 24px;
         width: 100%;
-        padding: 0 10px;
+        padding: 0 15px;
         box-sizing: border-box;
       }
-      .hero-flex-item {
-        /* Pede 450px de espaço. Se a tela não tiver esse espaço para os dois, ele empilha! */
-        flex: 1 1 450px; 
-        max-width: 500px; /* Não deixa ficar gigantesco em monitores ultra-wide */
-        width: 100%;
-      }
-      #halving-root {
-        width: 100%;
+      /* Quando for tablet ou celular, muda para uma coluna centralizada */
+      @media (max-width: 950px) {
+        .hero-layout-grid {
+          grid-template-columns: minmax(0, 500px);
+        }
       }
     </style>
 
-    <div class="hero-visual hero-flex-container">
+    <div class="hero-layout-grid">
       
       <!-- COLUNA 1 (ESQUERDA): Widget Cotação BTC/USD -->
-      <div class="hero-flex-item">
+      <div style="width: 100%;">
         <div class="btc-ultra-card" id="btcTickerCard" style="margin: 0 auto; max-width: 100%;">
           <div class="btc-bg-glow btc-glow-1"></div>
           <div class="btc-bg-glow btc-glow-2"></div>
@@ -124,13 +124,16 @@
       </div>
 
       <!-- COLUNA 2 (DIREITA): Halving Countdown -->
-      <div class="hero-flex-item">
-        <div id="halving-root"></div>
+      <div style="width: 100%;">
+        <div id="halving-root" style="width: 100%;"></div>
       </div>
 
     </div>
   </header>
 </div>
+
+
+  
 <!-- SOBRE -->
 <section class="about" id="sobre">
   <div class="section-inner">
