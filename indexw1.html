@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Bitcoin – Cotações e Histórico</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+  <meta name="theme-color" content="#F7931A" />
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://api.binance.com" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/main.css?v=2" />
+  <link rel="stylesheet" href="assets/css/widgets.css?v=4" />
+
+  <!-- Painel compacto: grid de widgets -->
+  <style>
+    .painel-wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+    }
+    .painel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+    .painel-item {
+      min-width: 0;
+    }
+    .painel-item .btc-ultra-card,
+    .painel-item .halv__wrap {
+      margin: 0 auto;
+    }
+    .painel-wide {
+      grid-column: span 2;
+    }
+    .painel-full {
+      grid-column: 1 / -1;
+    }
+    @media (max-width: 700px) {
+      .painel-wide {
+        grid-column: span 1;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon" aria-hidden="true">&#8383;</div>
+    BITCOIN&nbsp;<span>INICIANTES</span>
+  </a>
+</nav>
+
+<main class="painel-wrap">
+  <div class="painel-grid">
+    <div class="painel-item">
+      <div class="btc-ultra-card" id="btcTickerCard">
+              <div class="btc-bg-glow btc-glow-1"></div>
+              <div class="btc-bg-glow btc-glow-2"></div>
+
+              <div class="btc-top">
+                <div class="btc-coin">
+                  <div class="btc-icon-wrap"><div class="btc-icon" aria-hidden="true">&#8383;</div></div>
+                  <div>
+                    <div class="btc-name">Bitcoin Iniciantes</div>
+                    <div class="btc-pair">BTC / USD</div>
+                  </div>
+                </div>
+                <div class="btc-status">
+                  <span class="btc-live-dot" id="btcDot"></span>
+                  <span class="btc-status-text" id="btcStatusTxt">AO VIVO</span>
+                </div>
+              </div>
+
+              <div class="btc-price-area">
+                <div class="btc-price" id="btcPrice">$ —</div>
+                <div class="btc-change-badge" id="btcChange24h">—</div>
+              </div>
+
+              <div class="btc-cols-grid">
+                <div class="btc-col-item">
+                  <div class="bci-label">BTC / BRL</div>
+                  <div class="bci-price" id="btcPriceBrl"> —</div>
+                  <div class="bci-change" id="btcChangeBrl">—</div>
+                </div>
+                <div class="btc-col-divider"></div>
+                <div class="btc-col-item">
+                  <div class="bci-label">MSTR</div>
+                  <div class="bci-price" id="btcPriceMstr">$ —</div>
+                  <div class="bci-change" id="mstrChange">—</div>
+                </div>
+                <div class="btc-col-divider"></div>
+                <div class="btc-col-item">
+                  <div class="bci-label">USD / BRL</div>
+                  <div class="bci-price" id="btcPriceUsdBrl"> —</div>
+                  <div class="bci-change" id="usdChange">—</div>
+                </div>
+              </div>
+
+              <div class="btc-chart-box">
+                <canvas id="btcMiniChart" height="72"></canvas>
+              </div>
+
+              <div class="btc-footer-row">
+                <div class="btc-footer">
+                  <div class="btc-footer-left">
+                    <span class="btc-pulse"></span>
+                    <span>LIVE STREAM</span>
+                  </div>
+                  <div class="btc-footer-right">TIMEFRAME • 1H</div>
+                </div>
+                <div id="btcTopVariation" style="font-size:12px; font-weight:600; margin-top:6px; text-align:center; color:#ffffff;"></div>
+              </div>
+            </div>
+    </div>
+    <div class="painel-item painel-wide">
+      <div class="fng-outer" id="fng-root">
+                <div class="fng-left">
+                  <div class="fng-left-header">
+                    <div class="fng-logo-icon" aria-hidden="true">&#8383;</div>
+                    <span class="fng-left-title">Fear &amp; Greed Index</span>
+                  </div>
+                  <div class="fng-left-sub">Análise Multifatorial do Sentimento do Mercado Cripto</div>
+                  <div class="fng-divider"></div>
+                  <div class="fng-now-label">Agora:</div>
+                  <div class="fng-now-sentiment" id="fng-now-sent">—</div>
+                  <div class="fng-gauge-wrap">
+                    <svg class="fng-svg" viewBox="0 0 280 155" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <linearGradient id="fng-grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stop-color="#C62828"/>
+                          <stop offset="25%" stop-color="#E65100"/>
+                          <stop offset="48%" stop-color="#F9A825"/>
+                          <stop offset="72%" stop-color="#7CB342"/>
+                          <stop offset="100%" stop-color="#2E7D32"/>
+                        </linearGradient>
+                      </defs>
+                      <!-- Arco colorido (gradiente) -->
+                      <path d="M 24 140 A 116 116 0 0 1 256 140" fill="none" stroke="url(#fng-grad2)" stroke-width="22" stroke-linecap="round"/>
+                      <!-- Marcadores internos (7 pontos como relógio, distribuídos uniformemente) -->
+                      <circle cx="48" cy="115" r="2.8" fill="#444"/>
+                      <circle cx="67" cy="79" r="2.8" fill="#444"/>
+                      <circle cx="100" cy="54" r="2.8" fill="#444"/>
+                      <circle cx="140" cy="45" r="2.8" fill="#444"/>
+                      <circle cx="180" cy="54" r="2.8" fill="#444"/>
+                      <circle cx="213" cy="79" r="2.8" fill="#444"/>
+                      <circle cx="232" cy="115" r="2.8" fill="#444"/>
+                      <!-- Sombra em cone atrás do ponteiro -->
+                      <path id="fng-needle-shadow" d="M 140 140 L 42 108 L 38 120 Z" fill="rgba(198,40,40,0.13)"/>
+                      <!-- Linha do ponteiro (agulha muito fina, quase invisível) -->
+                      <line id="fng-needle" x1="140" y1="140" x2="30" y2="140" stroke="#bbb" stroke-width="1.2" stroke-linecap="round"/>
+                      <!-- Indicador circular na ponta do ponteiro -->
+                      <circle id="fng-needle-tip" cx="30" cy="140" r="7" fill="#fff" stroke="#aaa" stroke-width="1.5"/>
+                      <circle id="fng-needle-dot" cx="30" cy="140" r="3" fill="#C62828"/>
+                      <!-- Score grande no centro -->
+                      <text id="fng-arc-score" x="140" y="100" text-anchor="middle" font-family="var(--font-body)" font-size="40" font-weight="800" fill="#C62828" style="transition:fill 0.5s;">—</text>
+                      <!-- Label do sentimento -->
+                      <text id="fng-arc-label" x="140" y="122" text-anchor="middle" font-family="var(--font-body)" font-size="14" font-weight="600" fill="#C62828" style="transition:fill 0.5s;">—</text>
+                    </svg>
+                  </div>
+                  <div class="fng-left-footer">
+                    <span class="fng-dot" id="fng-dot"></span>
+                    <span id="fng-updated">alternative.me</span>
+                  </div>
+                </div>
+                <div class="fng-right">
+                  <div class="fng-right-title">Valores Históricos</div>
+                  <div class="fng-hist-item">
+                    <div><div class="fng-hist-period">Agora</div><div class="fng-hist-sent" id="fng-h-now-sent">—</div></div>
+                    <div class="fng-badge-circle" id="fng-h-now-badge">—</div>
+                  </div>
+                  <div class="fng-hist-item">
+                    <div><div class="fng-hist-period">Ontem</div><div class="fng-hist-sent" id="fng-h-prev-sent">—</div></div>
+                    <div class="fng-badge-circle" id="fng-h-prev-badge">—</div>
+                  </div>
+                  <div class="fng-hist-item">
+                    <div><div class="fng-hist-period">Semana passada</div><div class="fng-hist-sent" id="fng-h-week-sent">—</div></div>
+                    <div class="fng-badge-circle" id="fng-h-week-badge">—</div>
+                  </div>
+                  <div class="fng-hist-item">
+                    <div><div class="fng-hist-period">Mês passado</div><div class="fng-hist-sent" id="fng-h-month-sent">—</div></div>
+                    <div class="fng-badge-circle" id="fng-h-month-badge">—</div>
+                  </div>
+                </div>
+              </div>
+    </div>
+    <div class="painel-item">
+      <div class="mempool-widget" id="mempool-root">
+                <div class="mempool-header">
+                  <div class="mempool-header-icon" aria-hidden="true">&#8383;</div>
+                  <span class="mempool-header-title">Taxa-transação-blockchain</span>
+                  <span class="mempool-live-dot"></span>
+                </div>
+                <div class="mempool-fees">
+                  <div class="mempool-fee-col active">
+                    <div class="mempool-fee-label">Sem Prioridade</div>
+                    <div class="mempool-fee-val" id="mfee-none-val">—</div>
+                    <div class="mempool-fee-unit">sat/vB</div>
+                    <div class="mempool-fee-usd" id="mfee-none-usd">US$ —</div>
+                  </div>
+                  <div class="mempool-fee-col">
+                    <div class="mempool-fee-label">Prioridade Baixa</div>
+                    <div class="mempool-fee-val" id="mfee-low-val">—</div>
+                    <div class="mempool-fee-unit">sat/vB</div>
+                    <div class="mempool-fee-usd" id="mfee-low-usd">US$ —</div>
+                  </div>
+                  <div class="mempool-fee-col">
+                    <div class="mempool-fee-label">Prioridade Média</div>
+                    <div class="mempool-fee-val" id="mfee-med-val">—</div>
+                    <div class="mempool-fee-unit">sat/vB</div>
+                    <div class="mempool-fee-usd" id="mfee-med-usd">US$ —</div>
+                  </div>
+                  <div class="mempool-fee-col">
+                    <div class="mempool-fee-label">Prioridade Alta</div>
+                    <div class="mempool-fee-val" id="mfee-high-val">—</div>
+                    <div class="mempool-fee-unit">sat/vB</div>
+                    <div class="mempool-fee-usd" id="mfee-high-usd">US$ —</div>
+                  </div>
+                </div>
+                <div class="mempool-footer">
+                  <span class="mempool-footer-text">Fonte: <a href="https://mempool.space/pt/" target="_blank" rel="noopener">mempool.space</a> · Atualizado a cada 30s</span>
+                </div>
+              </div>
+    </div>
+    <div class="painel-item">
+      <div id="halving-root" style="margin-bottom:1.2rem;"></div>
+    </div>
+    <div class="painel-item painel-wide">
+      <div class="sif__wrap" id="sif-root">
+                <div class="sif__header">
+                  <div class="sif__title">Simulador de Independência Financeira</div>
+                  <div class="sif__metrics">
+                    <div class="sif__metric-item">
+                      <span class="sif__metric-label">Juro Real Anual</span>
+                      <span class="sif__metric-value" id="sif-juro-anual">—</span>
+                    </div>
+                    <div class="sif__metric-item">
+                      <span class="sif__metric-label">Custo Líquido</span>
+                      <span class="sif__metric-value" id="sif-custo-liq">—</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="sif__gauge-section">
+                  <div class="sif__gauge-container">
+                    <svg class="sif__gauge-svg" viewBox="0 0 240 130">
+                      <path d="M 24 124 A 96 96 0 0 1 216 124" fill="none" stroke="#dde0e8" stroke-width="22" stroke-linecap="round"/>
+                      <path id="sif-gauge-arc" d="M 24 124 A 96 96 0 0 1 216 124" fill="none" stroke="#1565c0" stroke-width="22" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="301.6" style="transition: stroke-dashoffset 0.7s;"/>
+                    </svg>
+                    <div class="sif__gauge-badge" id="sif-fator-badge">SEGURANÇA: —</div>
+                  </div>
+                  <div class="sif__gauge-label">Patrimônio Alvo Recomendado</div>
+                  <div class="sif__gauge-value" id="sif-patrimonio">—</div>
+                  <div class="sif__progress-container">
+                    <div class="sif__progress-texts">
+                      <span>Progresso: <strong id="sif-prog-pct" style="color: #2e7d32;">0%</strong></span>
+                      <span id="sif-gap-txt">Falta Acumular: 0</span>
+                    </div>
+                    <div class="sif__progress-bar">
+                      <div class="sif__progress-fill" id="sif-prog-fill"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="sif__chart-section">
+                  <div class="sif__chart-row">
+                    <span class="sif__bar-label">Custo de Vida</span>
+                    <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-desp" id="sif-bar-desp"><span>R$</span></div></div>
+                  </div>
+                  <div class="sif__chart-row">
+                    <span class="sif__bar-label">Renda Extra (Ativa)</span>
+                    <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-renda" id="sif-bar-renda"><span>R$</span></div></div>
+                  </div>
+                  <div class="sif__chart-row">
+                    <span class="sif__bar-label">Sua Renda Passiva</span>
+                    <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-passiva" id="sif-bar-passiva"><span>R$</span></div></div>
+                  </div>
+                  <div class="sif__chart-row">
+                    <span class="sif__bar-label">Juros (Alvo Faltante)</span>
+                    <div class="sif__bar-track"><div class="sif__bar-fill sif__bar-juros" id="sif-bar-juros"><span>R$</span></div></div>
+                  </div>
+                  <div class="sif__chart-axis" id="sif-axis"></div>
+                </div>
+
+                <div class="sif__controls">
+                  <div class="sif__control-row sif__full">
+                    <div class="sif__ctrl-top"><span class="sif__ctrl-label">Patrimônio Atual (R$)</span><span class="sif__ctrl-val" id="sif-val-pat-atual">0</span></div>
+                    <input class="sif__slider" type="range" id="sif-pat-atual" min="0" max="2000000" step="5000" value="50000">
+                  </div>
+                  <div class="sif__control-row">
+                    <div class="sif__ctrl-top"><span class="sif__ctrl-label">Selic Nominal (%)</span><span class="sif__ctrl-val" id="sif-val-selic">14</span></div>
+                    <input class="sif__slider" type="range" id="sif-selic" min="5" max="25" step="0.5" value="14">
+                  </div>
+                  <div class="sif__control-row">
+                    <div class="sif__ctrl-top"><span class="sif__ctrl-label">Inflação IPCA (%)</span><span class="sif__ctrl-val" id="sif-val-ipca">4,5</span></div>
+                    <input class="sif__slider" type="range" id="sif-ipca" min="1" max="15" step="0.5" value="4.5">
+                  </div>
+                  <div class="sif__control-row">
+                    <div class="sif__ctrl-top"><span class="sif__ctrl-label">Dependentes</span><span class="sif__ctrl-val" id="sif-val-dep">2</span></div>
+                    <input class="sif__slider" type="range" id="sif-dep" min="0" max="10" step="1" value="2">
+                  </div>
+                  <div class="sif__control-row">
+                    <div class="sif__ctrl-top"><span class="sif__ctrl-label">Despesas (R$)</span><span class="sif__ctrl-val" id="sif-val-desp">9.000</span></div>
+                    <input class="sif__slider" type="range" id="sif-desp" min="1000" max="50000" step="500" value="9000">
+                  </div>
+                  <div class="sif__control-row sif__full">
+                    <div class="sif__ctrl-top"><span class="sif__ctrl-label">Receitas Extras (R$)</span><span class="sif__ctrl-val" id="sif-val-rec">7.000</span></div>
+                    <input class="sif__slider" type="range" id="sif-rec" min="0" max="30000" step="500" value="7000">
+                  </div>
+                </div>
+              </div>
+    </div>
+    <div class="painel-item painel-wide">
+      <div class="dca__wrap" id="dca-root">
+                <div class="dca__ticker">
+                  <div class="dca__ticker-left">
+                    <span class="dca__ticker-icon" aria-hidden="true">&#8383;</span>
+                    <span class="dca__ticker-name">Bitcoin</span>
+                  </div>
+                  <div class="dca__ticker-right">
+                    <span class="dca__ticker-price-usd" id="dca-btc-price-usd">$ —</span>
+                    <span class="dca__ticker-price" id="dca-btc-price">R$ —</span>
+                    <span class="dca__ticker-change" id="dca-btc-change">—</span>
+                  </div>
+                </div>
+
+                <div class="dca__header">
+                  <div class="dca__title">📊 Simulador DCA em Bitcoin (compras recorrentes sem olha o preço)</div>
+                  <div class="dca__sub">Se eu tivesse investido todo mês, quanto teria hoje?</div>
+                </div>
+
+                <div class="dca__controls">
+                  <div class="dca__control-row">
+                    <div class="dca__ctrl-top">
+                      <span class="dca__ctrl-label">Valor do Aporte (R$)</span>
+                      <span class="dca__ctrl-val" id="dca-val-monthly">1.000</span>
+                    </div>
+                    <input class="dca__slider" type="range" id="dca-monthly" min="10" max="10000" step="10" value="1000">
+                  </div>
+            
+                  <div class="dca__control-row" style="margin-bottom: 15px;">
+                    <div class="dca__ctrl-top"><span class="dca__ctrl-label">Selecione a frequência do aporte</span></div>
+                    <select id="dca-frequencia" style="width: 100%; cursor: pointer; appearance: none; background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.8rem 1rem; border-radius: 8px; font-family: inherit; font-size: 1rem; outline: none;">
+                      <option value="mensal" style="background: #1a1a1a; color: #fff;">Mensal</option>
+                      <option value="semanal" style="background: #1a1a1a; color: #fff;">Semanal</option>
+                      <option value="diario" style="background: #1a1a1a; color: #fff;">Diário</option>
+                    </select>
+                  </div>
+
+                  <div class="dca__row-2col">
+                    <div class="dca__control-row">
+                      <div class="dca__ctrl-top"><span class="dca__ctrl-label">De</span></div>
+                      <input class="dca__input" type="text" id="dca-start" value="01/01/2026" placeholder="DD/MM/AAAA">
+                    </div>
+                    <div class="dca__control-row">
+                      <div class="dca__ctrl-top"><span class="dca__ctrl-label">Até</span></div>
+                      <input class="dca__input" type="text" id="dca-end" placeholder="DD/MM/AAAA">
+                    </div>
+                  </div>
+                  <button class="dca__btn" id="dca-btn-simulate">Simular →</button>
+                </div>
+
+                <div class="dca__loading" id="dca-loading" style="display:none;">
+                  <div class="dca__spinner"></div>
+                  <span>Buscando dados e calculando...</span>
+                </div>
+
+                <div class="dca__results" id="dca-results" style="display:none;">
+                  <div class="dca__results-title" id="dca-results-title">Resultado — DCA em Bitcoin</div>
+            
+                  <div class="dca__result-grid" id="dca-result-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;"></div>
+            
+                  <div class="dca__chart-box">
+                    <canvas id="dca-mini-chart" height="140"></canvas>
+                  </div>
+
+                  <!-- Tabela de Histórico Otimizada com Paginação -->
+                  <div class="dca__history-wrap" style="margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: background 0.2s;" id="dca-history-toggle">
+                      <span style="font-size: 13px; font-weight: 600; color: #ccc; text-transform: uppercase;">Histórico de Compras</span>
+                      <span style="font-size: 13px; color: #888;" id="dca-history-arrow">▾ Expandir</span>
+                    </div>
+              
+                    <div id="dca-history-container" style="display: none; max-height: 350px; overflow-x: auto; overflow-y: auto; margin-top: 5px; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; scrollbar-width: thin; scrollbar-color: #555 #1a1a1a;">
+                      <table style="width: 100%; min-width: 500px; text-align: left; border-collapse: collapse; font-size: 11px; white-space: nowrap;">
+                        <thead style="position: sticky; top: 0; background: #1a1a1a; z-index: 1; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">
+                          <tr>
+                            <th style="padding: 12px 10px; border-bottom: 1px solid #333; color: #8892b0;">Data</th>
+                            <th style="padding: 12px 10px; border-bottom: 1px solid #333; color: #8892b0;">Preço BTC</th>
+                            <th style="padding: 12px 10px; border-bottom: 1px solid #333; color: #8892b0;">Aporte</th>
+                            <th style="padding: 12px 10px; border-bottom: 1px solid #333; color: #60a5fa;">BTC Comprado</th>
+                            <th style="padding: 12px 10px; border-bottom: 1px solid #333; color: #60a5fa;">BTC Acumulado</th>
+                          </tr>
+                        </thead>
+                        <tbody id="dca-history-tbody">
+                          <!-- Preenchido via JS -->
+                        </tbody>
+                      </table>
+                      <div id="dca-load-more-container" style="text-align: center; padding: 15px; display: none; background: #1a1a1a; position: sticky; bottom: 0; border-top: 1px solid #333;">
+                         <button id="dca-btn-load-more" style="background: transparent; color: #F7931A; border: 1px solid rgba(247,147,26,0.5); padding: 8px 20px; border-radius: 5px; cursor: pointer; font-size: 12px; transition: all 0.2s;">Carregar mais 50 ↓</button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="dca__error" id="dca-error" style="display:none;"></div>
+              </div>
+    </div>
+    <div class="painel-item">
+      <div class="dca__wrap" id="dca-hist-root" style="max-width:none;">
+
+            <div class="dca__header">
+              <div class="dca__title">🔍 Consulta Histórica de Preço</div>
+              <div class="dca__sub">Veja o preço do Bitcoin em qualquer data e quantos satoshis um valor compraria.</div>
+            </div>
+
+            <div class="dca__controls">
+              <div class="dca__row-2col">
+                <div class="dca__control-row">
+                  <div class="dca__ctrl-top"><span class="dca__ctrl-label">Data</span></div>
+                  <input class="dca__input" type="date" id="dca-hist-data" min="2014-09-17">
+                </div>
+                <div class="dca__control-row">
+                  <div class="dca__ctrl-top"><span class="dca__ctrl-label">Valor (R$)</span></div>
+                  <input class="dca__input" type="text" inputmode="numeric" id="dca-hist-valor" value="1000" placeholder="1.000">
+                </div>
+              </div>
+              <button class="dca__btn" id="dca-hist-btn-consultar">Consultar →</button>
+            </div>
+
+            <div class="dca__loading" id="dca-hist-loading" style="display:none;">
+              <div class="dca__spinner"></div>
+              <span>Buscando dados...</span>
+            </div>
+
+            <div class="dca__results" id="dca-hist-results" style="display:none;">
+              <div class="dca__result-grid" id="dca-hist-result-grid"></div>
+            </div>
+
+            <div class="dca__error" id="dca-hist-error" style="display:none;"></div>
+
+          </div>
+    </div>
+    <div class="painel-item">
+      <div class="mural__wrap" id="mural-root">
+                <div class="mural__header">
+                  <div class="mural__title">&#8383; Mural de Sentimentos</div>
+                  <div class="mural__sub">Como você está se sentindo em relação ao Bitcoin hoje?</div>
+                </div>
+                <div class="mural__form" id="mural-form">
+                  <input class="mural__input" type="text" id="mural-apelido" placeholder="Seu apelido (ex: Satoshi_BR)" maxlength="30">
+                  <div class="mural__mood-row">
+                    <span class="mural__mood-label">Sentimento:</span>
+                    <div class="mural__moods">
+                      <button type="button" class="mural__mood-btn" data-mood="🚀" title="Para a lua!">🚀</button>
+                      <button type="button" class="mural__mood-btn" data-mood="😎" title="Confiante">😎</button>
+                      <button type="button" class="mural__mood-btn" data-mood="🧘" title="Hodlando tranquilo">🧘</button>
+                      <button type="button" class="mural__mood-btn" data-mood="😰" title="Preocupado">😰</button>
+                      <button type="button" class="mural__mood-btn" data-mood="🔥" title="Acumulando">🔥</button>
+                      <button type="button" class="mural__mood-btn" data-mood="💎" title="Diamond hands">💎</button>
+                    </div>
+                  </div>
+                  <textarea class="mural__textarea" id="mural-texto" placeholder="Escreva o que está sentindo sobre o Bitcoin agora..." maxlength="300" rows="3"></textarea>
+                  <div class="mural__form-footer">
+                    <span class="mural__char-count" id="mural-chars">0/300</span>
+                    <button type="button" class="mural__btn-post" id="mural-btn-post">Publicar no Mural →</button>
+                  </div>
+                  <div class="mural__error" id="mural-error" style="display:none;"></div>
+                </div>
+                <div class="mural__feed" id="mural-feed">
+                  <div class="mural__empty" id="mural-empty">Nenhuma entrada ainda. Seja o primeiro! 👆</div>
+                </div>
+              </div>
+    </div>
+    <div class="painel-item painel-full">
+      <div class="section-tag" style="color:#F7931A;">Análise de Mercado</div>
+          <h2 class="section-title">Projeções de Preço do Bitcoin</h2>
+          <p class="proj-subtitle">O que os maiores fundos e bancos do mundo projetam — e quanto representa de retorno a partir do preço atual.</p>
+
+          <!-- Barra de preço base -->
+          <div class="proj-pricebar" id="proj-pricebar">
+            <div class="proj-pricebar-input-group">
+              <label class="proj-pricebar-label">Preço base BTC (US$)</label>
+              <div class="proj-pricebar-input-wrap">
+                <input id="proj-base-price" type="number" value="62000" min="1" step="500" class="proj-pricebar-input" />
+                <span class="proj-pricebar-unit">USD</span>
+              </div>
+            </div>
+            <span class="proj-pricebar-hint">Ajuste o preço atual do BTC — os retornos potenciais recalculam automaticamente.</span>
+            <div class="proj-live-badge" id="proj-live-badge">
+              <span class="proj-live-dot"></span>
+              <span id="proj-live-price">Carregando...</span>
+            </div>
+          </div>
+
+          <!-- Legenda tiers -->
+          <div class="proj-legend">
+            <span class="proj-legend-item"><i class="proj-legend-dot" style="background:#16c784;"></i> Conservador (até +100%)</span>
+            <span class="proj-legend-item"><i class="proj-legend-dot" style="background:#f0b90b;"></i> Base (+100% a +350%)</span>
+            <span class="proj-legend-item"><i class="proj-legend-dot" style="background:#F7931A;"></i> Moonshot (+350% ou mais)</span>
+          </div>
+
+          <!-- Grid de cards -->
+          <div id="proj-grid" class="proj-grid"></div>
+
+          <!-- Disclaimer -->
+          <div class="proj-disclaimer">
+            <strong>⚠️ Aviso:</strong> Este quadro é estritamente informativo e
+            <strong>não constitui recomendação de investimento</strong>. Todos os alvos
+            vêm de instituições com posição comprada no ativo. O mercado de opções precifica ~80% de chance de
+            BTC furar US$ 60 mil no curto prazo. Projeção de longo prazo é narrativa, não garantia.
+            Faça sua própria pesquisa.
+          </div>
+
+          <p class="proj-sources">
+            Fontes: Standard Chartered, Citigroup, JPMorgan, Goldman Sachs, ARK Invest, VanEck, Bitwise, Galaxy Digital, Fidelity, TD Cowen (jun/2026).
+          </p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">BITCOIN <span>INICIANTES</span></div>
+    <div class="footer-divider"></div>
+    <p>© 2026 <span id="vc-num" style="opacity:0.55; font-size:0.85em;">···</span></p>
+  </div>
+</footer>
+
+
+  <script data-goatcounter="https://bitcoiniciante.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+
+  <script>
+  (function() {
+    function loadCount() {
+      var path = (window.goatcounter && window.goatcounter.get_data) ? window.goatcounter.get_data()['p'] : location.pathname;
+      path = path.replace(/index\.html$/, '');
+      var r = new XMLHttpRequest();
+      r.addEventListener('load', function() {
+        try {
+          var data = JSON.parse(this.responseText);
+          var el = document.getElementById('vc-num');
+          if (el) el.innerText = data.count;
+        } catch(e) {}
+      });
+      r.open('GET', 'https://bitcoiniciante.goatcounter.com/counter/' + encodeURIComponent(path) + '.json');
+      r.send();
+    }
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setTimeout(loadCount, 300);
+    } else {
+      document.addEventListener('DOMContentLoaded', function() { setTimeout(loadCount, 300); });
+    }
+  })();
+  </script>
+
+
+
+<!-- Google Analytics — carregado por último, sem bloquear renderização -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFP2BB2V0B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WFP2BB2V0B');
+</script>
+
+<!-- Scripts -->
+<script src="assets/js/config.js"></script>
+<script src="assets/js/utils.js"></script>
+<script defer src="assets/js/main.js"></script>
+<script defer src="assets/js/projections.js"></script>
+
+</body>
+</html>
