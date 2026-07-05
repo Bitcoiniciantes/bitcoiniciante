@@ -35,72 +35,99 @@
 <!-- HERO -->
 <div class="hero-wrapper">
   <header class="hero">
-    <!-- Adicionado Flexbox inline para alinhar os dois painéis -->
-    <div class="hero-visual" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; align-items: flex-start; width: 100%; max-width: 1050px; margin: 0 auto;">
+    
+    <!-- Estilo embutido para forçar o layout lado a lado no PC e empilhado no Mobile -->
+    <style>
+      .hero-grid-inline {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Trava em 2 colunas no desktop */
+        gap: 24px;
+        max-width: 1050px;
+        margin: 0 auto;
+        width: 100%;
+        align-items: start;
+      }
+      .hero-grid-item {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      /* Quando a tela for menor que 850px (tablets/celulares), muda para 1 coluna */
+      @media (max-width: 850px) {
+        .hero-grid-inline {
+          grid-template-columns: 1fr; 
+        }
+      }
+    </style>
+
+    <div class="hero-visual hero-grid-inline">
       
-      <!-- Widget Cotação BTC/USD em Tempo Real -->
-      <!-- O margin: 0 substitui a margem automática antiga para que ele obedeça ao flexbox -->
-      <div class="btc-ultra-card" id="btcTickerCard" style="margin: 0; width: 100%; max-width: 500px;">
-        <div class="btc-bg-glow btc-glow-1"></div>
-        <div class="btc-bg-glow btc-glow-2"></div>
+      <!-- COLUNA 1 (ESQUERDA): Widget Cotação BTC/USD -->
+      <div class="hero-grid-item">
+        <div class="btc-ultra-card" id="btcTickerCard" style="margin: 0 auto;">
+          <div class="btc-bg-glow btc-glow-1"></div>
+          <div class="btc-bg-glow btc-glow-2"></div>
 
-        <div class="btc-top">
-          <div class="btc-coin">
-            <div class="btc-icon-wrap"><div class="btc-icon" aria-hidden="true">&#8383;</div></div>
-            <div>
-              <div class="btc-name">Bitcoin Iniciantes</div>
-              <div class="btc-pair">BTC / USD</div>
+          <div class="btc-top">
+            <div class="btc-coin">
+              <div class="btc-icon-wrap"><div class="btc-icon" aria-hidden="true">&#8383;</div></div>
+              <div>
+                <div class="btc-name">Bitcoin Iniciantes</div>
+                <div class="btc-pair">BTC / USD</div>
+              </div>
+            </div>
+            <div class="btc-status">
+              <span class="btc-live-dot" id="btcDot"></span>
+              <span class="btc-status-text" id="btcStatusTxt">AO VIVO</span>
             </div>
           </div>
-          <div class="btc-status">
-            <span class="btc-live-dot" id="btcDot"></span>
-            <span class="btc-status-text" id="btcStatusTxt">AO VIVO</span>
-          </div>
-        </div>
 
-        <div class="btc-price-area">
-          <div class="btc-price" id="btcPrice">$ —</div>
-          <div class="btc-change-badge" id="btcChange24h">—</div>
-        </div>
-
-        <div class="btc-cols-grid">
-          <div class="btc-col-item">
-            <div class="bci-label">BTC / BRL</div>
-            <div class="bci-price" id="btcPriceBrl"> —</div>
-            <div class="bci-change" id="btcChangeBrl">—</div>
+          <div class="btc-price-area">
+            <div class="btc-price" id="btcPrice">$ —</div>
+            <div class="btc-change-badge" id="btcChange24h">—</div>
           </div>
-          <div class="btc-col-divider"></div>
-          <div class="btc-col-item">
-            <div class="bci-label">MSTR</div>
-            <div class="bci-price" id="btcPriceMstr">$ —</div>
-            <div class="bci-change" id="mstrChange">—</div>
-          </div>
-          <div class="btc-col-divider"></div>
-          <div class="btc-col-item">
-            <div class="bci-label">USD / BRL</div>
-            <div class="bci-price" id="btcPriceUsdBrl"> —</div>
-            <div class="bci-change" id="usdChange">—</div>
-          </div>
-        </div>
 
-        <div class="btc-chart-box">
-          <canvas id="btcMiniChart" height="72"></canvas>
-        </div>
-
-        <div class="btc-footer-row">
-          <div class="btc-footer">
-            <div class="btc-footer-left">
-              <span class="btc-pulse"></span>
-              <span>LIVE STREAM</span>
+          <div class="btc-cols-grid">
+            <div class="btc-col-item">
+              <div class="bci-label">BTC / BRL</div>
+              <div class="bci-price" id="btcPriceBrl"> —</div>
+              <div class="bci-change" id="btcChangeBrl">—</div>
             </div>
-            <div class="btc-footer-right">TIMEFRAME • 1H</div>
+            <div class="btc-col-divider"></div>
+            <div class="btc-col-item">
+              <div class="bci-label">MSTR</div>
+              <div class="bci-price" id="btcPriceMstr">$ —</div>
+              <div class="bci-change" id="mstrChange">—</div>
+            </div>
+            <div class="btc-col-divider"></div>
+            <div class="btc-col-item">
+              <div class="bci-label">USD / BRL</div>
+              <div class="bci-price" id="btcPriceUsdBrl"> —</div>
+              <div class="bci-change" id="usdChange">—</div>
+            </div>
           </div>
-          <div id="btcTopVariation" style="font-size:12px; font-weight:600; margin-top:6px; text-align:center; color:#ffffff;"></div>
+
+          <div class="btc-chart-box">
+            <canvas id="btcMiniChart" height="72"></canvas>
+          </div>
+
+          <div class="btc-footer-row">
+            <div class="btc-footer">
+              <div class="btc-footer-left">
+                <span class="btc-pulse"></span>
+                <span>LIVE STREAM</span>
+              </div>
+              <div class="btc-footer-right">TIMEFRAME • 1H</div>
+            </div>
+            <div id="btcTopVariation" style="font-size:12px; font-weight:600; margin-top:6px; text-align:center; color:#ffffff;"></div>
+          </div>
         </div>
       </div>
 
-      <!-- HALVING COUNTDOWN MOVIDO PARA CÁ -->
-      <div id="halving-root" style="width: 100%; max-width: 500px;"></div>
+      <!-- COLUNA 2 (DIREITA): Halving Countdown -->
+      <div class="hero-grid-item">
+        <div id="halving-root"></div>
+      </div>
 
     </div>
   </header>
