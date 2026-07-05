@@ -35,9 +35,12 @@
 <!-- HERO -->
 <div class="hero-wrapper">
   <header class="hero">
-    <div class="hero-visual">
+    <!-- Adicionado Flexbox inline para alinhar os dois painéis -->
+    <div class="hero-visual" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; align-items: flex-start; width: 100%; max-width: 1050px; margin: 0 auto;">
+      
       <!-- Widget Cotação BTC/USD em Tempo Real -->
-      <div class="btc-ultra-card" id="btcTickerCard">
+      <!-- O margin: 0 substitui a margem automática antiga para que ele obedeça ao flexbox -->
+      <div class="btc-ultra-card" id="btcTickerCard" style="margin: 0; width: 100%; max-width: 500px;">
         <div class="btc-bg-glow btc-glow-1"></div>
         <div class="btc-bg-glow btc-glow-2"></div>
 
@@ -95,6 +98,10 @@
           <div id="btcTopVariation" style="font-size:12px; font-weight:600; margin-top:6px; text-align:center; color:#ffffff;"></div>
         </div>
       </div>
+
+      <!-- HALVING COUNTDOWN MOVIDO PARA CÁ -->
+      <div id="halving-root" style="width: 100%; max-width: 500px;"></div>
+
     </div>
   </header>
 </div>
@@ -217,7 +224,7 @@
         </div>
 
         <!-- HALVING COUNTDOWN -->
-        <div id="halving-root" style="margin-bottom:1.2rem;"></div>
+       
       </div>
     </div>
   </div>
