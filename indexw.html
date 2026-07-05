@@ -35,14 +35,11 @@
 
 <!-- HERO -->
 <div class="hero-wrapper" style="width: 100%; max-width: 1200px !important; margin: 0 auto; padding-top: 10px;">
-  <!-- O max-width: 100% !important abaixo quebra a trava que estava espremendo os painéis -->
   <header class="hero" style="width: 100%; max-width: 100% !important;">
     
-    <!-- Estilo "blindado" para garantir os painéis lado a lado -->
     <style>
       .hero-layout-grid {
         display: grid;
-        /* Cria duas colunas exatas de até 500px, centralizadas */
         grid-template-columns: minmax(0, 500px) minmax(0, 500px);
         gap: 24px;
         justify-content: center;
@@ -51,7 +48,6 @@
         padding: 0 15px;
         box-sizing: border-box;
       }
-      /* Quando for tablet ou celular, muda para uma coluna centralizada */
       @media (max-width: 950px) {
         .hero-layout-grid {
           grid-template-columns: minmax(0, 500px);
@@ -81,8 +77,9 @@
             </div>
           </div>
 
-          <div class="btc-price-area">
-            <div class="btc-price" id="btcPrice">$ —</div>
+          <!-- CORREÇÃO APLICADA AQUI: nowrap e ajuste de tamanho -->
+          <div class="btc-price-area" style="flex-wrap: nowrap;">
+            <div class="btc-price" id="btcPrice" style="white-space: nowrap; font-size: clamp(2.2rem, 3.2vw, 3.3rem);">$ —</div>
             <div class="btc-change-badge" id="btcChange24h">—</div>
           </div>
 
