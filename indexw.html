@@ -34,31 +34,34 @@
 
 
 <!-- HERO -->
-<div class="hero-wrapper" style="width: 100%; max-width: 1200px !important; margin: 0 auto; padding-top: 10px;">
-  <header class="hero" style="width: 100%; max-width: 100% !important;">
+<div class="hero-wrapper" style="width: 100%; max-width: 1200px !important; margin: 0 auto; padding-top: 15px; box-sizing: border-box;">
+  <header class="hero" style="width: 100%; max-width: 100% !important; box-sizing: border-box;">
     
     <style>
       .hero-layout-grid {
         display: grid;
-        grid-template-columns: minmax(0, 500px) minmax(0, 500px);
+        /* A MÁGICA ESTÁ AQUI: Cria colunas de no mínimo 380px. Se não couberem duas, empilha! */
+        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
         gap: 24px;
         justify-content: center;
         align-items: start;
         width: 100%;
+        max-width: 1050px; /* Limita a largura total para os painéis não ficarem distantes */
+        margin: 0 auto;
         padding: 0 15px;
         box-sizing: border-box;
       }
-      @media (max-width: 950px) {
-        .hero-layout-grid {
-          grid-template-columns: minmax(0, 500px);
-        }
+      .hero-layout-item {
+        width: 100%;
+        max-width: 500px; /* Trava a largura máxima de cada painel */
+        margin: 0 auto;
       }
     </style>
 
     <div class="hero-layout-grid">
       
       <!-- COLUNA 1 (ESQUERDA): Widget Cotação BTC/USD -->
-      <div style="width: 100%;">
+      <div class="hero-layout-item">
         <div class="btc-ultra-card" id="btcTickerCard" style="margin: 0 auto; max-width: 100%;">
           <div class="btc-bg-glow btc-glow-1"></div>
           <div class="btc-bg-glow btc-glow-2"></div>
@@ -77,9 +80,8 @@
             </div>
           </div>
 
-          <!-- CORREÇÃO APLICADA AQUI: nowrap e ajuste de tamanho -->
           <div class="btc-price-area" style="flex-wrap: nowrap;">
-            <div class="btc-price" id="btcPrice" style="white-space: nowrap; font-size: clamp(2.2rem, 3.2vw, 3.3rem);">$ —</div>
+            <div class="btc-price" id="btcPrice" style="white-space: nowrap; font-size: clamp(2.2rem, 3.2vw, 3.2rem);">$ —</div>
             <div class="btc-change-badge" id="btcChange24h">—</div>
           </div>
 
@@ -121,14 +123,13 @@
       </div>
 
       <!-- COLUNA 2 (DIREITA): Halving Countdown -->
-      <div style="width: 100%;">
+      <div class="hero-layout-item">
         <div id="halving-root" style="width: 100%;"></div>
       </div>
 
     </div>
   </header>
 </div>
-
 
   
 <!-- SOBRE -->
