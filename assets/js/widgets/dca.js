@@ -165,48 +165,6 @@ window.BIWidgets.dca = function initDca() {
     }
   }
 
-  /* ================= COMPARTILHAMENTO (VIRALIDADE) ================= */
-  function compartilharWhatsApp(texto) {
-    var url = 'https://wa.me/?text=' + encodeURIComponent(texto);
-    window.open(url, '_blank');
-  }
-
-  async function compartilharResultado(texto) {
-    // Em celulares, tenta abrir o menu nativo de compartilhamento (WhatsApp, Instagram, etc.)
-    if (navigator.share) {
-      try {
-        await navigator.share({ text: texto });
-        return;
-      } catch (e) {
-        // Usuário cancelou o menu nativo — não força o fallback nesse caso.
-        return;
-      }
-    }
-    // Fallback (desktop / navegadores sem suporte): abre direto o WhatsApp Web.
-    compartilharWhatsApp(texto);
-  }
-
-  // Cria o botão uma única vez (se ainda não existir) e sempre atualiza o texto que ele vai compartilhar.
-  function criarOuAtualizarBotaoShare(id, parentEl, texto) {
-    if (!parentEl) return;
-    var btn = $(id);
-    if (!btn) {
-      btn = document.createElement('button');
-      btn.id = id;
-      btn.type = 'button';
-      btn.innerHTML = '📤 Compartilhar resultado';
-      btn.style.cssText = 'margin-top:14px; width:100%; padding:12px; border-radius:8px; border:1px solid rgba(16,185,129,0.4); background:rgba(16,185,129,0.1); color:#10B981; font-weight:600; cursor:pointer; font-size:14px; transition:background .15s ease;';
-      btn.onmouseenter = function () { btn.style.background = 'rgba(16,185,129,0.2)'; };
-      btn.onmouseleave = function () { btn.style.background = 'rgba(16,185,129,0.1)'; };
-      parentEl.appendChild(btn);
-    }
-    btn.onclick = function () { compartilharResultado(texto); };
-  }
-
-  function getLinkCompartilhamento() {
-    return (CFG && CFG.shareUrl) ? CFG.shareUrl : window.location.href;
-  }
-
   /* ================= SIMULADOR DCA ================= */
   async function simulateDca(e) {
     if (e) e.preventDefault();
@@ -339,15 +297,6 @@ window.BIWidgets.dca = function initDca() {
           </div>
         `;
       }
-
-      // Botão "Compartilhar resultado" (Simulador)
-      var freqTexto = { diario: 'todo dia', semanal: 'toda semana', mensal: 'todo mês' }[frequencia] || 'todo mês';
-      var textoShareSim = (roi >= 0 ? '🚀' : '😬') +
-        ' Se eu tivesse investido R$ ' + aporte.toLocaleString('pt-BR') + ' ' + freqTexto + ' em Bitcoin desde ' + rawStart +
-        ', hoje eu teria R$ ' + finalBrlValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) +
-        ' (investi R$ ' + totalInvested.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) +
-        ', retorno de ' + (roi >= 0 ? '+' : '') + roi.toFixed(1) + '%)! Calcule o seu em: ' + getLinkCompartilhamento();
-      if (grid) criarOuAtualizarBotaoShare('dca-btn-share-sim', grid.parentElement, textoShareSim);
 
       // Renderiza a tabela inicial com limite
       renderHistoryTable();
@@ -504,15 +453,6 @@ window.BIWidgets.dca = function initDca() {
       if (registroData.data !== rawData) {
         showHistError('Sem pregão em ' + rawData.split('-').reverse().join('/') + ', mostrando o dado mais próximo (' + registroData.data.split('-').reverse().join('/') + ').');
       }
-
-      // Botão "Compartilhar resultado" (Consulta Histórica)
-      var roiHist = ((valorAtualEmReais - valor) / valor) * 100;
-      var dataFormatadaShare = registroData.data.split('-').reverse().join('/');
-      var textoShareHist = (roiHist >= 0 ? '🤑' : '😬') +
-        ' Se eu tivesse comprado R$ ' + valor.toLocaleString('pt-BR') + ' de Bitcoin em ' + dataFormatadaShare +
-        ', hoje eu teria ' + formatarBRL(valorAtualEmReais) +
-        ' (' + (roiHist >= 0 ? '+' : '') + roiHist.toFixed(1) + '%)! Calcule o seu em: ' + getLinkCompartilhamento();
-      if (grid) criarOuAtualizarBotaoShare('dca-btn-share-hist', grid.parentElement, textoShareHist);
 
       if (resultsBox) resultsBox.style.display = 'block';
 
