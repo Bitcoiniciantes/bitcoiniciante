@@ -410,9 +410,14 @@ window.BIWidgets.dca = function initDca() {
       var precoData = registroData.precoBtcBrl;
       var precoHoje = registroHoje.precoBtcBrl;
 
+      // CÁLCULOS
       var satsCompraria = (valor / precoData) * 100000000;
       var satsHoje = (valor / precoHoje) * 100000000;
       var diferenca = ((satsCompraria - satsHoje) / satsHoje) * 100;
+      
+      // NOVO CÁLCULO: Valor em Reais Hoje
+      var btcComprado = valor / precoData; 
+      var valorAtualEmReais = btcComprado * precoHoje;
 
       var grid = $('dca-hist-result-grid');
       if (grid) {
@@ -424,14 +429,23 @@ window.BIWidgets.dca = function initDca() {
               <span style="color:#555; font-weight:400;"> &nbsp;/&nbsp; </span>${formatarBRL(precoData)}
             </strong>
           </div>
+          
           <div style="display:flex; flex-direction:column; gap:4px;">
             <span style="font-size:12px; color:#aaa;">Compraria na data</span>
             <strong style="color:#F7931A; font-size:16px;">${formatarSats(satsCompraria)}</strong>
           </div>
-          <div style="display:flex; flex-direction:column; gap:4px;">
-            <span style="font-size:12px; color:#aaa;">Compraria Hoje</span>
-            <strong style="color:#10B981; font-size:16px;">${formatarSats(satsHoje)}</strong>
-            <span style="font-size:13px; color:${diferenca >= 0 ? '#10B981' : '#EF4444'};">${diferenca >= 0 ? '+' : ''}${diferenca.toFixed(1)}% vs. essa data</span>
+          
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div>
+              <span style="font-size:12px; color:#aaa;">Compraria Hoje</span>
+              <strong style="color:#10B981; font-size:16px; display:block;">${formatarSats(satsHoje)}</strong>
+              <span style="font-size:13px; color:${diferenca >= 0 ? '#10B981' : '#EF4444'};">${diferenca >= 0 ? '+' : ''}${diferenca.toFixed(1)}% vs. essa data</span>
+            </div>
+            
+            <div style="background: rgba(22, 199, 132, 0.1); padding: 8px; border-radius: 6px; border: 1px solid rgba(22, 199, 132, 0.2); margin-top: 2px;">
+              <span style="font-size:11px; color:#ccc; display:block; margin-bottom:2px;">Seus R$ ${valor.toLocaleString('pt-BR')} valeriam hoje:</span>
+              <strong style="color:#10B981; font-size:16px;">${formatarBRL(valorAtualEmReais)}</strong>
+            </div>
           </div>
         `;
       }
