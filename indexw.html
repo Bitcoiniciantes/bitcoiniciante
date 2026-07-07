@@ -21,6 +21,32 @@
   <link rel="stylesheet" href="assets/css/main.css?v=2" />
   <link rel="stylesheet" href="assets/css/widgets.css?v=4" />
 
+  <!-- Estilos para os Botões Rápidos DCA -->
+  <style>
+    .dca__quick-values {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .dca__btn-quick {
+      background: rgba(255, 255, 255, 0.05);
+      color: #ccc;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Instrument Sans', sans-serif;
+    }
+    .dca__btn-quick:hover {
+      background: rgba(247, 147, 26, 0.15); /* Fundo laranjinha translúcido */
+      color: #F7931A; /* Cor principal do seu tema */
+      border-color: #F7931A;
+    }
+  </style>
 </head>
 
 <body>
@@ -347,12 +373,27 @@
           </div>
 
           <div class="dca__controls">
+            <!-- AQUI FOI ADICIONADA A DIV DOS BOTÕES DE VALORES RÁPIDOS -->
             <div class="dca__control-row">
               <div class="dca__ctrl-top">
                 <span class="dca__ctrl-label">Valor do Aporte (R$)</span>
                 <span class="dca__ctrl-val" id="dca-val-monthly">1.000</span>
               </div>
               <input class="dca__slider" type="range" id="dca-monthly" min="10" max="10000" step="10" value="1000">
+              
+              <!-- NOVA DIV COM OS VALORES PRÉ-DEFINIDOS -->
+              <div class="dca__quick-values">
+                <button type="button" class="dca__btn-quick" data-val="20">20</button>
+                <button type="button" class="dca__btn-quick" data-val="50">50</button>
+                <button type="button" class="dca__btn-quick" data-val="80">80</button>
+                <button type="button" class="dca__btn-quick" data-val="100">100</button>
+                <button type="button" class="dca__btn-quick" data-val="120">120</button>
+                <button type="button" class="dca__btn-quick" data-val="150">150</button>
+                <button type="button" class="dca__btn-quick" data-val="180">180</button>
+                <button type="button" class="dca__btn-quick" data-val="300">300</button>
+                <button type="button" class="dca__btn-quick" data-val="400">400</button>
+                <button type="button" class="dca__btn-quick" data-val="500">500</button>
+              </div>
             </div>
             
             <div class="dca__control-row" style="margin-bottom: 15px;">
@@ -609,6 +650,31 @@
 <script src="assets/js/utils.js"></script>
 <script defer src="assets/js/main.js"></script>
 <script defer src="assets/js/projections.js"></script>
+
+<!-- Script dos Botões Rápidos DCA -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const quickButtons = document.querySelectorAll('.dca__btn-quick');
+    const slider = document.getElementById('dca-monthly');
+    const valDisplay = document.getElementById('dca-val-monthly');
+
+    quickButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const newValue = btn.getAttribute('data-val');
+        
+        // Atualiza a posição da barra (slider)
+        slider.value = newValue;
+        
+        // Atualiza o texto superior
+        valDisplay.textContent = newValue;
+        
+        // Dispara os eventos para que os scripts principais atualizem os cálculos
+        slider.dispatchEvent(new Event('input'));
+        slider.dispatchEvent(new Event('change'));
+      });
+    });
+  });
+</script>
 
 </body>
 </html>
