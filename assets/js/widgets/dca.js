@@ -34,11 +34,11 @@ window.BIWidgets.dca = function initDca() {
     console.log("[DCA] Data Final Simulador preenchida: " + endInput.value);
   }
 
-  // 2. O input da Consulta Histórica é type="date" (padrão HTML5: YYYY-MM-DD)
+// 2. O input da Consulta Histórica é type="date" (fixado em 01/10/2014)
   var histInput = $('dca-hist-data');
   if (histInput && !histInput.value) {
-    histInput.value = yyyy + '-' + mm + '-' + dd;
-    console.log("[DCA] Data Consulta Histórica preenchida: " + histInput.value);
+    histInput.value = '2014-10-01'; // Formato YYYY-MM-DD exigido pelo input date
+    console.log("[DCA] Data Consulta Histórica fixada em: 01/10/2014");
   }
 
   function showError(msg) {
