@@ -93,6 +93,12 @@
     return Math.round((b - a) / 86400000);
   }
 
+  /* ── Converte string "dd-mm-aaaa" em objeto Date (evita erro de fuso/parsing do formato BR) ── */
+  function parseDataBR(str) {
+    const [d, m, y] = str.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+
   /* ── Busca bloco atual via mempool.space ── */
   async function fetchCurrentBlock() {
     try {
@@ -270,17 +276,20 @@
       const fundoData = h.fundoApos ? h.fundoApos.data : '?';
       const topoPreco = h.topoApos.preco;
       const fundoPreco = h.fundoApos && h.fundoApos.preco ? h.fundoApos.preco : null;
-      
-      // Topo já passou (06/11/2025) — calcula dias até o fundo projetado (17/11/2026)
-      const fundoDate = new Date(2026, 9, 17); // 17/10/2026
-      const diasFaltamFundo = Math.max(0, Math.round((fundoDate - new Date()) / 86400000));
+
+      // Data do fundo projetado: lida direto de HALVINGS[3].fundoApos.data (fonte única —
+      // antes esse valor estava hardcoded aqui embaixo, duplicado e podia dessincronizar)
+      const fundoDate = h.fundoApos ? parseDataBR(h.fundoApos.data) : null;
+      const diasFaltamFundo = fundoDate ? Math.max(0, Math.round((fundoDate - new Date()) / 86400000)) : null;
       const statusAtual = 'BEAR';
 
       statsRow = `
         <div class="halv__status-bar">
           <span class="halv__status-dot halv__status-dot--bear"></span>
           <span>Estamos em: <strong style="color:#ef4444;">${statusAtual}</strong></span>
-          <span class="halv__faltam-badge">Faltam <strong>${diasFaltamFundo}</strong> dias para o fundo projetado</span>
+          <span class="halv__faltam-badge">Faltam <strong>${diasFaltamFundo}</strong> dias para o fundo projetado
+            <span class="halv__faltam-detalhe">(${fundoData}, com base na média histórica de ${h.bearDuracao} dias pós-topo)</span>
+          </span>
         </div>
         <div class="halv__stats-grid">
           <div class="halv__stat-item">
@@ -291,7 +300,7 @@
           <div class="halv__stat-item">
             <span class="halv__stat-label">Fundo do bear (projetado)</span>
             <span class="halv__stat-val halv__red">US$ ?</span>
-            <span class="halv__stat-sub">376 dias após o topo · ${fundoData}</span>
+            <span class="halv__stat-sub">${h.bearDuracao} dias após o topo · ${fundoData}</span>
           </div>
           <div class="halv__stat-item">
             <span class="halv__stat-label">Fundo ao Topo</span>
