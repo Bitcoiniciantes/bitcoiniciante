@@ -3,11 +3,13 @@
    - Usa /mempool-blocks para mostrar valores fracionados (0.2, 0.7 sat/vB)
      iguais aos exibidos no mempool.space
    - Fórmula oficial da mempool.space (FAQ):
-       Alta   = mediana do bloco 0
-       Média  = média( mediana bloco 0 , mediana bloco 1 )
-       Baixa  = média( Média , mediana bloco 2 )
-       Nenhuma = min( 2 × taxa mínima , Baixa )
-   - Taxa mínima vem de /fees/recommended (buscado em paralelo)
+       Alta    = mediana do bloco 0
+       Média   = média( mediana bloco 0 , mediana bloco 1 )
+       Baixa   = média( Média , mediana bloco 2 )
+       Nenhuma = min( 2 × taxa mínima bruta , Baixa )
+         onde "taxa mínima bruta" = feeRange[0] do ÚLTIMO bloco projetado
+         (não usar /fees/recommended.minimumFee — esse vem arredondado
+         pra inteiro e distorce o valor de "Sem Prioridade")
    ===================================================================== */
 window.BIWidgets = window.BIWidgets || {};
 window.BIWidgets.mempool = function initMempool() {
@@ -50,47 +52,49 @@ window.BIWidgets.mempool = function initMempool() {
   }
 
   // Calcula as 4 faixas de prioridade a partir de /mempool-blocks,
-  // seguindo exatamente a fórmula documentada pela mempool.space.
-  function fromBlocks(blocks, minimumFee) {
+  // seguindo a fórmula documentada pela mempool.space.
+  function fromBlocks(blocks) {
     if (!Array.isArray(blocks) || blocks.length === 0) return null;
 
-    var b0 = blocks[0];
-    var b1 = blocks[1] || b0;
-    var b2 = blocks[2] || b1;
+    var b0   = blocks[0];
+    var b1   = blocks[1] || b0;
+    var b2   = blocks[2] || b1;
+    var last = blocks[blocks.length - 1];
 
     var high = b0.medianFee;
     var med  = (b0.medianFee + b1.medianFee) / 2;
     var low  = (med + b2.medianFee) / 2;
-    var none = Math.min(2 * (minimumFee || 1), low);
+
+    // taxa mínima "crua" (não arredondada) = piso do último bloco da fila
+    var rawMinFee = (last.feeRange && last.feeRange.length) ? last.feeRange[0] : low;
+    var none = Math.min(2 * rawMinFee, low);
 
     return { none: none, low: low, med: med, high: high };
   }
 
   function loadFees() {
-    Promise.all([
-      BI.fetchJSON(CFG.api.mempoolBlocks, { timeout: 8000, retries: 1 }),
-      BI.fetchJSON(CFG.api.mempoolFees,   { timeout: 8000, retries: 1 })
-        .catch(function () { return null; }) // não quebra se /fees/recommended falhar
-    ])
-      .then(function (results) {
-        var blocks      = results[0];
-        var recommended = results[1];
-        var minFee      = recommended ? recommended.minimumFee : 1;
-
-        var f = fromBlocks(blocks, minFee);
-
+    // 1ª tentativa: /mempool-blocks (valores fracionados, fonte principal)
+    BI.fetchJSON(CFG.api.mempoolBlocks, { timeout: 8000, retries: 1 })
+      .then(function (blocks) {
+        var f = fromBlocks(blocks);
         if (f) {
           applyFees(f.none, f.low, f.med, f.high);
-        } else if (recommended) {
-          // fallback total: /mempool-blocks falhou, usa só os inteiros
-          var none = Math.max(1, recommended.minimumFee || recommended.economyFee);
-          var low  = recommended.economyFee  || recommended.hourFee;
-          var med  = recommended.halfHourFee || recommended.hourFee;
-          var high = recommended.fastestFee;
-          applyFees(none, low, med, high);
+        } else {
+          throw new Error('blocos vazios');
         }
       })
-      .catch(function () { /* falha silenciosa */ });
+      .catch(function () {
+        // Fallback total: /fees/recommended (inteiros), só se /mempool-blocks falhar
+        BI.fetchJSON(CFG.api.mempoolFees, { timeout: 8000, retries: 1 })
+          .then(function (d) {
+            var none = Math.max(1, d.minimumFee || d.economyFee);
+            var low  = d.economyFee  || d.hourFee;
+            var med  = d.halfHourFee || d.hourFee;
+            var high = d.fastestFee;
+            applyFees(none, low, med, high);
+          })
+          .catch(function () { /* falha silenciosa */ });
+      });
   }
 
   function loadBtcPrice() {
