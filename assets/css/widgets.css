@@ -174,37 +174,38 @@
    3. MEMPOOL FEES
    ===================================================================== */
 .mempool-widget {
-  margin-top: 56px; border-radius: 16px; border: 1px solid #dde1e7; overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: #e0f7fa; font-family: var(--font-body);
+  margin-top: 56px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3); background: #111; font-family: var(--font-body);
 }
-.mempool-header { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0.85rem 1.2rem 0.7rem; border-bottom: 1px solid #e8e8e8; }
+.mempool-header { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0.85rem 1.2rem 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
 .mempool-header-icon { width: 26px; height: 26px; background: #F7931A; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 0.85rem; flex-shrink: 0; }
-.mempool-header-title { font-size: 0.82rem; font-weight: 700; color: #0052FF !important; letter-spacing: 0.08em; text-transform: uppercase; }
-.mempool-live-dot { width: 7px; height: 7px; border-radius: 50%; background: #4caf50; margin-left: auto; animation: pulse-dot 2s infinite; display: none; }
-.mempool-fees { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
-.mempool-fee-col { padding: 0.9rem 0.7rem 1rem; text-align: center; border-right: 1px solid #e8e8e8; transition: background 0.2s; background: #e0f7fa; border-top: 2px solid transparent; }
-.mempool-fee-col:last-child { border-right: none; }
-.mempool-fee-col.active { background: #fff8f0; border-top: 2px solid #F7931A; }
-.mempool-fee-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.5rem; color: #666666; }
-.mempool-fee-col.active .mempool-fee-label { color: #F7931A; font-weight: 800; }
-.mempool-fee-val { font-size: 1.5rem; font-weight: 900; color: #1a1a2e; line-height: 1; margin-bottom: 2px; font-family: var(--font-body); }
-.mempool-fee-unit { font-size: 0.68rem; color: #999999; font-weight: 600; }
-.mempool-fee-usd { font-size: 0.75rem; color: #666666; font-weight: 600; margin-top: 4px; }
-.mempool-footer { padding: 0.45rem 1.2rem; border-top: 1px solid #e8e8e8; display: flex; align-items: center; gap: 6px; }
-.mempool-footer-text { font-size: 0.6rem; color: #999999; font-weight: 500; }
+.mempool-header-title { font-size: 0.82rem; font-weight: 700; color: #9aa0aa !important; letter-spacing: 0.08em; text-transform: uppercase; }
+.mempool-live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--btc-green); margin-left: auto; animation: pulse-dot 2s infinite; display: none; }
+.mempool-fees { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; padding: 1rem 1rem 0.4rem; }
+.mempool-fee-col { padding: 0 0.35rem 0.8rem; text-align: center; background: transparent; }
+.mempool-fee-label {
+  display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.02em; text-transform: none;
+  margin-bottom: 0.6rem; padding: 5px 10px; border-radius: 999px; color: #fff; white-space: nowrap;
+}
+.mempool-fee-col.active .mempool-fee-label { background: #0aab2f; }
+.mempool-fee-col:nth-child(2) .mempool-fee-label { background: linear-gradient(90deg, #0f9d58, #4caf50); }
+.mempool-fee-col:nth-child(3) .mempool-fee-label { background: linear-gradient(90deg, #4caf50, #9ccc65); }
+.mempool-fee-col:nth-child(4) .mempool-fee-label { background: linear-gradient(90deg, #9ccc65, #cddc39); color: #1a1a2e; }
+.mempool-fee-val { font-size: 1.5rem; font-weight: 900; color: #ffffff; line-height: 1; margin-bottom: 2px; font-family: var(--font-body); }
+.mempool-fee-unit { font-size: 0.68rem; color: #9aa0aa; font-weight: 600; }
+.mempool-fee-usd { font-size: 0.75rem; color: #22c55e; font-weight: 600; margin-top: 4px; }
+.mempool-footer { padding: 0.45rem 1.2rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 6px; }
+.mempool-footer-text { font-size: 0.6rem; color: #6c757d; font-weight: 500; }
 .mempool-footer a { color: #F7931A; text-decoration: none; font-size: 0.6rem; font-weight: 600; }
 .mempool-footer a:hover { text-decoration: underline; }
 @media (max-width: 600px) {
   /* 2x2 para evitar que valores fracionados (0.2, 0.7) cortem */
-  .mempool-fees { grid-template-columns: repeat(2, 1fr); }
-  .mempool-fee-col { border-right: 1px solid #e8e8e8 !important; border-bottom: 1px solid #e8e8e8; }
-  .mempool-fee-col:nth-child(2n) { border-right: none !important; }
-  .mempool-fee-col:nth-child(n+3) { border-bottom: none; }
+  .mempool-fees { grid-template-columns: repeat(2, 1fr); gap: 0.8rem 0; }
   .mempool-fee-val { font-size: 1.35rem; }
 }
 @media (max-width: 380px) {
   .mempool-fee-val { font-size: 1.15rem; }
-  .mempool-fee-label { font-size: 0.62rem; }
+  .mempool-fee-label { font-size: 0.58rem; padding: 4px 8px; }
 }
 
 /* =====================================================================
