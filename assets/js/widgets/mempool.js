@@ -2,14 +2,17 @@
    Widget: Taxas de transação (mempool.space)
    - Usa /mempool-blocks para mostrar valores fracionados (0.2, 0.7 sat/vB)
      iguais aos exibidos no mempool.space
-   - Faz fallback para /fees/recommended (inteiros) caso /mempool-blocks
-     não responda
+   - Fórmula oficial da mempool.space (FAQ):
+       Alta   = mediana do bloco 0
+       Média  = média( mediana bloco 0 , mediana bloco 1 )
+       Baixa  = média( Média , mediana bloco 2 )
+       Nenhuma = min( 2 × taxa mínima , Baixa )
+   - Taxa mínima vem de /fees/recommended (buscado em paralelo)
    ===================================================================== */
 window.BIWidgets = window.BIWidgets || {};
 window.BIWidgets.mempool = function initMempool() {
   'use strict';
   var CFG = window.BI_CONFIG;
-
   var BTC_PRICE_USD = 0;
   var AVG_TX_VBYTES = 141;
 
@@ -40,56 +43,54 @@ window.BIWidgets.mempool = function initMempool() {
     setText('mfee-low-val',  fmtSat(low));
     setText('mfee-med-val',  fmtSat(med));
     setText('mfee-high-val', fmtSat(high));
-
     setText('mfee-none-usd', satToUsd(none));
     setText('mfee-low-usd',  satToUsd(low));
     setText('mfee-med-usd',  satToUsd(med));
     setText('mfee-high-usd', satToUsd(high));
   }
 
-  // Lê /mempool-blocks e extrai medianas dos próximos blocos
-  function fromBlocks(blocks) {
+  // Calcula as 4 faixas de prioridade a partir de /mempool-blocks,
+  // seguindo exatamente a fórmula documentada pela mempool.space.
+  function fromBlocks(blocks, minimumFee) {
     if (!Array.isArray(blocks) || blocks.length === 0) return null;
-    // bloco mais "barato" da fila = última posição (próximas confirmações
-    // são o primeiro bloco; quanto mais fundo, menor a taxa de inclusão)
-    var first = blocks[0];                                  // próximo bloco
-    var last  = blocks[blocks.length - 1];                  // bloco mais ao fundo
-    var mid   = blocks[Math.floor(blocks.length / 2)] || first;
 
-    var high = first.medianFee;
-    var med  = mid.medianFee;
-    var low  = last.medianFee;
-    // "sem prioridade" = taxa mínima da fila do último bloco
-    var none = (last.feeRange && last.feeRange.length)
-      ? last.feeRange[0]
-      : low;
+    var b0 = blocks[0];
+    var b1 = blocks[1] || b0;
+    var b2 = blocks[2] || b1;
+
+    var high = b0.medianFee;
+    var med  = (b0.medianFee + b1.medianFee) / 2;
+    var low  = (med + b2.medianFee) / 2;
+    var none = Math.min(2 * (minimumFee || 1), low);
 
     return { none: none, low: low, med: med, high: high };
   }
 
   function loadFees() {
-    // 1ª tentativa: /mempool-blocks (valores fracionados)
-    BI.fetchJSON(CFG.api.mempoolBlocks, { timeout: 8000, retries: 1 })
-      .then(function (blocks) {
-        var f = fromBlocks(blocks);
+    Promise.all([
+      BI.fetchJSON(CFG.api.mempoolBlocks, { timeout: 8000, retries: 1 }),
+      BI.fetchJSON(CFG.api.mempoolFees,   { timeout: 8000, retries: 1 })
+        .catch(function () { return null; }) // não quebra se /fees/recommended falhar
+    ])
+      .then(function (results) {
+        var blocks      = results[0];
+        var recommended = results[1];
+        var minFee      = recommended ? recommended.minimumFee : 1;
+
+        var f = fromBlocks(blocks, minFee);
+
         if (f) {
           applyFees(f.none, f.low, f.med, f.high);
-        } else {
-          throw new Error('blocos vazios');
+        } else if (recommended) {
+          // fallback total: /mempool-blocks falhou, usa só os inteiros
+          var none = Math.max(1, recommended.minimumFee || recommended.economyFee);
+          var low  = recommended.economyFee  || recommended.hourFee;
+          var med  = recommended.halfHourFee || recommended.hourFee;
+          var high = recommended.fastestFee;
+          applyFees(none, low, med, high);
         }
       })
-      .catch(function () {
-        // Fallback: /fees/recommended (inteiros)
-        BI.fetchJSON(CFG.api.mempoolFees, { timeout: 8000, retries: 1 })
-          .then(function (d) {
-            var none = Math.max(1, d.minimumFee || d.economyFee);
-            var low  = d.economyFee  || d.hourFee;
-            var med  = d.halfHourFee || d.hourFee;
-            var high = d.fastestFee;
-            applyFees(none, low, med, high);
-          })
-          .catch(function () { /* falha silenciosa */ });
-      });
+      .catch(function () { /* falha silenciosa */ });
   }
 
   function loadBtcPrice() {
