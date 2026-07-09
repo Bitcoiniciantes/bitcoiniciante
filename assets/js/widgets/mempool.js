@@ -103,6 +103,6 @@ window.BIWidgets.mempool = function initMempool() {
       .catch(function () { loadFees(); });
   }
 
-  loadBtcPrice();
-  setInterval(loadBtcPrice, 30000);
+loadBtcPrice();
+setInterval(loadBtcPrice, 10000); // era 30000
 };
