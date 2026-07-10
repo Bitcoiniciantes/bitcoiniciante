@@ -7,7 +7,7 @@ window.BIWidgets.etfWidget = async function() {
     // ====================================================================
     // CHAVE DA API DA SOSOVALUE (Gere em m.sosovalue.com/developer)
     // ====================================================================
-    const CHAVE_API_SOSOVALUE = "COLE_AQUI_A_SUA_CHAVE_API"; 
+    const CHAVE_API_SOSOVALUE = "SOSO-85dba142513d4577893df18c8448e3de"; 
     // ====================================================================
 
     const container = document.getElementById('widget-etf-sosovalue');
