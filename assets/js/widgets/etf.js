@@ -70,7 +70,11 @@ window.BIWidgets.etfWidget = async function() {
 
         const json = JSON.parse(texto);
 
-        const dataArray = Array.isArray(json) ? json.reverse() : [];
+        if (json.code !== 0 || !Array.isArray(json.data)) {
+            throw new Error(json.message || 'Resposta inesperada da API');
+        }
+
+        const dataArray = json.data.slice().reverse();
 
         renderizarGrafico({
             datas: dataArray.map(i => i.date),
