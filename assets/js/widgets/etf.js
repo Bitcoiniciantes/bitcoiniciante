@@ -1,5 +1,5 @@
 /* =====================================================================
-   WIDGET: Spot Bitcoin ETF (SoSoValue)
+   WIDGET: Spot Bitcoin ETF (SoSoValue) - ATUALIZADO
    ===================================================================== */
 window.BIWidgets = window.BIWidgets || {};
 
@@ -13,25 +13,19 @@ window.BIWidgets.etfWidget = async function() {
     const container = document.getElementById('widget-etf-sosovalue');
     if (!container) return;
 
-    // Estrutura HTML
     container.innerHTML = `
         <div class="btc-ultra-card etf-widget">
             <div class="etf-header">
-                <h3 class="etf-title">Spot Bitcoin ETF (Fluxo)</h3>
-                <div class="etf-filtros">
-                    <button class="btn-periodo ativo" data-periodo="1d">Diário</button>
-                    <button class="btn-periodo" data-periodo="7d">Semanal</button>
-                    <button class="btn-periodo" data-periodo="30d">Mensal</button>
-                </div>
+                <h3 class="etf-title">Histórico ETF BTC (EUA)</h3>
             </div>
             
             <div class="etf-grid">
                 <div class="halv__stat-item">
-                    <span class="halv__stat-label">Total Assets</span>
+                    <span class="halv__stat-label">Ativos Totais</span>
                     <span class="halv__stat-val" id="etf-assets">A carregar...</span>
                 </div>
                 <div class="halv__stat-item">
-                    <span class="halv__stat-label">Fluxo Líquido</span>
+                    <span class="halv__stat-label">Fluxo (Último dia)</span>
                     <span class="halv__stat-val" id="etf-fluxo-ultimo">A carregar...</span>
                 </div>
             </div>
@@ -42,49 +36,37 @@ window.BIWidgets.etfWidget = async function() {
         </div>
     `;
 
-    // Carrega o Chart.js se não estiver carregado
     if (typeof Chart === 'undefined') {
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
-        script.onload = () => buscarDadosSoSoValue('1d');
+        script.onload = () => buscarDadosSoSoValue();
         document.head.appendChild(script);
     } else {
-        buscarDadosSoSoValue('1d');
+        buscarDadosSoSoValue();
     }
 
-    // Lógica dos botões
-    document.querySelectorAll('#widget-etf-sosovalue .btn-periodo').forEach(botao => {
-        botao.addEventListener('click', function() {
-            document.querySelectorAll('#widget-etf-sosovalue .btn-periodo').forEach(b => b.classList.remove('ativo'));
-            this.classList.add('ativo');
-            buscarDadosSoSoValue(this.getAttribute('data-periodo'));
-        });
-    });
-
-    async function buscarDadosSoSoValue(periodo) {
+    async function buscarDadosSoSoValue() {
         try {
-            document.getElementById('etf-fluxo-ultimo').innerText = "A carregar...";
-            
-            // ATENÇÃO: Se continuar dando 404, verifique no painel o caminho exato.
-            // Tentei a URL padrão baseada na documentação da SoSoValue.
-            const urlAlvo = `https://openapi.sosovalue.com/openapi/v1/etf/btc/flow?period=${periodo}`;
+            // URL OFICIAL CONFORME DOCUMENTAÇÃO
+            const urlAlvo = `https://openapi.sosovalue.com/openapi/v1/etfs/summary-history?symbol=BTC&country_code=US`;
             const url = `https://corsproxy.io/?${encodeURIComponent(urlAlvo)}`;
             
             const resposta = await fetch(url, {
                 method: 'GET',
-                headers: {
-                    'x-soso-api-key': CHAVE_API_SOSOVALUE
-                }
+                headers: { 'x-soso-api-key': CHAVE_API_SOSOVALUE }
             });
 
             if (!resposta.ok) throw new Error("Erro na API: " + resposta.status);
 
-            const dataArray = await resposta.json();
+            const json = await resposta.json();
             
-            // Processamento dos dados reais que você enviou
+            // A API retorna o array diretamente (json), sem .data
+            // A API retorna ordenado (o primeiro é o mais recente), vamos inverter para o gráfico
+            const dataArray = Array.isArray(json) ? json.reverse() : [];
+            
             const dados = {
                 datas: dataArray.map(item => item.date),
-                fluxos: dataArray.map(item => item.total_net_inflow / 1000000), // Em milhões
+                fluxos: dataArray.map(item => item.total_net_inflow / 1000000), // Convertendo para Milhões
                 assets: dataArray.map(item => item.total_net_assets)
             };
             
@@ -93,14 +75,12 @@ window.BIWidgets.etfWidget = async function() {
         } catch (error) {
             console.error("Erro na busca:", error);
             document.getElementById('etf-fluxo-ultimo').innerText = "Erro";
-            document.getElementById('etf-fluxo-ultimo').className = "halv__stat-val halv__red";
         }
     }
 
     function renderizarGrafico(dados) {
         if (!dados.fluxos.length) return;
 
-        // Atualiza os resumos
         const ultimoFluxo = dados.fluxos[dados.fluxos.length - 1];
         const ultimosAssets = dados.assets[dados.assets.length - 1];
         
@@ -117,7 +97,7 @@ window.BIWidgets.etfWidget = async function() {
             data: {
                 labels: dados.datas,
                 datasets: [{
-                    label: 'Fluxo (M$)',
+                    label: 'Fluxo Líquido (M$)',
                     data: dados.fluxos,
                     backgroundColor: dados.fluxos.map(v => v >= 0 ? '#4ade80' : '#ff4d6d'),
                     borderRadius: 4
@@ -127,7 +107,7 @@ window.BIWidgets.etfWidget = async function() {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { grid: { display: false }, ticks: { color: '#ccc' } },
+                    x: { grid: { display: false }, ticks: { color: '#ccc', maxRotation: 0 } },
                     y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#ccc' } }
                 },
                 plugins: { legend: { display: false } }
