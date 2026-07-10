@@ -13,22 +13,23 @@ window.BIWidgets.etfWidget = async function () {
     container.innerHTML = `
         <div class="btc-ultra-card etf-widget">
             <div class="etf-header">
-                <h3 class="etf-title">Histórico ETF BTC (EUA)</h3>
+                <div class="etf-header-titulo">
+                    <h3 class="etf-title">Histórico ETF BTC (EUA)</h3>
+                    <div class="etf-stats-inline">
+                        <span class="etf-stat-chip">
+                            <span class="etf-stat-chip-label">Ativos Totais</span>
+                            <span class="etf-stat-chip-val" id="etf-assets">A carregar...</span>
+                        </span>
+                        <span class="etf-stat-chip">
+                            <span class="etf-stat-chip-label">Fluxo (último dia)</span>
+                            <span class="etf-stat-chip-val" id="etf-fluxo-ultimo">A carregar...</span>
+                        </span>
+                    </div>
+                </div>
                 <div class="etf-filtros">
                     <button type="button" class="btn-periodo ativo" data-periodo="diario">Diariamente</button>
                     <button type="button" class="btn-periodo" data-periodo="semanal">Semanalmente</button>
                     <button type="button" class="btn-periodo" data-periodo="mensal">Mensal</button>
-                </div>
-            </div>
-
-            <div class="etf-grid">
-                <div class="halv__stat-item">
-                    <span class="halv__stat-label">Ativos Totais</span>
-                    <span class="halv__stat-val" id="etf-assets">A carregar...</span>
-                </div>
-                <div class="halv__stat-item">
-                    <span class="halv__stat-label">Fluxo (Último dia)</span>
-                    <span class="halv__stat-val" id="etf-fluxo-ultimo">A carregar...</span>
                 </div>
             </div>
 
@@ -120,7 +121,7 @@ window.BIWidgets.etfWidget = async function () {
 
         var fluxoEl = document.getElementById('etf-fluxo-ultimo');
         fluxoEl.innerText = `${ultimoFluxo >= 0 ? '+' : ''}${ultimoFluxo.toFixed(1)}M`;
-        fluxoEl.className = `halv__stat-val ${ultimoFluxo >= 0 ? 'halv__green' : 'halv__red'}`;
+        fluxoEl.className = `etf-stat-chip-val ${ultimoFluxo >= 0 ? 'halv__green' : 'halv__red'}`;
         document.getElementById('etf-assets').innerText = `$${(ultimosAssets / 1000000000).toFixed(2)}B`;
     }
 
