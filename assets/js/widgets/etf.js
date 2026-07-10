@@ -66,7 +66,7 @@ window.BIWidgets.etfWidget = async function() {
             document.getElementById('etf-fluxo-ultimo').innerText = "A carregar...";
             document.getElementById('etf-fluxo-ultimo').className = "halv__stat-val";
 
-            // URL CORRIGIDA: Base URL oficial + Endpoint de Fluxo
+            // URL ESTRUTURADA CORRETAMENTE: OpenAPI base + endpoint + headers certos
             const urlAlvo = `https://openapi.sosovalue.com/openapi/v1/etf/btc/flow?period=${periodo}`;
             const url = `https://corsproxy.io/?${encodeURIComponent(urlAlvo)}`;
             
@@ -74,19 +74,22 @@ window.BIWidgets.etfWidget = async function() {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-key': CHAVE_API_SOSOVALUE
+                    'x-soso-api-key': CHAVE_API_SOSOVALUE // Cabeçalho obrigatório da SoSoValue
                 }
             });
 
             if (!resposta.ok) throw new Error("Erro na API: " + resposta.status);
 
             const json = await resposta.json();
+            console.log("Resposta API SoSo:", json); // Útil para debug no F12
             
-            // Mapeamento dos dados (ajustado para a estrutura da API openapi)
+            // Tratamento da resposta (assumindo que o array de dados vem em 'data')
+            const dataArray = json.data || [];
+            
             const dados = {
-                datas: json.data.map(item => item.date),
-                fluxos: json.data.map(item => item.netInflow),
-                precos: json.data.map(item => item.btcPrice)
+                datas: dataArray.map(item => item.date),
+                fluxos: dataArray.map(item => item.netInflow),
+                precos: dataArray.map(item => item.btcPrice)
             };
             
             renderizarGrafico(dados);
