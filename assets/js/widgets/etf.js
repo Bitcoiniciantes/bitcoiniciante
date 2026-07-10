@@ -13,18 +13,16 @@ window.BIWidgets.etfWidget = async function () {
     container.innerHTML = `
         <div class="btc-ultra-card etf-widget">
             <div class="etf-header">
-                <div class="etf-header-titulo">
-                    <h3 class="etf-title">Histórico ETF BTC (EUA)</h3>
-                    <div class="etf-stats-inline">
-                        <span class="etf-stat-chip">
-                            <span class="etf-stat-chip-label">Ativos Totais</span>
-                            <span class="etf-stat-chip-val" id="etf-assets">A carregar...</span>
-                        </span>
-                        <span class="etf-stat-chip">
-                            <span class="etf-stat-chip-label">Fluxo (último dia)</span>
-                            <span class="etf-stat-chip-val" id="etf-fluxo-ultimo">A carregar...</span>
-                        </span>
-                    </div>
+                <h3 class="etf-title">Histórico ETF BTC (EUA)</h3>
+                <div class="etf-stats-inline">
+                    <span class="etf-stat-chip">
+                        <span class="etf-stat-chip-label">Ativos Totais</span>
+                        <span class="etf-stat-chip-val" id="etf-assets">A carregar...</span>
+                    </span>
+                    <span class="etf-stat-chip">
+                        <span class="etf-stat-chip-label">Fluxo (último dia)</span>
+                        <span class="etf-stat-chip-val" id="etf-fluxo-ultimo">A carregar...</span>
+                    </span>
                 </div>
                 <div class="etf-filtros">
                     <button type="button" class="btn-periodo ativo" data-periodo="diario">Diariamente</button>
