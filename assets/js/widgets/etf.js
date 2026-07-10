@@ -5,7 +5,7 @@ window.BIWidgets = window.BIWidgets || {};
 
 window.BIWidgets.etfWidget = async function() {
     // ====================================================================
-    // CHAVE DA API DA SOSOVALUE (Gere em m.sosovalue.com/developer)
+    // CHAVE DA API DA SOSOVALUE
     // ====================================================================
     const CHAVE_API_SOSOVALUE = "SOSO-85dba142513d4577893df18c8448e3de"; 
     // ====================================================================
@@ -13,7 +13,7 @@ window.BIWidgets.etfWidget = async function() {
     const container = document.getElementById('widget-etf-sosovalue');
     if (!container) return;
 
-    // Estrutura HTML limpa, usando as classes do seu widgets.css
+    // Estrutura HTML
     container.innerHTML = `
         <div class="btc-ultra-card etf-widget">
             <div class="etf-header">
@@ -66,8 +66,10 @@ window.BIWidgets.etfWidget = async function() {
             document.getElementById('etf-fluxo-ultimo').innerText = "A carregar...";
             document.getElementById('etf-fluxo-ultimo').className = "halv__stat-val";
 
-            const urlAlvo = `https://api.sosovalue.com/v1/etf/us-btc-spot/flow?period=${periodo}`;
-const url = `https://corsproxy.io/?${encodeURIComponent(urlAlvo)}`;
+            // URL CORRIGIDA: Base URL oficial + Endpoint de Fluxo
+            const urlAlvo = `https://openapi.sosovalue.com/openapi/v1/etf/btc/flow?period=${periodo}`;
+            const url = `https://corsproxy.io/?${encodeURIComponent(urlAlvo)}`;
+            
             const resposta = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -76,9 +78,11 @@ const url = `https://corsproxy.io/?${encodeURIComponent(urlAlvo)}`;
                 }
             });
 
-            if (!resposta.ok) throw new Error("Erro na API");
+            if (!resposta.ok) throw new Error("Erro na API: " + resposta.status);
 
             const json = await resposta.json();
+            
+            // Mapeamento dos dados (ajustado para a estrutura da API openapi)
             const dados = {
                 datas: json.data.map(item => item.date),
                 fluxos: json.data.map(item => item.netInflow),
@@ -88,8 +92,8 @@ const url = `https://corsproxy.io/?${encodeURIComponent(urlAlvo)}`;
             renderizarGrafico(dados);
 
         } catch (error) {
-            console.error("Falha ao puxar os dados:", error);
-            document.getElementById('etf-fluxo-ultimo').innerText = "Erro na API";
+            console.error("Erro na busca:", error);
+            document.getElementById('etf-fluxo-ultimo').innerText = "Erro";
             document.getElementById('etf-fluxo-ultimo').className = "halv__stat-val halv__red";
         }
     }
