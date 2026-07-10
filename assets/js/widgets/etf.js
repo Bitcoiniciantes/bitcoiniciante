@@ -67,7 +67,7 @@ window.BIWidgets.etfWidget = async function() {
 
    async function buscarDadosSoSoValue() {
     try {
-        const url = "https://openapi.sosovalue.com/openapi/v1/etfs/summary-history?symbol=BTC&country_code=US&limit=90";
+        const url = "https://openapi.sosovalue.com/openapi/v1/etfs/summary-history?symbol=BTC&country_code=US&limit=365";
 
         console.log("Consultando:", url);
 
