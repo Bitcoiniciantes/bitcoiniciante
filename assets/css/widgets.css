@@ -529,13 +529,42 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
 .etf-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+.etf-header-titulo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 .etf-title {
     margin: 0;
     color: #fff;
     font-size: 16px;
+}
+.etf-stats-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+.etf-stat-chip {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+.etf-stat-chip-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #888;
+}
+.etf-stat-chip-val {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
 }
 .etf-filtros {
     display: flex;
@@ -557,17 +586,10 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
     color: var(--btc-orange);
     border-color: var(--btc-orange);
 }
-.etf-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 15px;
-}
 .etf-canvas-container {
     position: relative;
-    height: 280px;
+    height: 420px;
     width: 100%;
 }
-#etf-assets {
-    color: #fff;
-}
+.etf-stat-chip-val.halv__green { color: #4ade80; }
+.etf-stat-chip-val.halv__red { color: #ff4d6d; }
