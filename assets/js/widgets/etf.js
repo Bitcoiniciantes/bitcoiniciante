@@ -1,15 +1,12 @@
 /* =====================================================================
-   WIDGET: Spot Bitcoin ETF (SoSoValue) - ATUALIZADO
+   WIDGET: Spot Bitcoin ETF (SoSoValue)
+   O histórico é acumulado dia a dia por um GitHub Action e salvo em
+   dados/historico_etf.json (ver scripts/atualizar_etf.js). O widget só
+   lê esse arquivo — não chama mais a API da SoSoValue no navegador.
    ===================================================================== */
 window.BIWidgets = window.BIWidgets || {};
 
-window.BIWidgets.etfWidget = async function() {
-    // ====================================================================
-    // CHAVE DA API DA SOSOVALUE
-    // ====================================================================
-    const CHAVE_API_SOSOVALUE = "SOSO-85dba142513d4577893df18c8448e3de"; 
-    // ====================================================================
-
+window.BIWidgets.etfWidget = async function () {
     const container = document.getElementById('widget-etf-sosovalue');
     if (!container) return;
 
@@ -23,7 +20,7 @@ window.BIWidgets.etfWidget = async function() {
                     <button type="button" class="btn-periodo" data-periodo="mensal">Mensal</button>
                 </div>
             </div>
-            
+
             <div class="etf-grid">
                 <div class="halv__stat-item">
                     <span class="halv__stat-label">Ativos Totais</span>
@@ -41,7 +38,11 @@ window.BIWidgets.etfWidget = async function() {
         </div>
     `;
 
-    var dadosBrutos = [];   // dados diários crus, em ordem cronológica (mais antigo -> mais recente)
+    var DIAS_DIARIO = 30;
+    var SEMANAS_SEMANAL = 12;
+    var MESES_MENSAL = 12;
+
+    var historico = [];      // histórico completo acumulado, ordem cronológica (mais antigo -> mais recente)
     var periodoAtual = 'diario';
 
     container.querySelectorAll('.btn-periodo').forEach(function (btn) {
@@ -50,8 +51,8 @@ window.BIWidgets.etfWidget = async function() {
             container.querySelectorAll('.btn-periodo').forEach(function (b) { b.classList.remove('ativo'); });
             btn.classList.add('ativo');
             periodoAtual = btn.dataset.periodo;
-            if (dadosBrutos.length) {
-                renderizarGrafico(agregarPorPeriodo(dadosBrutos, periodoAtual));
+            if (historico.length) {
+                renderizarGrafico(dadosDoPeriodo(historico, periodoAtual));
             }
         });
     });
@@ -59,61 +60,42 @@ window.BIWidgets.etfWidget = async function() {
     if (typeof Chart === 'undefined') {
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
-        script.onload = () => buscarDadosSoSoValue();
+        script.onload = carregarHistorico;
         document.head.appendChild(script);
     } else {
-        buscarDadosSoSoValue();
+        carregarHistorico();
     }
 
-   async function buscarDadosSoSoValue() {
-    try {
-        const url = "https://openapi.sosovalue.com/openapi/v1/etfs/summary-history?symbol=BTC&country_code=US&limit=365";
+    async function carregarHistorico() {
+        var urls = [
+            './dados/historico_etf.json',
+            'https://raw.githubusercontent.com/Bitcoiniciantes/bitcoiniciante/main/dados/historico_etf.json'
+        ];
 
-        console.log("Consultando:", url);
-
-        const resposta = await fetch(url, {
-            method: "GET",
-            headers: {
-                "x-soso-api-key": CHAVE_API_SOSOVALUE,
-                "Accept": "application/json"
-            }
-        });
-
-        const texto = await resposta.text();
-
-        console.log("Status:", resposta.status);
-        console.log("Resposta:", texto);
-
-        if (!resposta.ok) {
-            throw new Error(`HTTP ${resposta.status}`);
+        for (var i = 0; i < urls.length; i++) {
+            try {
+                var resposta = await fetch(urls[i]);
+                if (resposta.ok) {
+                    var json = await resposta.json();
+                    json.sort(function (a, b) { return a.data < b.data ? -1 : (a.data > b.data ? 1 : 0); });
+                    historico = json;
+                    atualizarStats(historico);
+                    renderizarGrafico(dadosDoPeriodo(historico, periodoAtual));
+                    return;
+                }
+            } catch (e) {}
         }
 
-        const json = JSON.parse(texto);
-
-        if (json.code !== 0 || !Array.isArray(json.data)) {
-            throw new Error(json.message || 'Resposta inesperada da API');
-        }
-
-        // API retorna do mais recente para o mais antigo -> inverte para ordem cronológica
-        dadosBrutos = json.data.slice().reverse();
-
-        atualizarStats(dadosBrutos);
-        renderizarGrafico(agregarPorPeriodo(dadosBrutos, periodoAtual));
-
-    } catch (e) {
-        console.error(e);
-
-        document.getElementById("etf-assets").innerText = "Erro";
-        document.getElementById("etf-fluxo-ultimo").innerText = "Erro";
+        console.error('[ETF] histórico não encontrado em nenhuma das fontes.');
+        document.getElementById('etf-assets').innerText = 'Erro';
+        document.getElementById('etf-fluxo-ultimo').innerText = 'Erro';
     }
-}
 
-    // Atualiza os cards de estatística com o dado diário mais recente
-    // (independe do período escolhido no gráfico, igual ao site da SoSoValue)
+    // Sempre reflete o dia mais recente do histórico completo, independente do período escolhido no gráfico
     function atualizarStats(dados) {
         var ultimo = dados[dados.length - 1];
-        var ultimoFluxo = Number(ultimo.total_net_inflow) / 1000000;
-        var ultimosAssets = Number(ultimo.total_net_assets);
+        var ultimoFluxo = ultimo.fluxoLiquidoUsd / 1000000;
+        var ultimosAssets = ultimo.ativosTotaisUsd;
 
         var fluxoEl = document.getElementById('etf-fluxo-ultimo');
         fluxoEl.innerText = `${ultimoFluxo >= 0 ? '+' : ''}${ultimoFluxo.toFixed(1)}M`;
@@ -121,38 +103,39 @@ window.BIWidgets.etfWidget = async function() {
         document.getElementById('etf-assets').innerText = `$${(ultimosAssets / 1000000000).toFixed(2)}B`;
     }
 
-    // Agrupa os registros diários em semanas (seg-dom) ou meses
-    function agregarPorPeriodo(dados, periodo) {
+    // Recorta o histórico completo conforme o período escolhido:
+    // diário = últimos 30 dias | semanal = últimas 12 semanas | mensal = últimos 12 meses
+    function dadosDoPeriodo(dados, periodo) {
         if (periodo === 'diario') {
+            var diario = dados.slice(-DIAS_DIARIO);
             return {
-                datas: dados.map(function (i) { return i.date; }),
-                fluxos: dados.map(function (i) { return Number(i.total_net_inflow) / 1000000; }),
-                assets: dados.map(function (i) { return Number(i.total_net_assets); })
+                datas: diario.map(function (i) { return i.data; }),
+                fluxos: diario.map(function (i) { return i.fluxoLiquidoUsd / 1000000; })
             };
         }
 
+        var agrupado = agregarPorPeriodo(dados, periodo);
+        var limite = periodo === 'semanal' ? SEMANAS_SEMANAL : MESES_MENSAL;
+        return {
+            datas: agrupado.datas.slice(-limite),
+            fluxos: agrupado.fluxos.slice(-limite)
+        };
+    }
+
+    // Agrupa os registros diários em semanas (seg-dom) ou meses, somando o fluxo líquido de cada grupo
+    function agregarPorPeriodo(dados, periodo) {
         var grupos = new Map();
 
         dados.forEach(function (item) {
-            var chave = periodo === 'semanal' ? chaveDaSemana(item.date) : item.date.slice(0, 7); // YYYY-MM
-            if (!grupos.has(chave)) {
-                grupos.set(chave, { rotulo: chave, fluxo: 0, assets: 0, ultimaData: '' });
-            }
-            var g = grupos.get(chave);
-            g.fluxo += Number(item.total_net_inflow);
-            // assets é um saldo acumulado, então usamos o valor do dia mais recente de cada grupo
-            if (item.date >= g.ultimaData) {
-                g.assets = Number(item.total_net_assets);
-                g.ultimaData = item.date;
-            }
+            var chave = periodo === 'semanal' ? chaveDaSemana(item.data) : item.data.slice(0, 7); // YYYY-MM
+            if (!grupos.has(chave)) grupos.set(chave, { rotulo: chave, fluxo: 0 });
+            grupos.get(chave).fluxo += item.fluxoLiquidoUsd;
         });
 
-        var listaGrupos = Array.from(grupos.values());
-
+        var lista = Array.from(grupos.values());
         return {
-            datas: listaGrupos.map(function (g) { return g.rotulo; }),
-            fluxos: listaGrupos.map(function (g) { return g.fluxo / 1000000; }),
-            assets: listaGrupos.map(function (g) { return g.assets; })
+            datas: lista.map(function (g) { return g.rotulo; }),
+            fluxos: lista.map(function (g) { return g.fluxo / 1000000; })
         };
     }
 
@@ -164,11 +147,12 @@ window.BIWidgets.etfWidget = async function() {
         d.setUTCDate(d.getUTCDate() + diffParaSegunda);
         return d.toISOString().slice(0, 10);
     }
+
     function renderizarGrafico(dados) {
         if (!dados.fluxos.length) return;
 
         const ctx = document.getElementById('canvas-etf-oficial').getContext('2d');
-        
+
         if (window.graficoInstancia) window.graficoInstancia.destroy();
 
         window.graficoInstancia = new Chart(ctx, {
@@ -178,7 +162,7 @@ window.BIWidgets.etfWidget = async function() {
                 datasets: [{
                     label: 'Fluxo Líquido (M$)',
                     data: dados.fluxos,
-                    backgroundColor: dados.fluxos.map(v => v >= 0 ? '#4ade80' : '#ff4d6d'),
+                    backgroundColor: dados.fluxos.map(function (v) { return v >= 0 ? '#4ade80' : '#ff4d6d'; }),
                     borderRadius: 4
                 }]
             },
