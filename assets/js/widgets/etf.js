@@ -27,11 +27,11 @@ window.BIWidgets.etfWidget = async function() {
             
             <div class="etf-grid">
                 <div class="halv__stat-item">
-                    <span class="halv__stat-label">Preço Atual BTC</span>
-                    <span class="halv__stat-val" id="etf-preco-btc">A carregar...</span>
+                    <span class="halv__stat-label">Total Assets</span>
+                    <span class="halv__stat-val" id="etf-assets">A carregar...</span>
                 </div>
                 <div class="halv__stat-item">
-                    <span class="halv__stat-label">Fluxo Líquido (Último)</span>
+                    <span class="halv__stat-label">Fluxo Líquido</span>
                     <span class="halv__stat-val" id="etf-fluxo-ultimo">A carregar...</span>
                 </div>
             </div>
@@ -42,6 +42,7 @@ window.BIWidgets.etfWidget = async function() {
         </div>
     `;
 
+    // Carrega o Chart.js se não estiver carregado
     if (typeof Chart === 'undefined') {
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
@@ -51,8 +52,7 @@ window.BIWidgets.etfWidget = async function() {
         buscarDadosSoSoValue('1d');
     }
 
-    let graficoInstancia = null;
-
+    // Lógica dos botões
     document.querySelectorAll('#widget-etf-sosovalue .btn-periodo').forEach(botao => {
         botao.addEventListener('click', function() {
             document.querySelectorAll('#widget-etf-sosovalue .btn-periodo').forEach(b => b.classList.remove('ativo'));
@@ -64,32 +64,28 @@ window.BIWidgets.etfWidget = async function() {
     async function buscarDadosSoSoValue(periodo) {
         try {
             document.getElementById('etf-fluxo-ultimo').innerText = "A carregar...";
-            document.getElementById('etf-fluxo-ultimo').className = "halv__stat-val";
-
-            // URL ESTRUTURADA CORRETAMENTE: OpenAPI base + endpoint + headers certos
+            
+            // ATENÇÃO: Se continuar dando 404, verifique no painel o caminho exato.
+            // Tentei a URL padrão baseada na documentação da SoSoValue.
             const urlAlvo = `https://openapi.sosovalue.com/openapi/v1/etf/btc/flow?period=${periodo}`;
             const url = `https://corsproxy.io/?${encodeURIComponent(urlAlvo)}`;
             
             const resposta = await fetch(url, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'x-soso-api-key': CHAVE_API_SOSOVALUE // Cabeçalho obrigatório da SoSoValue
+                    'x-soso-api-key': CHAVE_API_SOSOVALUE
                 }
             });
 
             if (!resposta.ok) throw new Error("Erro na API: " + resposta.status);
 
-            const json = await resposta.json();
-            console.log("Resposta API SoSo:", json); // Útil para debug no F12
+            const dataArray = await resposta.json();
             
-            // Tratamento da resposta (assumindo que o array de dados vem em 'data')
-            const dataArray = json.data || [];
-            
+            // Processamento dos dados reais que você enviou
             const dados = {
                 datas: dataArray.map(item => item.date),
-                fluxos: dataArray.map(item => item.netInflow),
-                precos: dataArray.map(item => item.btcPrice)
+                fluxos: dataArray.map(item => item.total_net_inflow / 1000000), // Em milhões
+                assets: dataArray.map(item => item.total_net_assets)
             };
             
             renderizarGrafico(dados);
@@ -102,55 +98,37 @@ window.BIWidgets.etfWidget = async function() {
     }
 
     function renderizarGrafico(dados) {
-        if (!dados.precos || !dados.precos.length) return;
+        if (!dados.fluxos.length) return;
 
-        const precoBtc = dados.precos[dados.precos.length - 1];
+        // Atualiza os resumos
         const ultimoFluxo = dados.fluxos[dados.fluxos.length - 1];
+        const ultimosAssets = dados.assets[dados.assets.length - 1];
         
-        document.getElementById('etf-preco-btc').innerText = `$${Number(precoBtc).toLocaleString()}`;
-        
-        const elementoFluxo = document.getElementById('etf-fluxo-ultimo');
-        elementoFluxo.innerText = `${ultimoFluxo >= 0 ? '+' : ''}${ultimoFluxo}M`;
-        elementoFluxo.className = `halv__stat-val ${ultimoFluxo >= 0 ? 'halv__green' : 'halv__red'}`;
+        document.getElementById('etf-fluxo-ultimo').innerText = `${ultimoFluxo >= 0 ? '+' : ''}${ultimoFluxo.toFixed(1)}M`;
+        document.getElementById('etf-fluxo-ultimo').className = `halv__stat-val ${ultimoFluxo >= 0 ? 'halv__green' : 'halv__red'}`;
+        document.getElementById('etf-assets').innerText = `$${(ultimosAssets/1000000000).toFixed(2)}B`;
 
         const ctx = document.getElementById('canvas-etf-oficial').getContext('2d');
-        const coresBarras = dados.fluxos.map(v => v >= 0 ? '#4ade80' : '#ff4d6d'); 
+        
+        if (window.graficoInstancia) window.graficoInstancia.destroy();
 
-        if (graficoInstancia) graficoInstancia.destroy();
-
-        graficoInstancia = new Chart(ctx, {
+        window.graficoInstancia = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: dados.datas,
-                datasets: [
-                    {
-                        type: 'line',
-                        label: 'Preço BTC ($)',
-                        data: dados.precos,
-                        borderColor: '#ff9f1a', 
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        tension: 0.2,
-                        yAxisID: 'yPreco'
-                    },
-                    {
-                        type: 'bar',
-                        label: 'Fluxo Líquido (M$)',
-                        data: dados.fluxos,
-                        backgroundColor: coresBarras,
-                        yAxisID: 'yFluxo',
-                        borderRadius: 4
-                    }
-                ]
+                datasets: [{
+                    label: 'Fluxo (M$)',
+                    data: dados.fluxos,
+                    backgroundColor: dados.fluxos.map(v => v >= 0 ? '#4ade80' : '#ff4d6d'),
+                    borderRadius: 4
+                }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
                 scales: {
                     x: { grid: { display: false }, ticks: { color: '#ccc' } },
-                    yFluxo: { position: 'left', grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#ccc', callback: (v) => v + 'M' } },
-                    yPreco: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#ff9f1a' } }
+                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#ccc' } }
                 },
                 plugins: { legend: { display: false } }
             }
