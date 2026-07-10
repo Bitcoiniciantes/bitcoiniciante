@@ -518,3 +518,53 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
 .halv__status-dot--bear { background:#ef4444; animation:pulse 1.4s infinite; }
 .halv__faltam-badge { margin-left:auto; background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.25); border-radius:4px; padding:3px 8px; font-size:11px; color:#fca5a5; }
 .halv__faltam-detalhe { display:block; font-size:9px; font-weight:400; color:#fca5a5; opacity:.65; margin-top:2px; }
+
+/* =====================================================================
+   WIDGET ETF SOSOVALUE
+   ===================================================================== */
+.etf-widget {
+    max-width: 800px;
+    margin: 20px auto;
+}
+.etf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.etf-title {
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+}
+.etf-filtros {
+    display: flex;
+    gap: 8px;
+}
+.btn-periodo {
+    background: #111;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.btn-periodo:hover {
+    background: #222;
+}
+.btn-periodo.ativo {
+    color: var(--btc-orange);
+    border-color: var(--btc-orange);
+}
+.etf-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.etf-canvas-container {
+    position: relative;
+    height: 280px;
+    width: 100%;
+}
