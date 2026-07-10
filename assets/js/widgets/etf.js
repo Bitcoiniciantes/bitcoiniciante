@@ -66,7 +66,8 @@ window.BIWidgets.etfWidget = async function() {
             document.getElementById('etf-fluxo-ultimo').innerText = "A carregar...";
             document.getElementById('etf-fluxo-ultimo').className = "halv__stat-val";
 
-            const url = `https://api.sosovalue.com/v1/etf/us-btc-spot/flow?period=${periodo}`;
+            const urlAlvo = `https://api.sosovalue.com/v1/etf/us-btc-spot/flow?period=${periodo}`;
+const url = `https://corsproxy.io/?${encodeURIComponent(urlAlvo)}`;
             const resposta = await fetch(url, {
                 method: 'GET',
                 headers: {
