@@ -45,39 +45,46 @@ window.BIWidgets.etfWidget = async function() {
         buscarDadosSoSoValue();
     }
 
-    async function buscarDadosSoSoValue() {
-        try {
-            // URL OFICIAL CONFORME DOCUMENTAÇÃO
-            const urlAlvo = `https://openapi.sosovalue.com/openapi/v1/etfs/summary-history?symbol=BTC&country_code=US`;
-            const url = `https://corsproxy.io/?${encodeURIComponent(urlAlvo)}`;
-            
-            const resposta = await fetch(url, {
-                method: 'GET',
-                headers: { 'x-soso-api-key': CHAVE_API_SOSOVALUE }
-            });
+   async function buscarDadosSoSoValue() {
+    try {
+        const url = "https://openapi.sosovalue.com/openapi/v1/etfs/summary-history?symbol=BTC&country_code=US&limit=30";
 
-            if (!resposta.ok) throw new Error("Erro na API: " + resposta.status);
+        console.log("Consultando:", url);
 
-            const json = await resposta.json();
-            
-            // A API retorna o array diretamente (json), sem .data
-            // A API retorna ordenado (o primeiro é o mais recente), vamos inverter para o gráfico
-            const dataArray = Array.isArray(json) ? json.reverse() : [];
-            
-            const dados = {
-                datas: dataArray.map(item => item.date),
-                fluxos: dataArray.map(item => item.total_net_inflow / 1000000), // Convertendo para Milhões
-                assets: dataArray.map(item => item.total_net_assets)
-            };
-            
-            renderizarGrafico(dados);
+        const resposta = await fetch(url, {
+            method: "GET",
+            headers: {
+                "x-soso-api-key": CHAVE_API_SOSOVALUE,
+                "Accept": "application/json"
+            }
+        });
 
-        } catch (error) {
-            console.error("Erro na busca:", error);
-            document.getElementById('etf-fluxo-ultimo').innerText = "Erro";
+        const texto = await resposta.text();
+
+        console.log("Status:", resposta.status);
+        console.log("Resposta:", texto);
+
+        if (!resposta.ok) {
+            throw new Error(`HTTP ${resposta.status}`);
         }
-    }
 
+        const json = JSON.parse(texto);
+
+        const dataArray = Array.isArray(json) ? json.reverse() : [];
+
+        renderizarGrafico({
+            datas: dataArray.map(i => i.date),
+            fluxos: dataArray.map(i => Number(i.total_net_inflow) / 1000000),
+            assets: dataArray.map(i => Number(i.total_net_assets))
+        });
+
+    } catch (e) {
+        console.error(e);
+
+        document.getElementById("etf-assets").innerText = "Erro";
+        document.getElementById("etf-fluxo-ultimo").innerText = "Erro";
+    }
+}
     function renderizarGrafico(dados) {
         if (!dados.fluxos.length) return;
 
