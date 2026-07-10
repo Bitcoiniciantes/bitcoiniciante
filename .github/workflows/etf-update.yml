@@ -1,0 +1,26 @@
+name: Atualizar Historico ETF BTC
+
+on:
+  schedule:
+    - cron: '20 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '18'
+      - run: node scripts/atualizar_etf.js
+        env:
+          SOSOVALUE_API_KEY: ${{ secrets.SOSOVALUE_API_KEY }}
+      - run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
+          git add dados/historico_etf.json
+          git commit -m "Atualiza historico do ETF BTC" || echo "Sem mudanças"
+          git push
