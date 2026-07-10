@@ -523,7 +523,7 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
    WIDGET ETF SOSOVALUE
    ===================================================================== */
 .etf-widget {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 20px auto;
 }
 .etf-header {
