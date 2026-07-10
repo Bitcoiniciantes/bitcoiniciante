@@ -568,3 +568,6 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
     height: 280px;
     width: 100%;
 }
+#etf-assets {
+    color: #fff;
+}
