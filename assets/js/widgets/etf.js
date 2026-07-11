@@ -286,13 +286,14 @@ window.BIWidgets.etfWidget = async function () {
                             color: '#ccc',
                             usePointStyle: true,
                             boxWidth: 8,
+                            padding: 16,
                             generateLabels: function () {
                                 var itens = [
-                                    { text: 'Fluxo Positivo', fillStyle: '#4ade80', strokeStyle: '#4ade80', pointStyle: 'circle', datasetIndex: 0 },
-                                    { text: 'Fluxo Negativo', fillStyle: '#ff4d6d', strokeStyle: '#ff4d6d', pointStyle: 'circle', datasetIndex: 0 }
+                                    { text: ' Fluxo Positivo', fillStyle: '#4ade80', strokeStyle: '#4ade80', pointStyle: 'circle', datasetIndex: 0 },
+                                    { text: ' Fluxo Negativo', fillStyle: '#ff4d6d', strokeStyle: '#ff4d6d', pointStyle: 'circle', datasetIndex: 0 }
                                 ];
                                 if (temPreco) {
-                                    itens.push({ text: 'Preço BTC (US$)', fillStyle: '#ff9f1a', strokeStyle: '#ff9f1a', pointStyle: 'circle', datasetIndex: 1 });
+                                    itens.push({ text: ' Preço BTC (US$)', fillStyle: '#ff9f1a', strokeStyle: '#ff9f1a', pointStyle: 'circle', datasetIndex: 1 });
                                 }
                                 return itens;
                             }
