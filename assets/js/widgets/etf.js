@@ -279,6 +279,7 @@ window.BIWidgets.etfWidget = async function () {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: scales,
+                interaction: { mode: 'index', intersect: false },
                 plugins: {
                     legend: {
                         display: true,
@@ -289,13 +290,35 @@ window.BIWidgets.etfWidget = async function () {
                             padding: 16,
                             generateLabels: function () {
                                 var itens = [
-                                    { text: ' Fluxo Positivo', fillStyle: '#4ade80', strokeStyle: '#4ade80', pointStyle: 'circle', datasetIndex: 0 },
-                                    { text: ' Fluxo Negativo', fillStyle: '#ff4d6d', strokeStyle: '#ff4d6d', pointStyle: 'circle', datasetIndex: 0 }
+                                    { text: ' Fluxo Positivo', fillStyle: '#4ade80', strokeStyle: '#4ade80', fontColor: '#4ade80', pointStyle: 'circle', datasetIndex: 0 },
+                                    { text: ' Fluxo Negativo', fillStyle: '#ff4d6d', strokeStyle: '#ff4d6d', fontColor: '#ff4d6d', pointStyle: 'circle', datasetIndex: 0 }
                                 ];
                                 if (temPreco) {
-                                    itens.push({ text: ' Preço BTC (US$)', fillStyle: '#ff9f1a', strokeStyle: '#ff9f1a', pointStyle: 'circle', datasetIndex: 1 });
+                                    itens.push({ text: ' Preço BTC (US$)', fillStyle: '#ff9f1a', strokeStyle: '#ff9f1a', fontColor: '#ff9f1a', pointStyle: 'circle', datasetIndex: 1 });
                                 }
                                 return itens;
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        // O tooltip do preço só aparece na visão diária: nas visões semanal/mensal
+                        // o "preço" mostrado é só o do último dia do grupo, então misturar no hover confundiria.
+                        filter: function (item) {
+                            if (item.dataset.yAxisID === 'y1') return periodoAtual === 'diario';
+                            return true;
+                        },
+                        callbacks: {
+                            title: function (items) {
+                                return items.length ? 'Data: ' + items[0].label : '';
+                            },
+                            label: function (item) {
+                                if (item.dataset.yAxisID === 'y1') {
+                                    return 'Preço BTC: $' + Number(item.parsed.y).toLocaleString('pt-BR');
+                                }
+                                var v = item.parsed.y;
+                                return 'Fluxo Líquido: ' + (v >= 0 ? '+' : '') + v.toFixed(1) + 'M';
                             }
                         }
                     }
