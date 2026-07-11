@@ -47,15 +47,64 @@
       border-color: #F7931A;
     }
   </style>
+
+  <!-- Estilos para o Menu de Navegação Rápida do Topo (isolado, não altera main.css/widgets.css) -->
+  <style>
+    .menu-topo-custom {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .menu-topo-link {
+      color: #ccc;
+      text-decoration: none;
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.03);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .menu-topo-link:hover {
+      background: rgba(247, 147, 26, 0.15);
+      color: #F7931A;
+      border-color: #F7931A;
+    }
+    @media (max-width: 640px) {
+      .menu-topo-custom {
+        width: 100%;
+        justify-content: center;
+        gap: 6px;
+      }
+      .menu-topo-link {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+    }
+    /* Evita que as seções fiquem escondidas atrás do menu fixo ao clicar nos links */
+    #dca-root, #consulta-historica, #widget-etf-sosovalue {
+      scroll-margin-top: 100px;
+    }
+  </style>
 </head>
 
 <body>
 
-<nav>
+<nav style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
   <a href="#" class="logo">
     <div class="logo-icon" aria-hidden="true">&#8383;</div>
     BITCOIN&nbsp;<span>INICIANTES</span>
   </a>
+
+  <div class="menu-topo-custom" id="menuTopoCustom">
+    <a href="#dca-root" class="menu-topo-link">Compras DCA</a>
+    <a href="#consulta-historica" class="menu-topo-link">Histórico Preço</a>
+    <a href="#widget-etf-sosovalue" class="menu-topo-link">Fluxo ETF</a>
+  </div>
 </nav>
 
 
