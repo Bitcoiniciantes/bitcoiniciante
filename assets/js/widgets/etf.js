@@ -118,7 +118,8 @@ window.BIWidgets.etfWidget = async function () {
         var ultimosAssets = ultimo.ativosTotaisUsd;
 
         var fluxoEl = document.getElementById('etf-fluxo-ultimo');
-        fluxoEl.innerText = `${ultimoFluxo >= 0 ? '+' : ''}${ultimoFluxo.toFixed(1)}M`;
+        var seta = ultimoFluxo >= 0 ? '↑' : '↓';
+        fluxoEl.innerText = `${seta} ${ultimoFluxo >= 0 ? '+' : ''}${ultimoFluxo.toFixed(1)}M`;
         fluxoEl.className = `etf-stat-chip-val ${ultimoFluxo >= 0 ? 'halv__green' : 'halv__red'}`;
         document.getElementById('etf-assets').innerText = `$${(ultimosAssets / 1000000000).toFixed(2)}B`;
     }
@@ -129,7 +130,7 @@ window.BIWidgets.etfWidget = async function () {
         if (periodo === 'diario') {
             var diario = dados.slice(-DIAS_DIARIO);
             return {
-                datas: diario.map(function (i) { return i.data; }),
+                datas: diario.map(function (i) { return formatarRotuloDiaMes(i.data); }),
                 fluxos: diario.map(function (i) { return i.fluxoLiquidoUsd / 1000000; }),
                 precos: diario.map(function (i) { return buscarPreco(i.data); })
             };
@@ -141,10 +142,24 @@ window.BIWidgets.etfWidget = async function () {
         var fluxos = agrupado.fluxos.slice(-limite);
         var ultimasDatas = agrupado.ultimasDatas.slice(-limite);
         return {
-            datas: datas,
+            datas: datas.map(periodo === 'mensal' ? formatarRotuloMes : formatarRotuloDiaMes),
             fluxos: fluxos,
             precos: ultimasDatas.map(function (d) { return buscarPreco(d); })
         };
+    }
+
+    // "2026-06-10" -> "10/06"
+    function formatarRotuloDiaMes(dataStr) {
+        var partes = dataStr.split('-');
+        return partes[2] + '/' + partes[1];
+    }
+
+    var MESES_ABREV = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
+    // "2026-07" -> "Jul/26"
+    function formatarRotuloMes(dataStr) {
+        var partes = dataStr.split('-');
+        return MESES_ABREV[parseInt(partes[1], 10) - 1] + '/' + partes[0].slice(2);
     }
 
     // Busca o preço na data exata; se não achar (ex: feriado/final de semana sem candle),
@@ -229,14 +244,26 @@ window.BIWidgets.etfWidget = async function () {
             x: { grid: { display: false }, ticks: { color: '#ccc', maxRotation: 0 } },
             y: {
                 position: 'left',
-                grid: { color: 'rgba(255,255,255,0.05)' },
+                grid: {
+                    color: function (ctx) { return ctx.tick.value === 0 ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.05)'; },
+                    lineWidth: function (ctx) { return ctx.tick.value === 0 ? 1.5 : 1; }
+                },
                 ticks: { color: '#ccc' }
             }
         };
 
         if (temPreco) {
+            // Aproxima a escala da faixa real de preços do período, em vez de sempre começar em $0,
+            // pra deixar a variação da linha mais visível.
+            var precosValidos = dados.precos.filter(function (p) { return p !== null; });
+            var minPreco = Math.min.apply(null, precosValidos);
+            var maxPreco = Math.max.apply(null, precosValidos);
+            var margem = Math.max((maxPreco - minPreco) * 0.2, maxPreco * 0.03);
+
             scales.y1 = {
                 position: 'right',
+                min: Math.max(0, Math.floor((minPreco - margem) / 1000) * 1000),
+                max: Math.ceil((maxPreco + margem) / 1000) * 1000,
                 grid: { display: false },
                 ticks: {
                     color: '#ff9f1a',
@@ -254,8 +281,22 @@ window.BIWidgets.etfWidget = async function () {
                 scales: scales,
                 plugins: {
                     legend: {
-                        display: temPreco,
-                        labels: { color: '#ccc', usePointStyle: true, boxWidth: 8 }
+                        display: true,
+                        labels: {
+                            color: '#ccc',
+                            usePointStyle: true,
+                            boxWidth: 8,
+                            generateLabels: function () {
+                                var itens = [
+                                    { text: 'Fluxo Positivo', fillStyle: '#4ade80', strokeStyle: '#4ade80', pointStyle: 'circle', datasetIndex: 0 },
+                                    { text: 'Fluxo Negativo', fillStyle: '#ff4d6d', strokeStyle: '#ff4d6d', pointStyle: 'circle', datasetIndex: 0 }
+                                ];
+                                if (temPreco) {
+                                    itens.push({ text: 'Preço BTC (US$)', fillStyle: '#ff9f1a', strokeStyle: '#ff9f1a', pointStyle: 'circle', datasetIndex: 1 });
+                                }
+                                return itens;
+                            }
+                        }
                     }
                 }
             }
