@@ -76,6 +76,12 @@
   // Estimativa baseada em 10 min/bloco a partir do bloco atual aproximado
   const NEXT_HALVING_DATE_EST = new Date('2028-03-28T00:00:00Z');
 
+  /* ── Alerta: janela histórica de melhor compra do fundo ──
+     Nos 4 halvings anteriores, o fundo do bear market ocorreu, em média,
+     entre ~500 e ~540 dias antes do halving seguinte. Quando a contagem
+     regressiva cair para esse limite, acendemos um alerta na tela. */
+  const ALERT_DIAS_ANTES_HALVING = 500;
+
   /* ── Helpers ── */
   function fmtUSD(n) {
     if (n >= 1000) return 'US$ ' + n.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
@@ -147,6 +153,22 @@
     return { d: pad(d), h: pad(h), m: pad(m), s: pad(s), done: false };
   }
 
+  /* ── Ativa/desativa o alerta de "melhor janela para compra do fundo" ── */
+  function updateBuyAlert(diasRestantes) {
+    const el = document.getElementById('halv-buy-alert');
+    if (!el) return;
+    const ativo = diasRestantes > 0 && diasRestantes <= ALERT_DIAS_ANTES_HALVING;
+    if (!ativo) { el.innerHTML = ''; return; }
+    el.innerHTML = `
+      <div class="halv__buy-alert">
+        <span class="halv__buy-alert-icon">&#128276;</span>
+        <span class="halv__buy-alert-text">
+          <strong>Janela histórica de melhor compra do fundo</strong>
+          Faltam ${diasRestantes.toLocaleString('pt-BR')} dias para o 5º halving — nos ciclos anteriores, o fundo do bear ocorreu nessa faixa (~${ALERT_DIAS_ANTES_HALVING} dias antes do halving seguinte).
+        </span>
+      </div>`;
+  }
+
   /* ── Build widget HTML ── */
   function buildWidget() {
     const el = document.getElementById('halving-root');
@@ -193,6 +215,7 @@
         <span class="halv__block-val">3.125 ₿</span>
       </div>
     </div>
+    <div id="halv-buy-alert"></div>
     <div class="halv__est-date" id="halv-est-date">Estimativa: ~março 2028</div>
   </div>
 
@@ -228,6 +251,8 @@
       document.getElementById('halv-h').textContent = t.h;
       document.getElementById('halv-m').textContent = t.m;
       document.getElementById('halv-s').textContent = t.s;
+      const diasRestantes = Math.max(0, Math.floor((NEXT_HALVING_DATE_EST - Date.now()) / 86400000));
+      updateBuyAlert(diasRestantes);
     }
     tick();
     setInterval(tick, 1000);
