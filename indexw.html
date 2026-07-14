@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+html_content = r"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -94,7 +94,7 @@
 
 <body>
 
-<nav style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+<nav style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; height: auto !important; padding-bottom: 16px !important; top: 0 !important; z-index: 1000;">
   <a href="#" class="logo">
     <div class="logo-icon" aria-hidden="true">&#8383;</div>
     BITCOIN&nbsp;<span>INICIANTES</span>
@@ -734,4 +734,7 @@
 </script>
 
 </body>
-</html>
+</html>"""
+
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
