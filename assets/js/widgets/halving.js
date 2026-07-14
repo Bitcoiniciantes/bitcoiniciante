@@ -153,20 +153,32 @@
     return { d: pad(d), h: pad(h), m: pad(m), s: pad(s), done: false };
   }
 
-  /* ── Ativa/desativa o alerta de "melhor janela para compra do fundo" ── */
+  /* ── Ativa/desativa o alerta de "melhor janela para compra do fundo" ──
+     Antes de chegar na janela: mostra contagem regressiva discreta.
+     Dentro da janela (≤ 500 dias do halving): mostra o alerta evidente. */
   function updateBuyAlert(diasRestantes) {
     const el = document.getElementById('halv-buy-alert');
     if (!el) return;
-    const ativo = diasRestantes > 0 && diasRestantes <= ALERT_DIAS_ANTES_HALVING;
-    if (!ativo) { el.innerHTML = ''; return; }
-    el.innerHTML = `
-      <div class="halv__buy-alert">
-        <span class="halv__buy-alert-icon">&#128276;</span>
-        <span class="halv__buy-alert-text">
-          <strong>Janela histórica de melhor compra do fundo</strong>
-          Faltam ${diasRestantes.toLocaleString('pt-BR')} dias para o 5º halving — nos ciclos anteriores, o fundo do bear ocorreu nessa faixa (~${ALERT_DIAS_ANTES_HALVING} dias antes do halving seguinte).
-        </span>
-      </div>`;
+    if (diasRestantes <= 0) { el.innerHTML = ''; return; }
+
+    const diasAteJanela = diasRestantes - ALERT_DIAS_ANTES_HALVING;
+
+    if (diasAteJanela > 0) {
+      el.innerHTML = `
+        <div class="halv__buy-soon">
+          <span class="halv__buy-alert-icon">⏳</span>
+          <span>Faltam <strong>${diasAteJanela.toLocaleString('pt-BR')}</strong> dias para a janela histórica de melhor compra do fundo (${ALERT_DIAS_ANTES_HALVING} dias antes do halving)</span>
+        </div>`;
+    } else {
+      el.innerHTML = `
+        <div class="halv__buy-alert">
+          <span class="halv__buy-alert-icon">&#128276;</span>
+          <span class="halv__buy-alert-text">
+            <strong>Janela histórica de melhor compra do fundo</strong>
+            Faltam ${diasRestantes.toLocaleString('pt-BR')} dias para o 5º halving — nos ciclos anteriores, o fundo do bear ocorreu nessa faixa (~${ALERT_DIAS_ANTES_HALVING} dias antes do halving seguinte).
+          </span>
+        </div>`;
+    }
   }
 
   /* ── Build widget HTML ── */
