@@ -301,7 +301,7 @@
         const msLeft = blocosFaltando * 10 * 60 * 1000;
         const estDate = new Date(Date.now() + msLeft);
         const meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
-        if (est) est.textContent = `Estimativa: ~${meses[estDate.getMonth()]} ${estDate.getFullYear()} (${blocosFaltando.toLocaleString('pt-BR')} blocos)`;
+        if (est) est.textContent = `Estimativa: ~${meses[estDate.getMonth()]} ${estDate.getFullYear()} (${blocosFaltando.toLocaleString('pt-BR')} blocos faltando)`;
       }
     });
   }
