@@ -90,31 +90,6 @@
       scroll-margin-top: 100px;
     }
   </style>
-
-  <!-- Correção isolada: remove a linha/curva estranha que aparece no meio do menu no mobile -->
-  <!-- (não altera main.css/widgets.css; apenas neutraliza no próprio HTML o que estiver causando o traço) -->
-  <style>
-    nav {
-      border-radius: 0 !important;
-      box-shadow: none !important;
-      overflow: visible !important;
-    }
-    nav::before,
-    nav::after {
-      content: none !important;
-      display: none !important;
-      background: none !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-    @media (max-width: 640px) {
-      nav {
-        flex-direction: column !important;
-        align-items: center !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-      }
-    }
-  </style>
 </head>
 
 <body>
