@@ -54,6 +54,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
     }
     .menu-topo-link {
       color: #F7931A;
@@ -73,53 +74,16 @@
       color: #F7931A;
       border-color: #F7931A;
     }
-    
-    /* Estilos Menu Hambúrguer */
-    .menu-toggle {
-      display: none;
-      flex-direction: column;
-      gap: 4px;
-      cursor: pointer;
-      padding: 10px;
-      z-index: 10001;
-    }
-    .menu-toggle span {
-      width: 25px;
-      height: 3px;
-      background: #F7931A;
-      border-radius: 2px;
-      transition: 0.3s;
-    }
-
-    @media (max-width: 768px) {
-      .menu-toggle { display: flex; }
+    @media (max-width: 640px) {
       .menu-topo-custom {
-        display: none; /* Esconde por padrão no mobile */
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: 250px;
-        height: 100vh;
-        background: rgba(10, 10, 10, 0.98);
-        flex-direction: column;
+        width: 100%;
         justify-content: center;
-        align-items: center;
-        gap: 20px;
-        z-index: 10000;
-        border-left: 1px solid rgba(247, 147, 26, 0.2);
-        backdrop-filter: blur(10px);
+        gap: 6px;
       }
-      .menu-topo-custom.active { display: flex; }
       .menu-topo-link {
-        font-size: 16px;
-        width: 80%;
-        text-align: center;
+        font-size: 12px;
+        padding: 6px 10px;
       }
-      
-      /* Animação X do Hambúrguer */
-      .menu-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-      .menu-toggle.active span:nth-child(2) { opacity: 0; }
-      .menu-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
     }
     /* Evita que as seções fiquem escondidas atrás do menu fixo ao clicar nos links */
     #dca-root, #consulta-historica, #widget-etf-sosovalue {
@@ -130,17 +94,11 @@
 
 <body>
 
-<nav style="display:flex; align-items:center; justify-content:space-between; padding: 10px 20px; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 9999; border-bottom: 1px solid rgba(255,255,255,0.05);">
-  <a href="#" class="logo" style="margin: 0;">
+<nav style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+  <a href="#" class="logo">
     <div class="logo-icon" aria-hidden="true">&#8383;</div>
     BITCOIN&nbsp;<span>INICIANTES</span>
   </a>
-
-  <div class="menu-toggle" id="mobileMenuToggle">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
 
   <div class="menu-topo-custom" id="menuTopoCustom">
     <a href="#dca-root" class="menu-topo-link">Compras DCA</a>
@@ -151,17 +109,7 @@
 
 
 <!-- HERO (Livre do CSS antigo) -->
-<style>
-  @media (max-width: 640px) {
-    .hero-container-custom { margin-top: 20px !important; }
-    .btc-ultra-card { padding: 12px !important; }
-    .btc-price-area { margin-top: 0px !important; }
-    .btc-name { font-size: 14px !important; }
-    .btc-pair { font-size: 10px !important; }
-    .btc-status { transform: scale(0.8); }
-  }
-</style>
-<div class="hero-container-custom" style="max-width: 1100px; margin: 100px auto 40px auto; padding: 0 15px; width: 100%; box-sizing: border-box;">
+<div style="max-width: 1100px; margin: 100px auto 40px auto; padding: 0 15px; width: 100%; box-sizing: border-box;">
   
   <!-- Flexbox limpo e blindado contra quebras -->
   <div style="display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; align-items: flex-start;">
@@ -781,32 +729,6 @@
         slider.dispatchEvent(new Event('input'));
         slider.dispatchEvent(new Event('change'));
       });
-    });
-
-    // Lógica do Menu Hambúrguer
-    const toggle = document.getElementById('mobileMenuToggle');
-    const menu = document.getElementById('menuTopoCustom');
-    const links = document.querySelectorAll('.menu-topo-link');
-
-    toggle.addEventListener('click', () => {
-      toggle.classList.toggle('active');
-      menu.classList.toggle('active');
-    });
-
-    // Fecha o menu ao clicar em um link
-    links.forEach(link => {
-      link.addEventListener('click', () => {
-        toggle.classList.remove('active');
-        menu.classList.remove('active');
-      });
-    });
-
-    // Fecha o menu ao clicar fora dele
-    document.addEventListener('click', (e) => {
-      if (!menu.contains(e.target) && !toggle.contains(e.target) && menu.classList.contains('active')) {
-        toggle.classList.remove('active');
-        menu.classList.remove('active');
-      }
     });
   });
 </script>
