@@ -78,11 +78,18 @@
       .menu-topo-custom {
         width: 100%;
         justify-content: center;
-        gap: 6px;
+        gap: 4px;
+        margin-top: -8px; /* Sobe os links para ficarem mais centralizados no box */
       }
       .menu-topo-link {
-        font-size: 12px;
-        padding: 6px 10px;
+        font-size: 11px;
+        padding: 4px 7px;
+        margin-bottom: 2px;
+      }
+      .logo {
+        transform: scale(0.85);
+        margin-top: -5px;
+        margin-bottom: -10px;
       }
     }
     /* Evita que as seções fiquem escondidas atrás do menu fixo ao clicar nos links */
@@ -94,7 +101,7 @@
 
 <body>
 
-<nav style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+<nav style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; padding: 10px 15px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 9999;">
   <a href="#" class="logo">
     <div class="logo-icon" aria-hidden="true">&#8383;</div>
     BITCOIN&nbsp;<span>INICIANTES</span>
@@ -109,7 +116,14 @@
 
 
 <!-- HERO (Livre do CSS antigo) -->
-<div style="max-width: 1100px; margin: 100px auto 40px auto; padding: 0 15px; width: 100%; box-sizing: border-box;">
+<style>
+  @media (max-width: 640px) {
+    .hero-container-custom { margin-top: 40px !important; }
+    .btc-ultra-card { padding: 15px !important; }
+    .btc-price-area { margin-top: 5px !important; }
+  }
+</style>
+<div class="hero-container-custom" style="max-width: 1100px; margin: 100px auto 40px auto; padding: 0 15px; width: 100%; box-sizing: border-box;">
   
   <!-- Flexbox limpo e blindado contra quebras -->
   <div style="display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; align-items: flex-start;">
