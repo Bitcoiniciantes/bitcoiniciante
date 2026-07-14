@@ -524,6 +524,8 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
 .halv__buy-alert-text { font-size:11px; color:#bbf7d0; line-height:1.4; }
 .halv__buy-alert-text strong { color:#4ade80; font-size:12px; display:block; margin-bottom:2px; }
 @keyframes halvBuyAlertPulse { 0%,100% { box-shadow:0 0 0 0 rgba(74,222,128,.35); } 50% { box-shadow:0 0 0 6px rgba(74,222,128,0); } }
+.halv__buy-soon { display:flex; align-items:center; gap:8px; background:rgba(247,147,26,.08); border:1px solid rgba(247,147,26,.25); border-radius:8px; padding:9px 12px; margin-top:8px; font-size:11px; color:#ffd9a8; }
+.halv__buy-soon strong { color:#F7931A; }
 
 /* =====================================================================
    WIDGET ETF SOSOVALUE
