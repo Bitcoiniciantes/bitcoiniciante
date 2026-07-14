@@ -484,6 +484,7 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
 .halv__block-label { font-size:9px; color:#ccc; text-transform:uppercase; letter-spacing:.05em; text-align:center; }
 .halv__block-val { font-family:var(--font-mono); font-size:14px; font-weight:700; color:#fff; }
 .halv__est-date { font-size:10px; color:#ccc; text-align:center; font-style:italic; margin-top:4px; }
+.halv__est-inline { text-transform:none; letter-spacing:normal; font-style:normal; color:#F7931A; opacity:.75; font-size:10px; font-weight:400; }
 
 .halv__tabs { display:flex; gap:4px; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,.07); padding-bottom:6px; }
 .halv__tab { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:4px; color:#ccc; font-size:12px; font-weight:600; padding:4px 10px; cursor:pointer; font-family:var(--font-body); transition:all .2s; }
