@@ -82,6 +82,15 @@
      regressiva cair para esse limite, acendemos um alerta na tela. */
   const ALERT_DIAS_ANTES_HALVING = 500;
 
+  /* ── Data em que a janela abre: halving estimado − 500 dias ── */
+  const JANELA_COMPRA_DATE = new Date(NEXT_HALVING_DATE_EST.getTime() - ALERT_DIAS_ANTES_HALVING * 86400000);
+
+  function formatDataBR(date) {
+    const d = String(date.getDate()).padStart(2, '0');
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    return `${d}-${m}-${date.getFullYear()}`;
+  }
+
   /* ── Helpers ── */
   function fmtUSD(n) {
     if (n >= 1000) return 'US$ ' + n.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
@@ -167,7 +176,7 @@
       el.innerHTML = `
         <div class="halv__buy-soon">
           <span class="halv__buy-alert-icon">⏳</span>
-          <span>Faltam <strong>${diasAteJanela.toLocaleString('pt-BR')}</strong> dias para a janela histórica de melhor compra do fundo (${ALERT_DIAS_ANTES_HALVING} dias antes do halving)</span>
+          <span>Faltam <strong>${diasAteJanela.toLocaleString('pt-BR')}</strong> dias para a janela histórica de melhor compra do fundo — abre em <strong>${formatDataBR(JANELA_COMPRA_DATE)}</strong> (${ALERT_DIAS_ANTES_HALVING} dias antes do halving)</span>
         </div>`;
     } else {
       el.innerHTML = `
@@ -175,7 +184,7 @@
           <span class="halv__buy-alert-icon">&#128276;</span>
           <span class="halv__buy-alert-text">
             <strong>Janela histórica de melhor compra do fundo</strong>
-            Faltam ${diasRestantes.toLocaleString('pt-BR')} dias para o 5º halving — nos ciclos anteriores, o fundo do bear ocorreu nessa faixa (~${ALERT_DIAS_ANTES_HALVING} dias antes do halving seguinte).
+            Aberta desde ${formatDataBR(JANELA_COMPRA_DATE)} — faltam ${diasRestantes.toLocaleString('pt-BR')} dias para o 5º halving (~${ALERT_DIAS_ANTES_HALVING} dias é a média histórica pré-halving em que o fundo ocorreu nos ciclos anteriores).
           </span>
         </div>`;
     }
@@ -201,7 +210,7 @@
 
   <!-- Countdown ao 5º Halving -->
   <div class="halv__countdown-box">
-    <div class="halv__next-label">5º Halving — bloco <strong>${NEXT_HALVING_BLOCK.toLocaleString('pt-BR')}</strong></div>
+    <div class="halv__next-label">5º Halving — bloco <strong>${NEXT_HALVING_BLOCK.toLocaleString('pt-BR')}</strong> <span class="halv__est-inline" id="halv-est-date">(Estimativa: ~março 2028)</span></div>
     <div class="halv__clock" id="halv-clock">
       <div class="halv__unit"><span class="halv__num halv__num--days" id="halv-d">--</span><span class="halv__ulab">dias</span></div>
       <div class="halv__sep halv__sep--days">:</div>
@@ -228,7 +237,6 @@
       </div>
     </div>
     <div id="halv-buy-alert"></div>
-    <div class="halv__est-date" id="halv-est-date">Estimativa: ~março 2028</div>
   </div>
 
   <!-- Tabs -->
