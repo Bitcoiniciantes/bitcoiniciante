@@ -20,6 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
   let exchangeRate = 0; 
   let pricesHistory = [];
   let openPriceReference = 0;
+  let chartState = null; // guarda coords/preços do último desenho p/ o hover
+
+  // Elemento de tooltip (criado dinamicamente e inserido no wrapper do gráfico)
+  const chartWrap = document.querySelector('.preev__chart-wrap');
+  const tooltipEl = document.createElement('div');
+  tooltipEl.className = 'preev__chart-tooltip';
+  if (chartWrap) chartWrap.appendChild(tooltipEl);
 
   const timeframeParams = {
     '1H': { interval: '1m', limit: 60 },
@@ -134,6 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
         calculateConversion('left');
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        chartState = null;
+        hideTooltip();
         renderStats(1, 1, 0); 
         return;
     }
@@ -182,18 +191,35 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function drawTrendChart(prices, isBullish) {
+    hideTooltip();
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width * dpr; canvas.height = rect.height * dpr; ctx.scale(dpr, dpr);
     const w = rect.width, h = rect.height;
-    ctx.clearRect(0, 0, w, h);
     const min = Math.min(...prices), range = Math.max(...prices) - min || 1;
     const coords = prices.map((p, i) => ({ x: (i/(prices.length-1))*w, y: h-15-((p-min)/range)*(h-30) }));
-    
+
+    // Guarda o estado atual do gráfico para o hover reaproveitar sem redimensionar o canvas
+    chartState = { prices, coords, isBullish, min, range, w, h };
+
+    renderBaseChart();
+  }
+
+  /**
+   * Redesenha apenas as camadas base (linha, área e referência de abertura),
+   * sem tocar em canvas.width/height — usado tanto no desenho inicial quanto
+   * para "limpar" o hover a cada movimento do mouse.
+   */
+  function renderBaseChart() {
+    if (!chartState) return;
+    const { coords, isBullish, min, range, w, h } = chartState;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, w, h);
+
     const openY = h-15-((openPriceReference-min)/range)*(h-30);
     ctx.beginPath(); ctx.setLineDash([6,6]); ctx.moveTo(0, openY); ctx.lineTo(w, openY); ctx.strokeStyle = '#d5d7dc'; ctx.stroke(); ctx.setLineDash([]);
-    
+
     ctx.beginPath(); ctx.moveTo(coords[0].x, h);
     coords.forEach(c => ctx.lineTo(c.x, c.y));
     ctx.lineTo(coords[coords.length-1].x, h); ctx.closePath();
@@ -201,9 +227,69 @@ document.addEventListener('DOMContentLoaded', () => {
     grad.addColorStop(0, isBullish ? 'rgba(52, 211, 153, 0.15)' : 'rgba(248, 113, 113, 0.15)');
     grad.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.fillStyle = grad; ctx.fill();
-    
+
     ctx.beginPath(); coords.forEach((c, i) => i === 0 ? ctx.moveTo(c.x, c.y) : ctx.lineTo(c.x, c.y));
     ctx.strokeStyle = isBullish ? '#34d399' : '#f87171'; ctx.lineWidth = 2.5; ctx.stroke();
+  }
+
+  /**
+   * Encontra o ponto mais próximo do mouse/toque, desenha a linha-guia + o
+   * ponto destacado, e mostra o tooltip com o valor formatado.
+   */
+  function handleChartHover(evt) {
+    if (!chartState || !chartState.coords.length) return;
+    const rect = canvas.getBoundingClientRect();
+    const clientX = evt.touches && evt.touches.length ? evt.touches[0].clientX : evt.clientX;
+    const x = clientX - rect.left;
+
+    const { coords, prices, w, h, isBullish } = chartState;
+    let idx = Math.round((x / w) * (coords.length - 1));
+    idx = Math.max(0, Math.min(coords.length - 1, idx));
+    const point = coords[idx];
+    const price = prices[idx];
+
+    renderBaseChart();
+
+    const ctx = canvas.getContext('2d');
+    ctx.save();
+    ctx.beginPath();
+    ctx.setLineDash([3, 3]);
+    ctx.moveTo(point.x, 0);
+    ctx.lineTo(point.x, h);
+    ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.beginPath();
+    ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = isBullish ? '#34d399' : '#f87171';
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#ffffff';
+    ctx.stroke();
+    ctx.restore();
+
+    showTooltip(point.x, point.y, price);
+  }
+
+  function handleChartLeave() {
+    hideTooltip();
+    renderBaseChart();
+  }
+
+  function showTooltip(x, y, price) {
+    if (!tooltipEl) return;
+    const pR = selectRight.value;
+    const prefix = pR === 'BRL' ? 'R$ ' : pR === 'USD' ? '$ ' : '₿ ';
+    tooltipEl.textContent = `${prefix}${formatNumber(price, pR)}`;
+    tooltipEl.style.left = (canvas.offsetLeft + x) + 'px';
+    tooltipEl.style.top = (canvas.offsetTop + y) + 'px';
+    tooltipEl.classList.add('visible');
+  }
+
+  function hideTooltip() {
+    if (tooltipEl) tooltipEl.classList.remove('visible');
   }
 
   // --- EVENTOS FINAIS ---
@@ -220,6 +306,13 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTitle(); // Atualiza o título ao mudar o ativo
     updateAll(); 
   }));
+
+  // --- HOVER / TOOLTIP NO GRÁFICO ---
+  canvas.addEventListener('mousemove', handleChartHover);
+  canvas.addEventListener('mouseleave', handleChartLeave);
+  canvas.addEventListener('touchstart', handleChartHover, { passive: true });
+  canvas.addEventListener('touchmove', handleChartHover, { passive: true });
+  canvas.addEventListener('touchend', handleChartLeave);
 
   tfBtns.forEach(b => b.addEventListener('click', (e) => {
       tfBtns.forEach(btn => btn.classList.remove('active'));
