@@ -1,6 +1,6 @@
 /**
- * BITCOIN INICIANTES — Conversor Bidirecional Final
- * Ajuste: Limpeza de interface e reset de estatísticas quando BTC=BTC.
+ * BITCOIN INICIANTES — Conversor Bidirecional Profissional
+ * Limitação dinâmica: 8 casas p/ BTC, 2 casas p/ Moedas Fiduciárias (USD/BRL).
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -27,6 +27,26 @@ document.addEventListener('DOMContentLoaded', () => {
     '1Y': { interval: '1d', limit: 365 }
   };
 
+  /**
+   * Limita as casas decimais dinamicamente conforme o ativo
+   */
+  function limitarCasas(input, ativo) {
+    const maxCasas = ativo === 'BTC' ? 8 : 2;
+    let valor = input.value.replace(',', '.');
+    valor = valor.replace(/[^0-9.]/g, '');
+
+    const partes = valor.split('.');
+    if (partes.length > 2) {
+        valor = partes[0] + '.' + partes.slice(1).join('');
+    }
+
+    if (valor.includes('.')) {
+        const [inteiro, decimal] = valor.split('.');
+        valor = inteiro + '.' + decimal.slice(0, maxCasas);
+    }
+    input.value = valor.replace('.', ',');
+  }
+
   function getPairConfig() {
     const from = selectLeft.value;
     const to = selectRight.value;
@@ -49,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function formatNumber(val, asset) {
     if (isNaN(val) || val === null) return '—';
     const isCrypto = asset === 'BTC';
-    // Garantia estrita de 8 casas para BTC, 2 para Fiat
     return val.toLocaleString('pt-BR', {
       minimumFractionDigits: isCrypto ? 0 : 2,
       maximumFractionDigits: isCrypto ? 8 : 2
@@ -79,17 +98,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchCurrentTicker() {
     const config = getPairConfig();
-    
-    // CASO BTC == BTC ou BRL == BRL
     if (!config) {
-        exchangeRate = 1;
+        exchangeRate = 1; 
         calculateConversion('left');
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        renderStats(1, 1, 0); // Limpa indicadores de alta/baixa
+        renderStats(1, 1, 0); 
         return;
     }
-
     try {
       const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${config.symbol}`);
       const data = await res.json();
@@ -104,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchHistoricalTrends() {
     const config = getPairConfig();
-    if (!config) return; // Gráfico já foi limpo no fetchCurrentTicker
+    if (!config) return;
     
     const tf = timeframeParams[activeTimeframe];
     try {
@@ -128,11 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderStats(high, low, pct) {
     const pR = selectRight.value;
     const prefix = pR === 'BRL' ? 'R$ ' : pR === 'USD' ? '$ ' : '₿ ';
-    
-    // Se for BTC, usamos formatNumber com a regra de 8 casas
     highEl.textContent = `↑ ${prefix}${formatNumber(high, pR)}`;
     lowEl.textContent = `↓ ${prefix}${formatNumber(low, pR)}`;
-    
     changeEl.textContent = `${pct >= 0 ? '▲' : '▼'} ${Math.abs(pct).toFixed(2)}%`;
     changeEl.className = `preev__stat-item change-indicator ${pct >= 0 ? 'up' : 'down'}`;
   }
@@ -162,13 +175,17 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.strokeStyle = isBullish ? '#34d399' : '#f87171'; ctx.lineWidth = 2.5; ctx.stroke();
   }
 
-  inputLeft.addEventListener('input', () => calculateConversion('left'));
-  inputRight.addEventListener('input', () => calculateConversion('right'));
+  // --- EVENTOS FINAIS ---
+  inputLeft.addEventListener('input', () => {
+      limitarCasas(inputLeft, selectLeft.value);
+      calculateConversion('left');
+  });
+  inputRight.addEventListener('input', () => {
+      limitarCasas(inputRight, selectRight.value);
+      calculateConversion('right');
+  });
   
-  // Eventos de troca garantem a limpeza e atualização imediata
-  [selectLeft, selectRight].forEach(s => s.addEventListener('change', () => { 
-      updateAll(); 
-  }));
+  [selectLeft, selectRight].forEach(s => s.addEventListener('change', () => { updateAll(); }));
 
   tfBtns.forEach(b => b.addEventListener('click', (e) => {
       tfBtns.forEach(btn => btn.classList.remove('active'));
