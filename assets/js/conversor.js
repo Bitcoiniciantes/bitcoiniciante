@@ -1,6 +1,7 @@
 /**
  * BITCOIN INICIANTES — Conversor Bidirecional Profissional
  * Limitação dinâmica: 8 casas p/ BTC, 2 casas p/ Moedas Fiduciárias (USD/BRL).
+ * Título dinâmico conforme ativos selecionados.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const changeEl = document.getElementById('preev-change');
   const highEl = document.getElementById('preev-high');
   const lowEl = document.getElementById('preev-low');
+  const titleEl = document.querySelector('.preev__title'); // Seleciona o título
 
   let activeTimeframe = '1M';
   let exchangeRate = 0; 
@@ -26,6 +28,35 @@ document.addEventListener('DOMContentLoaded', () => {
     '1M': { interval: '8h', limit: 90 },
     '1Y': { interval: '1d', limit: 365 }
   };
+
+  /**
+   * Mapeia os nomes amigáveis para o título
+   */
+  const assetNames = {
+    'BTC': 'Bitcoin',
+    'USD': 'US Dólar',
+    'BRL': 'Real Brasileiro'
+  };
+
+  /**
+   * Atualiza o título dinamicamente
+   */
+  function updateTitle() {
+    if (titleEl) {
+      const fromName = assetNames[selectLeft.value] || selectLeft.value;
+      const toName = assetNames[selectRight.value] || selectRight.value;
+      titleEl.textContent = `${fromName} para ${toName}`;
+    }
+  }
+
+  /**
+   * Configuração inicial padrão: BTC para USD
+   */
+  function setInitialDefaults() {
+    selectLeft.value = 'BTC';
+    selectRight.value = 'USD';
+    updateTitle();
+  }
 
   /**
    * Limita as casas decimais dinamicamente conforme o ativo
@@ -185,7 +216,10 @@ document.addEventListener('DOMContentLoaded', () => {
       calculateConversion('right');
   });
   
-  [selectLeft, selectRight].forEach(s => s.addEventListener('change', () => { updateAll(); }));
+  [selectLeft, selectRight].forEach(s => s.addEventListener('change', () => { 
+    updateTitle(); // Atualiza o título ao mudar o ativo
+    updateAll(); 
+  }));
 
   tfBtns.forEach(b => b.addEventListener('click', (e) => {
       tfBtns.forEach(btn => btn.classList.remove('active'));
@@ -195,6 +229,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }));
   
   async function updateAll() { await fetchCurrentTicker(); await fetchHistoricalTrends(); }
+  
+  // Inicialização
+  setInitialDefaults(); // Força Bitcoin para US Dólar no carregamento
   updateAll();
   setInterval(fetchCurrentTicker, 10000);
 });
