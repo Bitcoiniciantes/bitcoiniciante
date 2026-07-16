@@ -1,6 +1,6 @@
 /**
- * BITCOIN INICIANTES — Conversor Bidirecional
- * Limite estrito de 8 casas decimais para BTC.
+ * BITCOIN INICIANTES — Conversor Bidirecional Final
+ * Ajuste: Limpeza de interface e reset de estatísticas quando BTC=BTC.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const from = selectLeft.value;
     const to = selectRight.value;
     if (from === to) return null; 
+    
     if (from === 'BTC' && to === 'USD') return { symbol: 'BTCUSDT', invert: false };
     if (from === 'USD' && to === 'BTC') return { symbol: 'BTCUSDT', invert: true };
     if (from === 'BTC' && to === 'BRL') return { symbol: 'BTCBRL', invert: false };
@@ -45,17 +46,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return parseFloat(raw) || 0;
   }
 
-  /**
-   * FORMATAÇÃO ESTRICTA:
-   * BTC sempre 8 casas decimais. Moedas fiat 2 casas.
-   */
   function formatNumber(val, asset) {
     if (isNaN(val) || val === null) return '—';
-    if (asset === 'BTC') {
-        // Remove zeros à direita desnecessários, mas mantém até 8 casas
-        return parseFloat(val.toFixed(8)).toString().replace('.', ',');
-    }
-    return val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const isCrypto = asset === 'BTC';
+    // Garantia estrita de 8 casas para BTC, 2 para Fiat
+    return val.toLocaleString('pt-BR', {
+      minimumFractionDigits: isCrypto ? 0 : 2,
+      maximumFractionDigits: isCrypto ? 8 : 2
+    });
   }
 
   function calculateConversion(triggerBox) {
@@ -81,7 +79,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchCurrentTicker() {
     const config = getPairConfig();
-    if (!config) return;
+    
+    // CASO BTC == BTC ou BRL == BRL
+    if (!config) {
+        exchangeRate = 1;
+        calculateConversion('left');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        renderStats(1, 1, 0); // Limpa indicadores de alta/baixa
+        return;
+    }
+
     try {
       const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${config.symbol}`);
       const data = await res.json();
@@ -96,12 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchHistoricalTrends() {
     const config = getPairConfig();
-    if (!config) {
-         const ctx = canvas.getContext('2d');
-         ctx.clearRect(0, 0, canvas.width, canvas.height);
-         renderStats(0, 0, 0);
-         return;
-    }
+    if (!config) return; // Gráfico já foi limpo no fetchCurrentTicker
+    
     const tf = timeframeParams[activeTimeframe];
     try {
       const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${config.symbol}&interval=${tf.interval}&limit=${tf.limit}`);
@@ -124,8 +128,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderStats(high, low, pct) {
     const pR = selectRight.value;
     const prefix = pR === 'BRL' ? 'R$ ' : pR === 'USD' ? '$ ' : '₿ ';
+    
+    // Se for BTC, usamos formatNumber com a regra de 8 casas
     highEl.textContent = `↑ ${prefix}${formatNumber(high, pR)}`;
     lowEl.textContent = `↓ ${prefix}${formatNumber(low, pR)}`;
+    
     changeEl.textContent = `${pct >= 0 ? '▲' : '▼'} ${Math.abs(pct).toFixed(2)}%`;
     changeEl.className = `preev__stat-item change-indicator ${pct >= 0 ? 'up' : 'down'}`;
   }
@@ -140,11 +147,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const min = Math.min(...prices), range = Math.max(...prices) - min || 1;
     const coords = prices.map((p, i) => ({ x: (i/(prices.length-1))*w, y: h-15-((p-min)/range)*(h-30) }));
     
-    // Tracejado
     const openY = h-15-((openPriceReference-min)/range)*(h-30);
     ctx.beginPath(); ctx.setLineDash([6,6]); ctx.moveTo(0, openY); ctx.lineTo(w, openY); ctx.strokeStyle = '#d5d7dc'; ctx.stroke(); ctx.setLineDash([]);
     
-    // Gradiente
     ctx.beginPath(); ctx.moveTo(coords[0].x, h);
     coords.forEach(c => ctx.lineTo(c.x, c.y));
     ctx.lineTo(coords[coords.length-1].x, h); ctx.closePath();
@@ -153,14 +158,18 @@ document.addEventListener('DOMContentLoaded', () => {
     grad.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.fillStyle = grad; ctx.fill();
     
-    // Linha
     ctx.beginPath(); coords.forEach((c, i) => i === 0 ? ctx.moveTo(c.x, c.y) : ctx.lineTo(c.x, c.y));
     ctx.strokeStyle = isBullish ? '#34d399' : '#f87171'; ctx.lineWidth = 2.5; ctx.stroke();
   }
 
   inputLeft.addEventListener('input', () => calculateConversion('left'));
   inputRight.addEventListener('input', () => calculateConversion('right'));
-  [selectLeft, selectRight].forEach(s => s.addEventListener('change', () => { updateAll(); }));
+  
+  // Eventos de troca garantem a limpeza e atualização imediata
+  [selectLeft, selectRight].forEach(s => s.addEventListener('change', () => { 
+      updateAll(); 
+  }));
+
   tfBtns.forEach(b => b.addEventListener('click', (e) => {
       tfBtns.forEach(btn => btn.classList.remove('active'));
       e.target.classList.add('active');
