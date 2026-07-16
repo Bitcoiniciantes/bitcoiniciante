@@ -1,6 +1,6 @@
 /**
- * BITCOIN INICIANTES — Conversor estilo Preev.com
- * Cálculos instantâneos, Sparklines em HTML5 Canvas, suporte a múltiplos timeframes e frações.
+ * BITCOIN INICIANTES — Conversor de Bitcoin Minimalista
+ * Restrito a BTC / USD / BRL.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,22 +12,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('preev-canvas');
   
   const scaleBtns = document.querySelectorAll('.preev__scale-btn');
-  const coinBtns = document.querySelectorAll('.preev__coin-btn');
   const tfBtns = document.querySelectorAll('.preev__tf-btn');
   
   const changeEl = document.getElementById('preev-change');
   const highEl = document.getElementById('preev-high');
   const lowEl = document.getElementById('preev-low');
 
-  // Estado da Aplicação
-  let activeCoin = 'BTC';       // Ativo padrão
-  let activeFiat = 'BRL';       // Fiduciária padrão
-  let activeScale = 'btc';      // Fração selecionada (sat, micro, milli, btc, kilo)
-  let activeTimeframe = '1M';   // Histórico padrão
-  let exchangeRate = 0;         // Preço do ativo sem escala
+  // Estado
+  let activeFiat = fiatSelect.value; // USD ou BRL
+  let activeScale = 'btc';
+  let activeTimeframe = '1M';
+  let exchangeRate = 0; // Preço puro de 1 BTC
   let pricesHistory = [];
+  let openPriceReference = 0; // Para desenhar a linha base tracejada no gráfico
 
-  // Configurações de tempo para dados históricos da Binance
+  // Configurações Binance
   const timeframeParams = {
     '1H': { interval: '1m', limit: 60 },
     '1D': { interval: '15m', limit: 96 },
@@ -36,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
     '1Y': { interval: '1d', limit: 365 }
   };
 
-  // Multiplicadores matemáticos das escalas estilo Preev
   const scaleMultipliers = {
     sat: 0.00000001,
     micro: 0.000001,
@@ -49,9 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return scaleMultipliers[activeScale] || 1;
   }
 
-  /**
-   * Limpa formatação fiduciária para cálculos
-   */
   function parseCleanFloat(val) {
     if (!val) return 0;
     let raw = val.replace(/\s/g, '');
@@ -67,9 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return parseFloat(raw) || 0;
   }
 
-  /**
-   * Formata os valores monetários de acordo com a moeda corrente
-   */
   function formatCurrency(val) {
     if (isNaN(val) || val === null) return '—';
     const locale = activeFiat === 'BRL' ? 'pt-BR' : 'en-US';
@@ -79,14 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /**
-   * Converte moeda com base nas interações
-   */
   function calculateConversion(trigger) {
     if (exchangeRate <= 0) return;
-    
-    const factor = getScaleFactor();
-    const rateWithScale = exchangeRate * factor;
+    const rateWithScale = exchangeRate * getScaleFactor();
 
     if (trigger === 'crypto') {
       const cryptoAmount = parseCleanFloat(cryptoInput.value);
@@ -94,81 +81,69 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       const fiatAmount = parseCleanFloat(fiatInput.value);
       const computedCrypto = fiatAmount / rateWithScale;
+      // Impede notações científicas chatas e limita a 8 casas
       cryptoInput.value = Number(computedCrypto.toFixed(8)).toString();
     }
   }
 
-  /**
-   * Ticker Real-Time via Binance API
-   */
   async function fetchCurrentTicker() {
     try {
-      const targetSymbol = activeFiat === 'USD' ? 'USDT' : activeFiat;
-      const symbol = `${activeCoin}${targetSymbol}`;
+      const symbol = `BTC${activeFiat === 'USD' ? 'USDT' : activeFiat}`;
       const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
       const data = await res.json();
       
       if (data && data.price) {
         exchangeRate = parseFloat(data.price);
-        
-        // Atualiza campos se nenhum estiver em foco
         if (document.activeElement !== cryptoInput && document.activeElement !== fiatInput) {
           calculateConversion('crypto');
         }
       }
     } catch (err) {
-      console.warn("Falha de rede ao requisitar preço imediato na Binance:", err);
+      console.warn("Falha ao obter preço da Binance:", err);
     }
   }
 
-  /**
-   * Obtém Klines da Binance para desenhar o gráfico e calcular mín/máx
-   */
   async function fetchHistoricalTrends() {
     try {
-      const targetSymbol = activeFiat === 'USD' ? 'USDT' : activeFiat;
-      const symbol = `${activeCoin}${targetSymbol}`;
+      const symbol = `BTC${activeFiat === 'USD' ? 'USDT' : activeFiat}`;
       const tf = timeframeParams[activeTimeframe];
 
       const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${tf.interval}&limit=${tf.limit}`);
       const data = await res.json();
 
       if (data && data.length > 0) {
-        pricesHistory = data.map(candle => parseFloat(candle[4])); // Fechamentos
-        const highPrices = data.map(candle => parseFloat(candle[2]));
-        const lowPrices = data.map(candle => parseFloat(candle[3]));
+        pricesHistory = data.map(candle => parseFloat(candle[4]));
+        const highs = data.map(candle => parseFloat(candle[2]));
+        const lows = data.map(candle => parseFloat(candle[3]));
 
-        const maxPrice = Math.max(...highPrices) * getScaleFactor();
-        const minPrice = Math.min(...lowPrices) * getScaleFactor();
+        const maxPrice = Math.max(...highs) * getScaleFactor();
+        const minPrice = Math.min(...lows) * getScaleFactor();
 
-        const openPrice = parseFloat(data[0][1]);
+        openPriceReference = parseFloat(data[0][1]); // Salva para a linha tracejada
         const closePrice = parseFloat(data[data.length - 1][4]);
-        const changePercent = ((closePrice - openPrice) / openPrice) * 100;
+        const changePercent = ((closePrice - openPriceReference) / openPriceReference) * 100;
 
         renderStats(maxPrice, minPrice, changePercent);
         drawTrendChart(pricesHistory, changePercent >= 0);
       }
     } catch (err) {
-      console.error("Falha ao buscar histórico de klines:", err);
+      console.error("Falha ao buscar Klines:", err);
     }
   }
 
-  /**
-   * Atualiza as estatísticas consolidadas no rodapé do Widget
-   */
   function renderStats(high, low, pct) {
-    const prefix = activeFiat === 'BRL' ? 'R$ ' : activeFiat === 'EUR' ? '€ ' : '$ ';
+    const prefix = activeFiat === 'BRL' ? 'R$ ' : '$ ';
     highEl.textContent = `↑ ${prefix}${formatCurrency(high)}`;
     lowEl.textContent = `↓ ${prefix}${formatCurrency(low)}`;
 
     const isPositive = pct >= 0;
-    changeEl.textContent = `${isPositive ? '▲ +' : '▼ '}${pct.toFixed(2)}%`;
+    changeEl.textContent = `${isPositive ? '▼' : '▼'} ${pct.toFixed(2)}%`;
     changeEl.className = `preev__stat-item change-indicator ${isPositive ? 'up' : 'down'}`;
+    
+    // Ajuste cosmético da seta baseado na referência (a seta de queda muda de direção no original)
+    if (isPositive) changeEl.textContent = changeEl.textContent.replace('▼', '▲');
   }
 
-  /**
-   * Desenha o Sparkline de Alta Densidade no Canvas
-   */
   function drawTrendChart(prices, isBullish) {
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
@@ -191,14 +166,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Coordenadas
     const coords = prices.map((price, idx) => {
       const x = (idx / (prices.length - 1)) * w;
-      const y = h - 12 - ((price - min) / range) * (h - 24);
+      const y = h - 15 - ((price - min) / range) * (h - 30);
       return { x, y };
     });
 
-    const themeColor = isBullish ? '#4ade80' : '#ff4d6d';
-    const gradStart = isBullish ? 'rgba(74, 222, 128, 0.12)' : 'rgba(255, 77, 109, 0.12)';
+    const themeColor = isBullish ? '#34d399' : '#f87171';
+    const gradStart = isBullish ? 'rgba(52, 211, 153, 0.15)' : 'rgba(248, 113, 113, 0.15)';
 
-    // Desenha gradiente abaixo do gráfico
+    // 1. Linha Base Tracejada (Abertura)
+    const openY = h - 15 - ((openPriceReference - min) / range) * (h - 30);
+    ctx.beginPath();
+    ctx.setLineDash([6, 6]);
+    ctx.moveTo(0, openY);
+    ctx.lineTo(w, openY);
+    ctx.strokeStyle = '#d5d7dc';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.setLineDash([]); // Reseta traços
+
+    // 2. Gradiente Inferior
     ctx.beginPath();
     ctx.moveTo(coords[0].x, h);
     ctx.lineTo(coords[0].x, coords[0].y);
@@ -214,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.fillStyle = gradient;
     ctx.fill();
 
-    // Desenha linha principal
+    // 3. Linha do Gráfico Principal
     ctx.beginPath();
     ctx.moveTo(coords[0].x, coords[0].y);
     for (let i = 1; i < coords.length; i++) {
@@ -227,47 +213,26 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.stroke();
   }
 
-  // Monitoria de Ações de Escala (sat, micro, milli, btc, kilo)
+  // Interações - Frações BTC
   scaleBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       scaleBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeScale = btn.getAttribute('data-scale');
 
-      // Altera o rótulo do input
-      cryptoLabel.textContent = activeScale === 'btc' ? activeCoin : activeScale;
+      cryptoLabel.textContent = activeScale === 'btc' ? 'BTC' : activeScale;
       
-      // Ajusta o input cripto para refletir a nova escala baseado na fiduciária atual
       const baseFiat = parseCleanFloat(fiatInput.value);
       const scaledRate = exchangeRate * getScaleFactor();
       const updatedCrypto = baseFiat / scaledRate;
 
       cryptoInput.value = isNaN(updatedCrypto) ? '1' : Number(updatedCrypto.toFixed(8)).toString();
-
       fetchHistoricalTrends();
     });
   });
 
-  // Ativos Rápidos
-  coinBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      coinBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeCoin = btn.getAttribute('data-coin');
-
-      // Se a moeda mudar, a escala volta a ser nativa do ativo
-      scaleBtns.forEach(b => b.classList.remove('active'));
-      document.querySelector('[data-scale="btc"]').classList.add('active');
-      activeScale = 'btc';
-      cryptoLabel.textContent = activeCoin;
-
-      updateData();
-    });
-  });
-
-  // Escuta interativa dos campos de texto
+  // Inputs Textuais
   cryptoInput.addEventListener('input', () => calculateConversion('crypto'));
-  
   fiatInput.addEventListener('input', () => calculateConversion('fiat'));
 
   fiatInput.addEventListener('focus', () => {
@@ -280,13 +245,13 @@ document.addEventListener('DOMContentLoaded', () => {
     fiatInput.value = formatCurrency(rawVal);
   });
 
-  // Moedas fiat
+  // Mudança de Moeda Fiat (Restrito a USD e BRL)
   fiatSelect.addEventListener('change', () => {
     activeFiat = fiatSelect.value;
-    updateData();
+    updateAll();
   });
 
-  // Timeframes
+  // Timeframes (1H, 1D, etc)
   tfBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       tfBtns.forEach(b => b.classList.remove('active'));
@@ -296,20 +261,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Redimensionamento do canvas
+  // Responsive Canvas
   window.addEventListener('resize', () => {
     if (pricesHistory.length > 0) {
-      const isBullish = !changeEl.classList.contains('down');
+      const isBullish = changeEl.classList.contains('up');
       drawTrendChart(pricesHistory, isBullish);
     }
   });
 
-  async function updateData() {
+  async function updateAll() {
     await fetchCurrentTicker();
     await fetchHistoricalTrends();
   }
 
-  // Inicialização padrão
-  updateData();
-  setInterval(fetchCurrentTicker, 10000); // Sincronização em segundo plano (10s)
+  // Init
+  updateAll();
+  setInterval(fetchCurrentTicker, 10000); // 10 segundos
 });
