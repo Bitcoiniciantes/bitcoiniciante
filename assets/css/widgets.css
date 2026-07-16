@@ -600,54 +600,57 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
 }
 .etf-stat-chip-val.halv__green { color: #4ade80; }
 .etf-stat-chip-val.halv__red { color: #ff4d6d; }
+
+
 /* =====================================================================
-   8. CONVERSOR INTEGRADO ESTILO PREEV.COM (Alta Fidelidade)
+   8. CONVERSOR DE BITCOIN (Estilo Preev Minimalista)
    ===================================================================== */
 .preev__container {
   background: #ffffff;
-  border-radius: 24px;
-  padding: 48px 44px;
+  border-radius: 20px;
+  padding: 50px 40px;
   margin: 40px auto;
-  max-width: 900px;
-  border: 1px solid #e8e8e8;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+  max-width: 950px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
   position: relative;
   overflow: hidden;
-  font-family: 'Instrument Sans', system-ui, sans-serif;
+  font-family: var(--font-body); /* Puxando do main.css */
 }
 
-/* Efeito Grade de Pontos Original Preev.com */
+/* Fundo pontilhado suave igual referência */
 .preev__container::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-image: radial-gradient(#e4e7ed 1.2px, transparent 0);
-  background-size: 24px 24px;
+  background-image: radial-gradient(#d5d7dc 1.2px, transparent 0);
+  background-size: 26px 26px;
   pointer-events: none;
-  opacity: 0.95;
+  opacity: 0.6;
   z-index: 0;
 }
 
 .preev__title {
   text-align: center;
   font-size: 28px;
-  font-weight: 700;
-  color: #111111;
-  margin-bottom: 24px;
-  letter-spacing: -0.03em;
+  font-weight: 500;
+  color: var(--black);
+  margin-bottom: 30px;
+  letter-spacing: -0.02em;
   position: relative;
   z-index: 1;
 }
 
-/* Seletor de frações (s, u, m, BlackDot, k) */
+/* Seletor de Escalas */
 .preev__scale-selector {
   display: flex;
   gap: 4px;
   justify-content: center;
-  margin-bottom: 30px;
-  background: #f0f1f5;
-  border-radius: 8px;
-  padding: 3px;
+  margin-bottom: 40px;
+  background: transparent;
+  border: 1px solid #e2e4e9;
+  border-radius: 6px;
+  padding: 4px;
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
@@ -660,25 +663,26 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   border: none;
   font-family: inherit;
   font-size: 14px;
-  font-weight: 600;
-  color: #555555;
-  padding: 6px 14px;
-  border-radius: 6px;
+  font-weight: 500;
+  color: var(--gray-500);
+  padding: 4px 12px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .preev__scale-btn:hover {
-  color: #111111;
+  color: var(--black);
 }
 
 .preev__scale-btn.active {
   background: #ffffff;
-  color: #111111;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  color: var(--black);
+  border: 1px solid #dcdfe6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-/* Inputs Inline Compactos */
+/* Grade de 4 Caixas Separadas */
 .preev__inputs-row {
   display: flex;
   align-items: center;
@@ -686,115 +690,70 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   gap: 12px;
   position: relative;
   z-index: 1;
-}
-
-.preev__group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  max-width: 320px;
+  margin-bottom: 50px;
 }
 
 .preev__box {
   background: #ffffff;
   border: 1px solid #dcdfe6;
-  border-radius: 12px;
-  height: 86px;
+  border-radius: 8px;
+  height: 90px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.01);
+  transition: border-color 0.2s ease;
+  color: var(--black);
 }
 
-.preev__box-value {
-  width: 60%;
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 32px;
-  font-weight: 400;
-  text-align: center;
-  color: #111111;
-  outline: none;
-}
-
-.preev__box-value:focus {
-  border-color: #F7931A;
-  box-shadow: 0 0 0 3px rgba(247, 147, 26, 0.12);
-}
-
-.preev__box-label {
-  width: 40%;
-  font-size: 24px;
+/* Caixa Larga: Valor Numérico */
+.preev__val {
+  width: 220px;
+  font-family: var(--font-body);
+  font-size: clamp(32px, 4vw, 48px);
   font-weight: 300;
-  color: #333333;
+  text-align: center;
+  outline: none;
+  padding: 0 10px;
+}
+
+.preev__val:focus {
+  border-color: #a0a5b1;
+}
+
+/* Caixa Curta: Texto (BTC/USD) */
+.preev__lbl {
+  width: 130px;
+  font-family: var(--font-body);
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 300;
   user-select: none;
 }
 
-.preev__box-select {
-  width: 40%;
-  font-family: inherit;
-  font-size: 24px;
-  font-weight: 300;
-  color: #333333;
+/* Select invisível disfarçado de Label */
+.select-fiat {
   cursor: pointer;
   outline: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  text-align: center;
 }
-
-.preev__box-select:focus {
-  border-color: #F7931A;
-}
+.select-fiat:focus { border-color: #a0a5b1; }
 
 .preev__vertical-divider {
-  font-size: 44px;
-  color: #e2e4e9;
-  font-weight: 100;
-  user-select: none;
+  width: 6px;
+  height: 40px;
+  background: #e2e4e9;
+  border-radius: 4px;
+  margin: 0 10px;
 }
 
-/* Seletores rápidos de moedas */
-.preev__quick-coins {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 25px;
-  flex-wrap: wrap;
-  position: relative;
-  z-index: 1;
-}
-
-.preev__coin-btn {
-  background: #f4f5f8;
-  border: 1px solid #e4e7ed;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  color: #555555;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.preev__coin-btn:hover {
-  background: #eaecef;
-}
-
-.preev__coin-btn.active {
-  background: rgba(247, 147, 26, 0.08);
-  color: #F7931A;
-  border-color: #F7931A;
-}
-
-/* Gráfico */
+/* Canvas Gráfico */
 .preev__chart-wrap {
   width: 100%;
   height: 180px;
-  margin-top: 35px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   position: relative;
   z-index: 1;
 }
@@ -805,11 +764,10 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   display: block;
 }
 
-/* Footer do Conversor */
+/* Rodapé / Stats */
 .preev__footer {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
   position: relative;
   z-index: 1;
 }
@@ -817,12 +775,10 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
 .preev__footer-content {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  background: #ffffff;
-  border: 1px solid #e4e7ed;
-  padding: 6px 16px;
-  border-radius: 999px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+  flex-wrap: wrap;
+  gap: 16px;
+  background: transparent;
+  padding: 0;
 }
 
 .preev__tf-group {
@@ -836,80 +792,56 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   font-family: inherit;
   font-size: 11px;
   font-weight: 700;
-  color: #888888;
+  color: var(--gray-500);
   padding: 4px 8px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.preev__tf-btn:hover {
-  color: #111111;
-}
+.preev__tf-btn:hover { color: var(--black); }
 
 .preev__tf-btn.active {
-  color: #F7931A;
-  background: rgba(247, 147, 26, 0.1);
+  background: #888888;
+  color: #ffffff;
 }
 
 .preev__footer-separator {
-  color: #ccc;
-  font-size: 12px;
-  user-select: none;
+  width: 3px; height: 3px;
+  background: #ccc;
+  border-radius: 50%;
 }
 
 .preev__stat-item {
-  font-family: 'DM Mono', monospace;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 500;
-  color: #666666;
+  color: var(--gray-700);
 }
 
-.preev__stat-item.up {
-  color: #4ade80;
-  font-weight: 600;
-}
+.preev__stat-item.up { color: #10b981; }
+.preev__stat-item.down { color: #f43f5e; }
 
-.preev__stat-item.down {
-  color: #ff4d6d;
-  font-weight: 600;
-}
-
-/* Esconder setas originais de inputs numéricos */
-.preev__box-value::-webkit-outer-spin-button,
-.preev__box-value::-webkit-inner-spin-button {
+/* Remover botões nativos dos inputs */
+.preev__val::-webkit-outer-spin-button,
+.preev__val::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.preev__box-value {
-  -moz-appearance: textfield;
-}
+.preev__val { -moz-appearance: textfield; }
 
-/* Responsividade de Alta Fidelidade */
+/* Mobile Extremo: Adaptação das caixas sem quebrar o layout */
 @media (max-width: 768px) {
-  .preev__container {
-    padding: 30px 15px;
-    border-radius: 16px;
-  }
-  .preev__inputs-row {
-    flex-direction: column;
-    gap: 16px;
-  }
-  .preev__vertical-divider {
-    display: none;
-  }
-  .preev__group {
-    max-width: 100%;
-  }
-  .preev__footer-content {
-    flex-direction: column;
-    gap: 8px;
-    border-radius: 14px;
-    width: 100%;
-    align-items: center;
-    padding: 12px;
-  }
-  .preev__footer-separator {
-    display: none;
-  }
+  .preev__container { padding: 40px 15px; }
+  .preev__inputs-row { gap: 8px; }
+  .preev__val { width: 140px; font-size: 32px; height: 70px; }
+  .preev__lbl { width: 90px; font-size: 26px; height: 70px; }
+  .preev__vertical-divider { width: 4px; margin: 0 2px; }
+}
+@media (max-width: 480px) {
+  .preev__inputs-row { flex-wrap: wrap; }
+  .preev__vertical-divider { display: none; }
+  /* No mobile muito pequeno, divide 2 caixas em cima, 2 embaixo */
+  .preev__val { width: 60%; height: 60px; font-size: 28px; }
+  .preev__lbl { width: 35%; height: 60px; font-size: 24px; }
 }
