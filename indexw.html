@@ -623,20 +623,23 @@
 
       <!-- Inputs Lado a Lado (4 Caixas Independentes) -->
       <div class="preev__inputs-row">
-        <!-- Caixa de Valor BTC -->
-        <input type="text" id="preev-crypto-input" class="preev__box preev__val" value="1" inputmode="decimal">
-        <!-- Caixa de Label BTC (Fixa) -->
-        <div class="preev__box preev__lbl" id="preev-crypto-label">BTC</div>
+        <!-- Lado Esquerdo -->
+        <input type="text" id="preev-left-input" class="preev__box preev__val" value="1" inputmode="decimal">
+        <select id="preev-left-select" class="preev__box preev__lbl select-asset">
+          <option value="BTC" selected>BTC</option>
+          <option value="BRL">BRL</option>
+          <option value="USD">USD</option>
+        </select>
 
         <!-- Divisor Central -->
         <div class="preev__vertical-divider"></div>
 
-        <!-- Caixa de Valor Fiat -->
-        <input type="text" id="preev-fiat-input" class="preev__box preev__val" value="—" inputmode="decimal">
-        <!-- Caixa de Select Fiat (USD/BRL) -->
-        <select id="preev-fiat-select" class="preev__box preev__lbl select-fiat">
-          <option value="USD" selected>USD</option>
-          <option value="BRL">BRL</option>
+        <!-- Lado Direito -->
+        <input type="text" id="preev-right-input" class="preev__box preev__val" value="—" inputmode="decimal">
+        <select id="preev-right-select" class="preev__box preev__lbl select-asset">
+          <option value="BTC">BTC</option>
+          <option value="BRL" selected>BRL</option>
+          <option value="USD">USD</option>
         </select>
       </div>
 
