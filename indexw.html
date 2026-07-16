@@ -608,30 +608,28 @@
 <!-- CONVERSOR DE BITCOIN (Design Minimalista) -->
 <section id="conversor-preev-sec">
   <div class="section-inner">
-    <div class="preev__container">
-      <h2 class="preev__title">Conversor de Bitcoin</h2>
-      
-      <!-- Inputs Lado a Lado -->
-      <div class="preev__inputs-row">
-        <!-- Lado Esquerdo: Default BTC -->
-        <input type="text" id="preev-left-input" class="preev__box preev__val" value="1" inputmode="decimal">
-        <select id="preev-left-select" class="preev__box preev__lbl select-asset">
-          <option value="BTC" selected>BTC</option>
-          <option value="BRL">BRL</option>
-          <option value="USD">USD</option>
-        </select>
-
-        <!-- Divisor Central -->
-        <div class="preev__vertical-divider"></div>
-
-        <!-- Lado Direito: Default USD -->
-        <input type="text" id="preev-right-input" class="preev__box preev__val" value="—" inputmode="decimal">
-        <select id="preev-right-select" class="preev__box preev__lbl select-asset">
-          <option value="BTC">BTC</option>
-          <option value="BRL">BRL</option>
-          <option value="USD" selected>USD</option>
-        </select>
-      </div>
+<!-- ... dentro da section conversor-preev-sec ... -->
+<div class="preev__container">
+  <h2 id="preev-title" class="preev__title">Bitcoin para US Dollar</h2>
+  
+  <div class="preev__inputs-row">
+    <input type="text" id="preev-left-input" class="preev__box preev__val" value="1" inputmode="decimal">
+    <select id="preev-left-select" class="preev__box preev__lbl select-asset">
+      <option value="BTC" selected>BTC</option>
+      <option value="PAXG">PAXG</option>
+      <option value="BRL">BRL</option>
+      <option value="USD">USD</option>
+    </select>
+    <div class="preev__vertical-divider"></div>
+    <input type="text" id="preev-right-input" class="preev__box preev__val" value="—" inputmode="decimal">
+    <select id="preev-right-select" class="preev__box preev__lbl select-asset">
+      <option value="BTC">BTC</option>
+      <option value="PAXG">PAXG</option>
+      <option value="BRL">BRL</option>
+      <option value="USD" selected>USD</option>
+    </select>
+  </div>
+  <!-- ... resto do HTML ... -->
 
       <!-- Canvas do Sparkline -->
       <div class="preev__chart-wrap">
