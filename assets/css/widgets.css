@@ -606,7 +606,7 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
    8. CONVERSOR DE BITCOIN (Estilo Preev Minimalista)
    ===================================================================== */
 .preev__container {
-  background: #f8f9fa;
+  background: #bbbbbb;
   border-radius: 20px;
   padding: 50px 40px;
   margin: 40px auto;
