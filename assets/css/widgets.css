@@ -610,7 +610,8 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   border-radius: 20px;
   padding: 50px 40px;
   margin: 40px auto;
-  max-width: 950px;
+  width: 100%;
+  max-width: 1200px;
   border: 1px solid #f0f0f0;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
   position: relative;
