@@ -606,11 +606,11 @@
 </section>
 
 
-<!-- CONVERSOR INTEGRADO ESTILO PREEV.COM (Abaixo do Histórico ETF) -->
+<!-- CONVERSOR DE BITCOIN ESTILO PREEV.COM (Design Ultralimpo) -->
 <section id="conversor-preev-sec">
   <div class="section-inner">
     <div class="preev__container">
-      <h2 class="preev__title">Conversor de Criptomoedas</h2>
+      <h2 class="preev__title">Conversor de Bitcoin</h2>
       
       <!-- Seletor de Escalas de Bitcoin (s, u, m, ⚫, k) -->
       <div class="preev__scale-selector">
@@ -621,34 +621,23 @@
         <button class="preev__scale-btn" data-scale="kilo" title="kBTC">k</button>
       </div>
 
-      <!-- Inputs Lado a Lado (Estilo Preev) -->
+      <!-- Inputs Lado a Lado (4 Caixas Independentes) -->
       <div class="preev__inputs-row">
-        <!-- Lado Cripto -->
-        <div class="preev__group">
-          <input type="text" id="preev-crypto-input" class="preev__box preev__box-value" value="1" inputmode="decimal">
-          <div class="preev__box preev__box-label" id="preev-crypto-label">BTC</div>
-        </div>
+        <!-- Caixa de Valor BTC -->
+        <input type="text" id="preev-crypto-input" class="preev__box preev__val" value="1" inputmode="decimal">
+        <!-- Caixa de Label BTC (Fixa) -->
+        <div class="preev__box preev__lbl" id="preev-crypto-label">BTC</div>
 
-        <div class="preev__vertical-divider">|</div>
+        <!-- Divisor Central -->
+        <div class="preev__vertical-divider"></div>
 
-        <!-- Lado Fiat -->
-        <div class="preev__group">
-          <input type="text" id="preev-fiat-input" class="preev__box preev__box-value" value="—" inputmode="decimal">
-          <select id="preev-fiat-select" class="preev__box preev__box-select">
-            <option value="BRL" selected>BRL</option>
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Atalhos de Criptoativos rápidos -->
-      <div class="preev__quick-coins">
-        <button class="preev__coin-btn active" data-coin="BTC">BTC</button>
-        <button class="preev__coin-btn" data-coin="ETH">ETH</button>
-        <button class="preev__coin-btn" data-coin="LTC">LTC</button>
-        <button class="preev__coin-btn" data-coin="DOGE">DOGE</button>
-        <button class="preev__coin-btn" data-coin="SOL">SOL</button>
+        <!-- Caixa de Valor Fiat -->
+        <input type="text" id="preev-fiat-input" class="preev__box preev__val" value="—" inputmode="decimal">
+        <!-- Caixa de Select Fiat (USD/BRL) -->
+        <select id="preev-fiat-select" class="preev__box preev__lbl select-fiat">
+          <option value="USD" selected>USD</option>
+          <option value="BRL">BRL</option>
+        </select>
       </div>
 
       <!-- Canvas do Sparkline de Tendências -->
@@ -667,7 +656,7 @@
             <button class="preev__tf-btn" data-tf="1Y">1A</button>
           </span>
           
-          <span class="preev__footer-separator">•</span>
+          <span class="preev__footer-separator"></span>
           
           <span id="preev-change" class="preev__stat-item change-indicator">—</span>
           <span id="preev-high" class="preev__stat-item">↑ —</span>
