@@ -631,13 +631,15 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
 
 .preev__title {
   text-align: center;
-  font-size: 28px;
-  font-weight: 500;
+  font-size: clamp(20px, 4vw, 28px); /* Tamanho responsivo para não quebrar em textos longos */
+  font-weight: 600;
   color: var(--black);
-  margin-bottom: 50px; /* Título mais limpo */
+  margin-bottom: 40px;
   letter-spacing: -0.02em;
   position: relative;
   z-index: 1;
+  padding: 0 10px;
+  line-height: 1.2;
 }
 
 .preev__inputs-row {
