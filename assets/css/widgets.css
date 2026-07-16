@@ -634,7 +634,7 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   font-size: 28px;
   font-weight: 500;
   color: var(--black);
-  margin-bottom: 50px; /* Aumentado de 30px para 50px para cobrir a ausência das métricas/escala */
+  margin-bottom: 50px; /* Título mais limpo */
   letter-spacing: -0.02em;
   position: relative;
   z-index: 1;
@@ -734,11 +734,11 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
 .preev__stat-item.up { color: #10b981; }
 .preev__stat-item.down { color: #f43f5e; }
 
+/* Remove spinners */
 .preev__val::-webkit-outer-spin-button,
 .preev__val::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .preev__val { -moz-appearance: textfield; }
 
-/* Adaptação Mobile Extrema */
 @media (max-width: 820px) {
   .preev__container { padding: 40px 15px; }
   .preev__inputs-row { gap: 8px; }
