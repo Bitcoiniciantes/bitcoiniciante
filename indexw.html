@@ -605,15 +605,15 @@
   </div>
 </section>
 
-<!-- CONVERSOR DE BITCOIN ESTILO PREEV.COM (Design Ultralimpo) -->
+<!-- CONVERSOR DE BITCOIN (Design Minimalista) -->
 <section id="conversor-preev-sec">
   <div class="section-inner">
     <div class="preev__container">
       <h2 class="preev__title">Conversor de Bitcoin</h2>
       
-      <!-- Inputs Lado a Lado (4 Caixas Independentes) -->
+      <!-- Inputs Lado a Lado -->
       <div class="preev__inputs-row">
-        <!-- Lado Esquerdo -->
+        <!-- Lado Esquerdo: Default BTC -->
         <input type="text" id="preev-left-input" class="preev__box preev__val" value="1" inputmode="decimal">
         <select id="preev-left-select" class="preev__box preev__lbl select-asset">
           <option value="BTC" selected>BTC</option>
@@ -624,21 +624,21 @@
         <!-- Divisor Central -->
         <div class="preev__vertical-divider"></div>
 
-        <!-- Lado Direito -->
+        <!-- Lado Direito: Default USD -->
         <input type="text" id="preev-right-input" class="preev__box preev__val" value="—" inputmode="decimal">
         <select id="preev-right-select" class="preev__box preev__lbl select-asset">
           <option value="BTC">BTC</option>
-          <option value="BRL" selected>BRL</option>
-          <option value="USD">USD</option>
+          <option value="BRL">BRL</option>
+          <option value="USD" selected>USD</option>
         </select>
       </div>
 
-      <!-- Canvas do Sparkline de Tendências -->
+      <!-- Canvas do Sparkline -->
       <div class="preev__chart-wrap">
         <canvas id="preev-canvas"></canvas>
       </div>
 
-      <!-- Timeframes e Estatísticas Consolidadas -->
+      <!-- Timeframes e Estatísticas -->
       <div class="preev__footer">
         <div class="preev__footer-content">
           <span class="preev__tf-group">
