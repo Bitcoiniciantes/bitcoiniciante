@@ -668,11 +668,12 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
 .preev__val {
   width: 280px; 
   font-family: var(--font-body);
-  font-size: clamp(32px, 4vw, 44px);
-  font-weight: 300;
+  font-size: clamp(24px, 3.5vw, 38px); /* Reduzi um pouco o tamanho máximo para caber 8 casas */
+  font-weight: 400; /* Aumentei levemente o peso para compensar o tamanho menor */
   text-align: center;
   outline: none;
-  padding: 0 16px;
+  padding: 0 8px; /* Reduzi o padding lateral para ganhar mais espaço interno */
+  letter-spacing: -0.02em; /* Aproxima levemente os números para economizar espaço */
 }
 .preev__val:focus { border-color: #a0a5b1; }
 
