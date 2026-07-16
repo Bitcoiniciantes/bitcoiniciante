@@ -615,10 +615,9 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
   position: relative;
   overflow: hidden;
-  font-family: var(--font-body); /* Puxando do main.css */
+  font-family: var(--font-body);
 }
 
-/* Fundo pontilhado suave igual referência */
 .preev__container::before {
   content: '';
   position: absolute;
@@ -641,7 +640,6 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   z-index: 1;
 }
 
-/* Seletor de Escalas */
 .preev__scale-selector {
   display: flex;
   gap: 4px;
@@ -671,9 +669,7 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   transition: all 0.2s ease;
 }
 
-.preev__scale-btn:hover {
-  color: var(--black);
-}
+.preev__scale-btn:hover { color: var(--black); }
 
 .preev__scale-btn.active {
   background: #ffffff;
@@ -682,7 +678,6 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-/* Grade de 4 Caixas Separadas */
 .preev__inputs-row {
   display: flex;
   align-items: center;
@@ -706,50 +701,46 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   color: var(--black);
 }
 
-/* Caixa Larga: Valor Numérico */
+/* CAIXA NUMÉRICA - ALARGADA PARA NÃO ESPREMER OS DADOS */
 .preev__val {
-  width: 220px;
+  width: 280px; 
   font-family: var(--font-body);
-  font-size: clamp(32px, 4vw, 48px);
+  font-size: clamp(32px, 4vw, 44px);
   font-weight: 300;
   text-align: center;
   outline: none;
-  padding: 0 10px;
+  padding: 0 16px;
 }
+.preev__val:focus { border-color: #a0a5b1; }
 
-.preev__val:focus {
-  border-color: #a0a5b1;
-}
-
-/* Caixa Curta: Texto (BTC/USD) */
-.preev__lbl {
-  width: 130px;
+/* CAIXA DE LABEL / DROPDOWN */
+.preev__lbl, .select-asset {
+  width: 120px;
   font-family: var(--font-body);
-  font-size: clamp(28px, 3.5vw, 42px);
+  font-size: clamp(24px, 3.5vw, 36px);
   font-weight: 300;
   user-select: none;
 }
 
-/* Select invisível disfarçado de Label */
-.select-fiat {
+.select-asset {
   cursor: pointer;
   outline: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   text-align: center;
+  text-align-last: center; /* Força centralização no dropdown */
 }
-.select-fiat:focus { border-color: #a0a5b1; }
+.select-asset:focus { border-color: #a0a5b1; }
 
 .preev__vertical-divider {
-  width: 6px;
+  width: 4px;
   height: 40px;
   background: #e2e4e9;
   border-radius: 4px;
-  margin: 0 10px;
+  margin: 0 8px;
 }
 
-/* Canvas Gráfico */
 .preev__chart-wrap {
   width: 100%;
   height: 180px;
@@ -757,21 +748,9 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   position: relative;
   z-index: 1;
 }
+.preev__chart-wrap canvas { width: 100% !important; height: 100% !important; display: block; }
 
-.preev__chart-wrap canvas {
-  width: 100% !important;
-  height: 100% !important;
-  display: block;
-}
-
-/* Rodapé / Stats */
-.preev__footer {
-  display: flex;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-}
-
+.preev__footer { display: flex; justify-content: center; position: relative; z-index: 1; }
 .preev__footer-content {
   display: inline-flex;
   align-items: center;
@@ -781,67 +760,34 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   padding: 0;
 }
 
-.preev__tf-group {
-  display: flex;
-  gap: 2px;
-}
-
+.preev__tf-group { display: flex; gap: 2px; }
 .preev__tf-btn {
-  background: transparent;
-  border: none;
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--gray-500);
-  padding: 4px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
+  background: transparent; border: none; font-family: inherit; font-size: 11px;
+  font-weight: 700; color: var(--gray-500); padding: 4px 8px; border-radius: 4px;
+  cursor: pointer; transition: all 0.2s;
 }
-
 .preev__tf-btn:hover { color: var(--black); }
+.preev__tf-btn.active { background: #888888; color: #ffffff; }
 
-.preev__tf-btn.active {
-  background: #888888;
-  color: #ffffff;
-}
-
-.preev__footer-separator {
-  width: 3px; height: 3px;
-  background: #ccc;
-  border-radius: 50%;
-}
-
-.preev__stat-item {
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--gray-700);
-}
-
+.preev__footer-separator { width: 3px; height: 3px; background: #ccc; border-radius: 50%; }
+.preev__stat-item { font-family: var(--font-body); font-size: 12px; font-weight: 500; color: var(--gray-700); }
 .preev__stat-item.up { color: #10b981; }
 .preev__stat-item.down { color: #f43f5e; }
 
-/* Remover botões nativos dos inputs */
 .preev__val::-webkit-outer-spin-button,
-.preev__val::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+.preev__val::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .preev__val { -moz-appearance: textfield; }
 
-/* Mobile Extremo: Adaptação das caixas sem quebrar o layout */
-@media (max-width: 768px) {
+/* Adaptação Mobile Extrema */
+@media (max-width: 820px) {
   .preev__container { padding: 40px 15px; }
   .preev__inputs-row { gap: 8px; }
-  .preev__val { width: 140px; font-size: 32px; height: 70px; }
-  .preev__lbl { width: 90px; font-size: 26px; height: 70px; }
-  .preev__vertical-divider { width: 4px; margin: 0 2px; }
+  .preev__val { width: 160px; font-size: 28px; height: 70px; }
+  .preev__lbl { width: 90px; font-size: 24px; height: 70px; }
+  .preev__vertical-divider { display: none; }
 }
 @media (max-width: 480px) {
   .preev__inputs-row { flex-wrap: wrap; }
-  .preev__vertical-divider { display: none; }
-  /* No mobile muito pequeno, divide 2 caixas em cima, 2 embaixo */
-  .preev__val { width: 60%; height: 60px; font-size: 28px; }
-  .preev__lbl { width: 35%; height: 60px; font-size: 24px; }
+  .preev__val { width: 55%; height: 60px; font-size: 24px; }
+  .preev__lbl { width: 38%; height: 60px; font-size: 22px; }
 }
