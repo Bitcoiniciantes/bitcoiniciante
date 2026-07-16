@@ -21,12 +21,34 @@ document.addEventListener('DOMContentLoaded', () => {
   let pricesHistory = [];
   let openPriceReference = 0;
   let chartState = null; // guarda coords/preços do último desenho p/ o hover
+  let tickerAbortController = null;
+  let historyAbortController = null;
+  let resizeTimeout = null;
 
   // Elemento de tooltip (criado dinamicamente e inserido no wrapper do gráfico)
   const chartWrap = document.querySelector('.preev__chart-wrap');
   const tooltipEl = document.createElement('div');
   tooltipEl.className = 'preev__chart-tooltip';
   if (chartWrap) chartWrap.appendChild(tooltipEl);
+
+  // Badge "AO VIVO" (criado dinamicamente e inserido no card do conversor)
+  const previewContainer = document.querySelector('.preev__container');
+  const liveBadge = document.createElement('div');
+  liveBadge.className = 'preev__live-badge';
+  liveBadge.innerHTML = '<span class="preev__live-dot live"></span><span class="preev__live-text">AO VIVO</span>';
+  if (previewContainer) previewContainer.appendChild(liveBadge);
+  const liveDotEl = liveBadge.querySelector('.preev__live-dot');
+  const liveTextEl = liveBadge.querySelector('.preev__live-text');
+
+  /**
+   * Atualiza o indicador visual de conexão (verde pulsando / vermelho parado)
+   */
+  function setLiveStatus(isLive) {
+    if (!liveDotEl) return;
+    liveDotEl.classList.toggle('live', isLive);
+    liveDotEl.classList.toggle('offline', !isLive);
+    if (liveTextEl) liveTextEl.textContent = isLive ? 'AO VIVO' : 'OFFLINE';
+  }
 
   const timeframeParams = {
     '1H': { interval: '1m', limit: 60 },
@@ -63,6 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
     selectLeft.value = 'BTC';
     selectRight.value = 'USD';
     updateTitle();
+
+    // Acessibilidade básica
+    inputLeft.setAttribute('aria-label', 'Valor a converter, moeda de origem');
+    selectLeft.setAttribute('aria-label', 'Moeda de origem');
+    inputRight.setAttribute('aria-label', 'Valor convertido, moeda de destino');
+    selectRight.setAttribute('aria-label', 'Moeda de destino');
+    canvas.setAttribute('role', 'img');
+    canvas.setAttribute('aria-label', 'Gráfico de tendência de preço no período selecionado');
   }
 
   /**
@@ -146,8 +176,13 @@ document.addEventListener('DOMContentLoaded', () => {
         renderStats(1, 1, 0); 
         return;
     }
+
+    // Cancela uma requisição anterior ainda pendente (ex: usuário trocou de par rápido)
+    if (tickerAbortController) tickerAbortController.abort();
+    tickerAbortController = new AbortController();
+
     try {
-      const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${config.symbol}`);
+      const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${config.symbol}`, { signal: tickerAbortController.signal });
       const data = await res.json();
       if (data && data.price) {
         exchangeRate = parseFloat(data.price);
@@ -155,16 +190,25 @@ document.addEventListener('DOMContentLoaded', () => {
           calculateConversion('left');
         }
       }
-    } catch (err) { console.warn("Binance API error", err); }
+      setLiveStatus(true);
+    } catch (err) {
+      if (err.name === 'AbortError') return; // requisição cancelada de propósito, ignora
+      console.warn("Binance API error", err);
+      setLiveStatus(false);
+    }
   }
 
   async function fetchHistoricalTrends() {
     const config = getPairConfig();
     if (!config) return;
-    
+
+    // Cancela uma requisição de histórico anterior ainda pendente
+    if (historyAbortController) historyAbortController.abort();
+    historyAbortController = new AbortController();
+
     const tf = timeframeParams[activeTimeframe];
     try {
-      const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${config.symbol}&interval=${tf.interval}&limit=${tf.limit}`);
+      const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${config.symbol}&interval=${tf.interval}&limit=${tf.limit}`, { signal: historyAbortController.signal });
       const data = await res.json();
       if (data && data.length > 0) {
         let closes = data.map(c => parseFloat(c[4]));
@@ -178,7 +222,10 @@ document.addEventListener('DOMContentLoaded', () => {
         renderStats(Math.max(...closes), Math.min(...closes), ((closes[closes.length-1] - openRef) / openRef) * 100);
         drawTrendChart(closes, closes[closes.length-1] >= openRef);
       }
-    } catch (err) { console.error("Klines error", err); }
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+      console.error("Klines error", err);
+    }
   }
 
   function renderStats(high, low, pct) {
@@ -195,7 +242,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * dpr; canvas.height = rect.height * dpr; ctx.scale(dpr, dpr);
+    canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
+    ctx.setTransform(1, 0, 0, 1, 0, 0); // reseta a matriz antes de reaplicar a escala
+    ctx.scale(dpr, dpr);
     const w = rect.width, h = rect.height;
     const min = Math.min(...prices), range = Math.max(...prices) - min || 1;
     const coords = prices.map((p, i) => ({ x: (i/(prices.length-1))*w, y: h-15-((p-min)/range)*(h-30) }));
@@ -314,6 +363,17 @@ document.addEventListener('DOMContentLoaded', () => {
   canvas.addEventListener('touchmove', handleChartHover, { passive: true });
   canvas.addEventListener('touchend', handleChartLeave);
 
+  // Redesenha o gráfico (com o mesmo histórico) quando a janela é redimensionada,
+  // evitando que fique desalinhado até a próxima atualização de dados
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      if (pricesHistory.length > 0) {
+        drawTrendChart(pricesHistory, pricesHistory[pricesHistory.length - 1] >= openPriceReference);
+      }
+    }, 150);
+  });
+
   tfBtns.forEach(b => b.addEventListener('click', (e) => {
       tfBtns.forEach(btn => btn.classList.remove('active'));
       e.target.classList.add('active');
@@ -326,5 +386,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inicialização
   setInitialDefaults(); // Força Bitcoin para US Dólar no carregamento
   updateAll();
-  setInterval(fetchCurrentTicker, 10000);
+  setInterval(fetchCurrentTicker, 10000);     // preço ao vivo a cada 10s
+  setInterval(fetchHistoricalTrends, 60000);  // gráfico/histórico a cada 60s
 });
