@@ -716,7 +716,28 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   padding: 12px;
   box-sizing: border-box;
 }
-.preev__chart-wrap canvas { width: 100% !important; height: 100% !important; display: block; }
+.preev__chart-wrap canvas { width: 100% !important; height: 100% !important; display: block; cursor: crosshair; }
+
+.preev__chart-tooltip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -130%);
+  background: #1a1a1a;
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  padding: 5px 9px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  z-index: 5;
+}
+.preev__chart-tooltip.visible { opacity: 1; }
 
 .preev__footer { display: flex; justify-content: center; position: relative; z-index: 1; }
 .preev__footer-content {
