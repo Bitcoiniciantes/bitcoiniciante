@@ -599,51 +599,79 @@
 </section>
 
 
-<!-- FLUXO ETF BTC -->
 <section>
   <div class="section-inner">
     <div id="widget-etf-sosovalue"></div>
   </div>
 </section>
 
-<!-- CONVERSOR ESTILO PREEV.COM (Adicionado abaixo do Histórico ETF) -->
-<section id="conversor-preev-sec" style="margin-top: 20px; margin-bottom: 60px;">
+
+<!-- CONVERSOR INTEGRADO ESTILO PREEV.COM (Abaixo do Histórico ETF) -->
+<section id="conversor-preev-sec">
   <div class="section-inner">
-    <div class="preev__wrap" id="conversor-preev-root">
+    <div class="preev__container">
       <h2 class="preev__title">Conversor de Criptomoedas</h2>
       
-      <div class="preev__inputs-container">
-        <div class="preev__input-group">
-          <input type="number" id="preev-btc-input" class="preev__field" value="1" step="any" min="0" placeholder="0">
-          <span class="preev__currency-label">BTC</span>
+      <!-- Seletor de Escalas de Bitcoin (s, u, m, ⚫, k) -->
+      <div class="preev__scale-selector">
+        <button class="preev__scale-btn" data-scale="sat" title="Satoshis">s</button>
+        <button class="preev__scale-btn" data-scale="micro" title="Bits (μBTC)">μ</button>
+        <button class="preev__scale-btn" data-scale="milli" title="mBTC">m</button>
+        <button class="preev__scale-btn active" data-scale="btc" title="Bitcoin">⚫</button>
+        <button class="preev__scale-btn" data-scale="kilo" title="kBTC">k</button>
+      </div>
+
+      <!-- Inputs Lado a Lado (Estilo Preev) -->
+      <div class="preev__inputs-row">
+        <!-- Lado Cripto -->
+        <div class="preev__group">
+          <input type="text" id="preev-crypto-input" class="preev__box preev__box-value" value="1" inputmode="decimal">
+          <div class="preev__box preev__box-label" id="preev-crypto-label">BTC</div>
         </div>
-        <div class="preev__divider">|</div>
-        <div class="preev__input-group">
-          <input type="text" id="preev-fiat-input" class="preev__field" value="—" placeholder="0">
-          <select id="preev-fiat-currency" class="preev__select">
-            <option value="USD">USD</option>
+
+        <div class="preev__vertical-divider">|</div>
+
+        <!-- Lado Fiat -->
+        <div class="preev__group">
+          <input type="text" id="preev-fiat-input" class="preev__box preev__box-value" value="—" inputmode="decimal">
+          <select id="preev-fiat-select" class="preev__box preev__box-select">
             <option value="BRL" selected>BRL</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
           </select>
         </div>
       </div>
 
-      <div class="preev__chart-container">
-        <canvas id="preev-sparkline"></canvas>
+      <!-- Atalhos de Criptoativos rápidos -->
+      <div class="preev__quick-coins">
+        <button class="preev__coin-btn active" data-coin="BTC">BTC</button>
+        <button class="preev__coin-btn" data-coin="ETH">ETH</button>
+        <button class="preev__coin-btn" data-coin="LTC">LTC</button>
+        <button class="preev__coin-btn" data-coin="DOGE">DOGE</button>
+        <button class="preev__coin-btn" data-coin="SOL">SOL</button>
       </div>
 
+      <!-- Canvas do Sparkline de Tendências -->
+      <div class="preev__chart-wrap">
+        <canvas id="preev-canvas"></canvas>
+      </div>
+
+      <!-- Timeframes e Estatísticas Consolidadas -->
       <div class="preev__footer">
-        <div class="preev__timeframes">
-          <button class="preev__tf-btn" data-tf="1H">1H</button>
-          <button class="preev__tf-btn" data-tf="1D">1D</button>
-          <button class="preev__tf-btn" data-tf="1S">1S</button>
-          <button class="preev__tf-btn active" data-tf="1M">1M</button>
-          <button class="preev__tf-btn" data-tf="1A">1A</button>
-        </div>
-        
-        <div class="preev__stats">
+        <div class="preev__footer-content">
+          <span class="preev__tf-group">
+            <button class="preev__tf-btn" data-tf="1H">1H</button>
+            <button class="preev__tf-btn" data-tf="1D">1D</button>
+            <button class="preev__tf-btn" data-tf="1W">1S</button>
+            <button class="preev__tf-btn active" data-tf="1M">1M</button>
+            <button class="preev__tf-btn" data-tf="1Y">1A</button>
+          </span>
+          
+          <span class="preev__footer-separator">•</span>
+          
           <span id="preev-change" class="preev__stat-item change-indicator">—</span>
-          <span id="preev-high" class="preev__stat-item">↑ $ —</span>
-          <span id="preev-low" class="preev__stat-item">↓ $ —</span>
+          <span id="preev-high" class="preev__stat-item">↑ —</span>
+          <span id="preev-low" class="preev__stat-item">↓ —</span>
         </div>
       </div>
     </div>
@@ -753,7 +781,7 @@
 <script src="assets/js/utils.js"></script>
 <script defer src="assets/js/main.js"></script>
 <script defer src="assets/js/projections.js"></script>
-<!-- Scripts do Conversor Preev -->
+<!-- Novo Conversor estilo Preev -->
 <script defer src="assets/js/conversor.js"></script>
 
 <!-- Script dos Botões Rápidos DCA -->
