@@ -634,48 +634,10 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   font-size: 28px;
   font-weight: 500;
   color: var(--black);
-  margin-bottom: 30px;
+  margin-bottom: 50px; /* Aumentado de 30px para 50px para cobrir a ausência das métricas/escala */
   letter-spacing: -0.02em;
   position: relative;
   z-index: 1;
-}
-
-.preev__scale-selector {
-  display: flex;
-  gap: 4px;
-  justify-content: center;
-  margin-bottom: 40px;
-  background: transparent;
-  border: 1px solid #e2e4e9;
-  border-radius: 6px;
-  padding: 4px;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  z-index: 1;
-}
-
-.preev__scale-btn {
-  background: transparent;
-  border: none;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--gray-500);
-  padding: 4px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.preev__scale-btn:hover { color: var(--black); }
-
-.preev__scale-btn.active {
-  background: #ffffff;
-  color: var(--black);
-  border: 1px solid #dcdfe6;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .preev__inputs-row {
@@ -701,7 +663,6 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   color: var(--black);
 }
 
-/* CAIXA NUMÉRICA - ALARGADA PARA NÃO ESPREMER OS DADOS */
 .preev__val {
   width: 280px; 
   font-family: var(--font-body);
@@ -713,7 +674,6 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
 }
 .preev__val:focus { border-color: #a0a5b1; }
 
-/* CAIXA DE LABEL / DROPDOWN */
 .preev__lbl, .select-asset {
   width: 120px;
   font-family: var(--font-body);
@@ -729,7 +689,7 @@ input[type="date"].dca__input::-webkit-date-and-time-value {
   -moz-appearance: none;
   appearance: none;
   text-align: center;
-  text-align-last: center; /* Força centralização no dropdown */
+  text-align-last: center; 
 }
 .select-asset:focus { border-color: #a0a5b1; }
 
