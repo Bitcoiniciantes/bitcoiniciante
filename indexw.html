@@ -84,7 +84,7 @@
       border-color: #F7931A;
     }
     
-    /* Botão Mobile customizado substituindo os "3 tracinhos" por MENU (agora visível em todas as telas) */
+    /* Botão Mobile customizado substituindo os "3 tracinhos" por MENU (visível em todas as telas) */
     .menu-toggle {
       display: block; 
       background: rgba(255, 255, 255, 0.05);
@@ -104,15 +104,15 @@
     
     /* Evita que as seções fiquem escondidas atrás do menu fixo ao clicar nos links */
     #dca-root, #consulta-historica, #widget-etf-sosovalue, #conversor-preev-sec {
-      scroll-margin-top: 120px; /* Aumentei um pouco para compensar o menu fixo */
+      scroll-margin-top: 120px;
     }
   </style>
 </head>
 
 <body>
 
-<!-- MENU CONGELADO: Alterado position para 'sticky', z-index alto e adicionado fundo translúcido/desfoque -->
-<nav style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; height: auto !important; padding: 15px 20px !important; top: 0 !important; z-index: 9999; position: sticky; background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+<!-- MENU CONGELADO: Sem alterar as larguras, apenas position sticky e fundo sólido escuro -->
+<nav style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; height: auto !important; padding-top: 16px !important; padding-bottom: 16px !important; top: 0 !important; z-index: 9999; position: sticky; background: #0d0d0d;">
   <a href="#" class="logo" style="text-decoration: none;">
     <div class="logo-icon" aria-hidden="true">&#8383;</div>
     <span style="color: #F7931A; font-weight: 800;">Bitcoiniciantes</span>
@@ -131,7 +131,7 @@
 
 
 <!-- HERO (Livre do CSS antigo) -->
-<div style="max-width: 1100px; margin: 100px auto 40px auto; padding: 0 15px; width: 100%; box-sizing: border-box;">
+<div style="max-width: 1100px; margin: 60px auto 40px auto; padding: 0 15px; width: 100%; box-sizing: border-box;">
   
   <!-- Flexbox limpo e blindado contra quebras -->
   <div style="display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; align-items: flex-start;">
