@@ -75,22 +75,34 @@
       border-color: #F7931A;
     }
 
+    /* Nav ~10% mais estreita que o padrão do main.css (min(1200px, 90%)) */
+    nav {
+      width: min(1080px, 81%);
+    }
+
     /* Botão sanduíche — some no desktop, só aparece no mobile */
     .nav-hamburger {
       display: none;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-      width: 40px;
+      align-items: center;
+      gap: 8px;
+      width: auto;
       height: 40px;
       background: transparent;
       border: 1px solid rgba(0,0,0,0.08);
       border-radius: 8px;
       cursor: pointer;
-      padding: 0;
+      padding: 0 12px;
       flex-shrink: 0;
     }
-    .nav-hamburger span {
+    .nav-hamburger-bars {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      width: 20px;
+      flex-shrink: 0;
+    }
+    .nav-hamburger-bars span {
       display: block;
       width: 20px;
       height: 2px;
@@ -99,9 +111,16 @@
       border-radius: 2px;
       transition: transform 0.25s ease, opacity 0.25s ease;
     }
-    .nav-hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .nav-hamburger.active span:nth-child(2) { opacity: 0; }
-    .nav-hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav-hamburger-label {
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--black, #0A0A0A);
+    }
+    .nav-hamburger.active .nav-hamburger-bars span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .nav-hamburger.active .nav-hamburger-bars span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.active .nav-hamburger-bars span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
     @media (max-width: 640px) {
       nav {
@@ -149,11 +168,12 @@
 <nav style="display:flex; align-items:center; justify-content:space-between; gap:16px; z-index: 1000;">
   <a href="#" class="logo">
     <div class="logo-icon" aria-hidden="true">&#8383;</div>
-    BITCOIN&nbsp;<span>INICIANTES</span>
+    BITCOIN<span>ICIANTES</span>
   </a>
 
   <button class="nav-hamburger" id="navHamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="menuTopoCustom">
-    <span></span><span></span><span></span>
+    <span class="nav-hamburger-bars"><span></span><span></span><span></span></span>
+    <span class="nav-hamburger-label">MENU</span>
   </button>
 
   <div class="menu-topo-custom" id="menuTopoCustom">
