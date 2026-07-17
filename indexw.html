@@ -42,32 +42,41 @@
       font-family: 'Instrument Sans', sans-serif;
     }
     .dca__btn-quick:hover {
-      background: rgba(247, 147, 26, 0.15); /* Fundo laranjinha translúcido */
-      color: #F7931A; /* Cor principal do seu tema */
+      background: rgba(247, 147, 26, 0.15);
+      color: #F7931A;
       border-color: #F7931A;
     }
   </style>
 
   <!-- Estilos para o Menu de Navegação Rápida do Topo -->
   <style>
+    /* Oculta os links por padrão e prepara para exibir em coluna (vertical) */
     .menu-topo-custom {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      display: none; 
+      width: 100%;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
     }
+    /* Classe adicionada via JS para mostrar o menu */
+    .menu-topo-custom.active {
+      display: flex;
+    }
+    
     .menu-topo-link {
       color: #F7931A;
       text-decoration: none;
       font-family: 'Instrument Sans', sans-serif;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
-      padding: 8px 14px;
+      padding: 10px;
       border-radius: 6px;
       border: 1px solid rgba(255, 255, 255, 0.1);
       background: rgba(255, 255, 255, 0.03);
       transition: all 0.2s ease;
-      white-space: nowrap;
+      text-align: center;
+      width: 100%;
+      box-sizing: border-box;
     }
     .menu-topo-link:hover {
       background: rgba(247, 147, 26, 0.15);
@@ -75,9 +84,9 @@
       border-color: #F7931A;
     }
     
-    /* Botão Mobile customizado substituindo os "3 tracinhos" por MENU */
+    /* Botão Mobile customizado substituindo os "3 tracinhos" por MENU (agora visível em todas as telas) */
     .menu-toggle {
-      display: none;
+      display: block; 
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: #F7931A;
@@ -91,29 +100,6 @@
     }
     .menu-toggle:hover {
       background: rgba(247, 147, 26, 0.15);
-    }
-
-    /* Comportamento responsivo (Mobile) */
-    @media (max-width: 640px) {
-      .menu-toggle {
-        display: block; /* Mostra o botão "MENU" na horizontal ao lado da Logo */
-      }
-      .menu-topo-custom {
-        display: none; /* Esconde os links por padrão */
-        width: 100%;
-        flex-direction: column; /* Organiza os links na vertical quando aberto */
-        gap: 6px;
-      }
-      .menu-topo-custom.active {
-        display: flex; /* Exibe os links na vertical */
-      }
-      .menu-topo-link {
-        font-size: 14px;
-        padding: 10px;
-        text-align: center;
-        width: 100%;
-        box-sizing: border-box;
-      }
     }
     
     /* Evita que as seções fiquem escondidas atrás do menu fixo ao clicar nos links */
@@ -169,7 +155,6 @@
           </div>
         </div>
 
-        <!-- Preço travado na mesma linha com white-space: nowrap -->
         <div class="btc-price-area" style="flex-wrap: nowrap;">
           <div class="btc-price" id="btcPrice" style="white-space: nowrap; font-size: clamp(2rem, 3vw, 3.2rem);">$ —</div>
           <div class="btc-change-badge" id="btcChange24h">—</div>
@@ -289,9 +274,7 @@
                     <stop offset="100%" stop-color="#2E7D32"/>
                   </linearGradient>
                 </defs>
-                <!-- Arco colorido (gradiente) -->
                 <path d="M 24 140 A 116 116 0 0 1 256 140" fill="none" stroke="url(#fng-grad2)" stroke-width="22" stroke-linecap="round"/>
-                <!-- Marcadores internos (7 pontos como relógio, distribuídos uniformemente) -->
                 <circle cx="48" cy="115" r="2.8" fill="#444"/>
                 <circle cx="67" cy="79" r="2.8" fill="#444"/>
                 <circle cx="100" cy="54" r="2.8" fill="#444"/>
@@ -299,16 +282,11 @@
                 <circle cx="180" cy="54" r="2.8" fill="#444"/>
                 <circle cx="213" cy="79" r="2.8" fill="#444"/>
                 <circle cx="232" cy="115" r="2.8" fill="#444"/>
-                <!-- Sombra em cone atrás do ponteiro -->
                 <path id="fng-needle-shadow" d="M 140 140 L 42 108 L 38 120 Z" fill="rgba(198,40,40,0.13)"/>
-                <!-- Linha do ponteiro (agulha muito fina, quase invisível) -->
                 <line id="fng-needle" x1="140" y1="140" x2="30" y2="140" stroke="#bbb" stroke-width="1.2" stroke-linecap="round"/>
-                <!-- Indicador circular na ponta do ponteiro -->
                 <circle id="fng-needle-tip" cx="30" cy="140" r="7" fill="#fff" stroke="#aaa" stroke-width="1.5"/>
                 <circle id="fng-needle-dot" cx="30" cy="140" r="3" fill="#C62828"/>
-                <!-- Score grande no centro -->
                 <text id="fng-arc-score" x="140" y="100" text-anchor="middle" font-family="var(--font-body)" font-size="40" font-weight="800" fill="#C62828" style="transition:fill 0.5s;">—</text>
-                <!-- Label do sentimento -->
                 <text id="fng-arc-label" x="140" y="122" text-anchor="middle" font-family="var(--font-body)" font-size="14" font-weight="600" fill="#C62828" style="transition:fill 0.5s;">—</text>
               </svg>
             </div>
@@ -805,14 +783,23 @@
   document.addEventListener('DOMContentLoaded', () => {
     
     // ----------------------------------------------------
-    // LÓGICA DO MENU MOBILE (Sanduíche "MENU")
+    // LÓGICA DO MENU "SANDUÍCHE" UNIVERSAL
     // ----------------------------------------------------
     const menuToggle = document.getElementById('mobileMenuToggle');
     const menuTopo = document.getElementById('menuTopoCustom');
+    const menuLinks = document.querySelectorAll('.menu-topo-link');
 
     if (menuToggle && menuTopo) {
+      // Abre e fecha ao clicar em "MENU"
       menuToggle.addEventListener('click', () => {
         menuTopo.classList.toggle('active');
+      });
+      
+      // Fecha o menu automaticamente quando o usuário clica num link
+      menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          menuTopo.classList.remove('active');
+        });
       });
     }
 
