@@ -130,7 +130,7 @@
       }
       .nav-hamburger { display: flex; }
 
-      /* Os links viram um dropdown fechado por padrão, abaixo do nav */
+      /* Os links viram um dropdown fechado por padrão, abaixo do nav com correção de z-index */
       .menu-topo-custom {
         display: none;
         position: absolute;
@@ -147,7 +147,8 @@
         backdrop-filter: blur(12px);
         border-bottom: 1px solid var(--gray-200, #E8E8E8);
         border-radius: 0 0 16px 16px;
-        box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+        box-shadow: 0 16px 32px rgba(0,0,0,0.15);
+        z-index: 9999;
       }
       .menu-topo-custom.open { display: flex; }
       .menu-topo-link {
@@ -166,10 +167,10 @@
 
 <body>
 
-<nav style="display:flex; align-items:center; justify-content:space-between; gap:16px; z-index: 1000;">
+<nav style="display:flex; align-items:center; justify-content:space-between; gap:16px; z-index: 9999; position: relative;">
   <a href="#" class="logo">
     <div class="logo-icon" aria-hidden="true">&#8383;</div>
-    <div class="logo-text">BITCOIN<span>ICIANTES</span></div>
+    <div class="logo-text" style="color: #F7931A;">BITCOINICIANTES</div>
   </a>
 
   <button class="nav-hamburger" id="navHamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="menuTopoCustom">
@@ -525,7 +526,7 @@
           </div>
 
           <div class="dca__header">
-            <div class="dca__title">📊 Simulador DCA em Bitcoin (compras recorrentes sem olha o preço)</div>
+            <div class="dca__title">📊 Simulador DCA em Bitcoin (compras recorrentes sem olhar o preço)</div>
             <div class="dca__sub">Se eu tivesse investido todo mês, quanto teria hoje?</div>
           </div>
 
@@ -820,7 +821,7 @@
 
 <footer>
   <div class="footer-inner">
-    <div class="footer-logo">BITCOIN <span>INICIANTES</span></div>
+    <div class="footer-logo" style="color: #F7931A;">BITCOIN INICIANTES</div>
     <div class="footer-divider"></div>
     <p>
       Assessoria especializada em Bitcoin:<br>
