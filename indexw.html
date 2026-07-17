@@ -104,14 +104,15 @@
     
     /* Evita que as seções fiquem escondidas atrás do menu fixo ao clicar nos links */
     #dca-root, #consulta-historica, #widget-etf-sosovalue, #conversor-preev-sec {
-      scroll-margin-top: 100px;
+      scroll-margin-top: 120px; /* Aumentei um pouco para compensar o menu fixo */
     }
   </style>
 </head>
 
 <body>
 
-<nav style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; height: auto !important; padding-bottom: 16px !important; top: 0 !important; z-index: 1000; position: relative;">
+<!-- MENU CONGELADO: Alterado position para 'sticky', z-index alto e adicionado fundo translúcido/desfoque -->
+<nav style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; height: auto !important; padding: 15px 20px !important; top: 0 !important; z-index: 9999; position: sticky; background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
   <a href="#" class="logo" style="text-decoration: none;">
     <div class="logo-icon" aria-hidden="true">&#8383;</div>
     <span style="color: #F7931A; font-weight: 800;">Bitcoiniciantes</span>
@@ -315,9 +316,6 @@
             </div>
           </div>
         </div>
-
-        <!-- HALVING COUNTDOWN -->
-       
       </div>
     </div>
   </div>
