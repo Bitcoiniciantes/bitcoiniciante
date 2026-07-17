@@ -19,7 +19,7 @@
 
   <!-- Styles -->
   <link rel="stylesheet" href="assets/css/main.css?v=2" />
-  <link rel="stylesheet" href="assets/css/widgets.css?v=5" />
+  <link rel="stylesheet" href="assets/css/widgets.css?v=4" />
 
   <!-- Estilos para os Botões Rápidos DCA -->
   <style>
@@ -84,7 +84,7 @@
       border-color: #F7931A;
     }
     
-    /* Botão Mobile customizado substituindo os "3 tracinhos" por MENU (visível em todas as telas) */
+    /* Botão Mobile customizado substituindo os "3 tracinhos" por MENU (sempre visível) */
     .menu-toggle {
       display: block; 
       background: rgba(255, 255, 255, 0.05);
@@ -111,27 +111,33 @@
 
 <body>
 
-<!-- MENU CONGELADO: Sem alterar as larguras, apenas position sticky e fundo sólido escuro -->
-<nav style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; height: auto !important; padding-top: 16px !important; padding-bottom: 16px !important; top: 0 !important; z-index: 9999; position: sticky; background: #0d0d0d;">
-  <a href="#" class="logo" style="text-decoration: none;">
-    <div class="logo-icon" aria-hidden="true">&#8383;</div>
-    <span style="color: #F7931A; font-weight: 800;">Bitcoiniciantes</span>
-  </a>
+<!-- CABEÇALHO 100% FIXO - Ignora margens do site e crava no topo -->
+<header style="position: fixed; top: 0; left: 0; width: 100%; z-index: 9999; background: #0a0a0a; border-bottom: 1px solid rgba(255,255,255,0.05); box-sizing: border-box;">
+  <!-- NAV - Alinha perfeitamente o Menu e a Logo com a largura dos painéis (max-width: 1100px) -->
+  <nav style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; width: 100%; max-width: 1100px; margin: 0 auto; padding: 15px 20px; box-sizing: border-box;">
+    
+    <a href="#" class="logo" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
+      <div class="logo-icon" aria-hidden="true">&#8383;</div>
+      <span style="color: #F7931A; font-weight: 800;">Bitcoiniciantes</span>
+    </a>
 
-  <!-- Botão Sanduíche customizado com a palavra MENU -->
-  <button id="mobileMenuToggle" class="menu-toggle">MENU</button>
+    <!-- Botão Sanduíche "MENU" -->
+    <button id="mobileMenuToggle" class="menu-toggle">MENU</button>
 
-  <div class="menu-topo-custom" id="menuTopoCustom">
-    <a href="#dca-root" class="menu-topo-link">Compras DCA</a>
-    <a href="#consulta-historica" class="menu-topo-link">Histórico Preço</a>
-    <a href="#conversor-preev-sec" class="menu-topo-link">Conversor</a>
-    <a href="#widget-etf-sosovalue" class="menu-topo-link">Fluxo ETF</a>
-  </div>
-</nav>
+    <!-- Lista de Links -->
+    <div class="menu-topo-custom" id="menuTopoCustom">
+      <a href="#dca-root" class="menu-topo-link">Compras DCA</a>
+      <a href="#consulta-historica" class="menu-topo-link">Histórico Preço</a>
+      <a href="#conversor-preev-sec" class="menu-topo-link">Conversor</a>
+      <a href="#widget-etf-sosovalue" class="menu-topo-link">Fluxo ETF</a>
+    </div>
+
+  </nav>
+</header>
 
 
 <!-- HERO (Livre do CSS antigo) -->
-<div style="max-width: 1100px; margin: 60px auto 40px auto; padding: 0 15px; width: 100%; box-sizing: border-box;">
+<div style="max-width: 1100px; margin: 100px auto 40px auto; padding: 0 15px; width: 100%; box-sizing: border-box;">
   
   <!-- Flexbox limpo e blindado contra quebras -->
   <div style="display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; align-items: flex-start;">
