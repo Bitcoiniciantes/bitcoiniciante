@@ -74,15 +74,67 @@
       color: #F7931A;
       border-color: #F7931A;
     }
+
+    /* Botão sanduíche — some no desktop, só aparece no mobile */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 40px;
+      height: 40px;
+      background: transparent;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      margin: 0 auto;
+      background: var(--black, #0A0A0A);
+      border-radius: 2px;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+    .nav-hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.active span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
     @media (max-width: 640px) {
-      .menu-topo-custom {
-        width: 100%;
-        justify-content: center;
-        gap: 6px;
+      nav {
+        height: 64px;
+        padding: 0 16px;
       }
+      .nav-hamburger { display: flex; }
+
+      /* Os links viram um dropdown fechado por padrão, abaixo do nav */
+      .menu-topo-custom {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        width: 100%;
+        margin-top: 1px;
+        padding: 12px 16px 16px;
+        background: rgba(255,255,255,0.98);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--gray-200, #E8E8E8);
+        border-radius: 0 0 16px 16px;
+        box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+      }
+      .menu-topo-custom.open { display: flex; }
       .menu-topo-link {
-        font-size: 12px;
-        padding: 6px 10px;
+        width: 100%;
+        text-align: center;
+        font-size: 14px;
+        padding: 12px 14px;
       }
     }
     /* Evita que as seções fiquem escondidas atrás do menu fixo ao clicar nos links */
@@ -94,11 +146,15 @@
 
 <body>
 
-<nav style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; height: auto !important; padding-bottom: 16px !important; top: 0 !important; z-index: 1000;">
+<nav style="display:flex; align-items:center; justify-content:space-between; gap:16px; z-index: 1000;">
   <a href="#" class="logo">
     <div class="logo-icon" aria-hidden="true">&#8383;</div>
     BITCOIN&nbsp;<span>INICIANTES</span>
   </a>
+
+  <button class="nav-hamburger" id="navHamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="menuTopoCustom">
+    <span></span><span></span><span></span>
+  </button>
 
   <div class="menu-topo-custom" id="menuTopoCustom">
     <a href="#dca-root" class="menu-topo-link">Compras DCA</a>
@@ -107,6 +163,36 @@
     <a href="#widget-etf-sosovalue" class="menu-topo-link">Fluxo ETF</a>
   </div>
 </nav>
+
+<script>
+  (function () {
+    var hamburger = document.getElementById('navHamburger');
+    var menu = document.getElementById('menuTopoCustom');
+    if (!hamburger || !menu) return;
+
+    function closeMenu() {
+      menu.classList.remove('open');
+      hamburger.classList.remove('active');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+
+    hamburger.addEventListener('click', function () {
+      var isOpen = menu.classList.toggle('open');
+      hamburger.classList.toggle('active', isOpen);
+      hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    // Fecha o menu ao clicar em um link (navegação por âncora)
+    menu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Fecha o menu se a tela for redimensionada de volta pro desktop
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 640) closeMenu();
+    });
+  })();
+</script>
 
 
 <!-- HERO (Livre do CSS antigo) -->
