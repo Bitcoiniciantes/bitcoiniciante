@@ -50,45 +50,67 @@
 
   <!-- Estilos para o Menu de Navegação Rápida do Topo -->
   <style>
-    /* Oculta os links por padrão e prepara para exibir em coluna (vertical) */
-    .menu-topo-custom {
-      display: none; 
+    /* Estilo Base do Cabeçalho Fixo 100% */
+    .header-fixo {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 10px;
-    }
-    /* Classe adicionada via JS para mostrar o menu */
-    .menu-topo-custom.active {
-      display: flex;
-    }
-    
-    .menu-topo-link {
-      color: #F7931A;
-      text-decoration: none;
-      font-family: 'Instrument Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(255, 255, 255, 0.03);
-      transition: all 0.2s ease;
-      text-align: center;
-      width: 100%;
+      z-index: 9999;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
       box-sizing: border-box;
     }
-    .menu-topo-link:hover {
-      background: rgba(247, 147, 26, 0.15);
-      color: #F7931A;
-      border-color: #F7931A;
+    
+    /* Adaptação inteligente para caso você use modo noturno depois */
+    @media (prefers-color-scheme: dark) {
+      .header-fixo {
+        background: rgba(15, 15, 15, 0.95);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+    }
+
+    /* Container que segura a Logo e o Botão MENU alinhados com o site */
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 15px 20px;
+      box-sizing: border-box;
+      position: relative; /* IMPORTANTE: Garante que o menu flutuante abra a partir daqui */
+    }
+
+    /* A CAIXINHA FLUTUANTE DO MENU (Dropdown) COM FUNDO ESCURO */
+    .menu-topo-custom {
+      display: none; 
+      position: absolute;
+      top: 100%; /* Fixa o menu exatamente abaixo do cabeçalho */
+      right: 20px; /* Alinha à direita */
+      margin-top: 10px; /* Um pequeno respiro */
+      width: 220px;
+      flex-direction: column;
+      gap: 8px;
+      background: #111111; /* O FUNDO SÓLIDO ESCURO */
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6); /* Sombra pesada para destacar */
+      z-index: 100000;
+    }
+
+    .menu-topo-custom.active {
+      display: flex; /* Exibe o menu ao clicar */
     }
     
-    /* Botão Mobile customizado substituindo os "3 tracinhos" por MENU (sempre visível) */
+    /* Botão Mobile customizado "MENU" */
     .menu-toggle {
       display: block; 
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(247, 147, 26, 0.1);
+      border: 1px solid rgba(247, 147, 26, 0.3);
       color: #F7931A;
       padding: 8px 16px;
       border-radius: 6px;
@@ -99,7 +121,35 @@
       transition: all 0.2s ease;
     }
     .menu-toggle:hover {
+      background: rgba(247, 147, 26, 0.2);
+    }
+
+    /* Links de dentro do Menu */
+    .menu-topo-link {
+      color: #F7931A;
+      text-decoration: none;
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      transition: all 0.2s ease;
+      text-align: left;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .menu-topo-link:hover {
       background: rgba(247, 147, 26, 0.15);
+      color: #F7931A;
+    }
+
+    /* Celular: o menu fica com quase 100% da tela de largura */
+    @media (max-width: 640px) {
+      .menu-topo-custom {
+        right: 15px;
+        width: 250px;
+      }
     }
     
     /* Evita que as seções fiquem escondidas atrás do menu fixo ao clicar nos links */
@@ -111,20 +161,20 @@
 
 <body>
 
-<!-- CABEÇALHO 100% FIXO - Ignora margens do site e crava no topo -->
-<header style="position: fixed; top: 0; left: 0; width: 100%; z-index: 9999; background: #0a0a0a; border-bottom: 1px solid rgba(255,255,255,0.05); box-sizing: border-box;">
-  <!-- NAV - Alinha perfeitamente o Menu e a Logo com a largura dos painéis (max-width: 1100px) -->
-  <nav style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; width: 100%; max-width: 1100px; margin: 0 auto; padding: 15px 20px; box-sizing: border-box;">
+<!-- CABEÇALHO 100% FIXO NO TOPO -->
+<header class="header-fixo">
+  <nav class="nav-container">
     
+    <!-- Logo -->
     <a href="#" class="logo" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
       <div class="logo-icon" aria-hidden="true">&#8383;</div>
-      <span style="color: #F7931A; font-weight: 800;">Bitcoiniciantes</span>
+      <span style="color: #F7931A; font-weight: 800; font-size: 1.2rem;">Bitcoiniciantes</span>
     </a>
 
-    <!-- Botão Sanduíche "MENU" -->
+    <!-- Botão Sanduíche customizado com a palavra MENU -->
     <button id="mobileMenuToggle" class="menu-toggle">MENU</button>
 
-    <!-- Lista de Links -->
+    <!-- Menu Flutuante (Fundo Escuro) -->
     <div class="menu-topo-custom" id="menuTopoCustom">
       <a href="#dca-root" class="menu-topo-link">Compras DCA</a>
       <a href="#consulta-historica" class="menu-topo-link">Histórico Preço</a>
@@ -795,7 +845,8 @@
 
     if (menuToggle && menuTopo) {
       // Abre e fecha ao clicar em "MENU"
-      menuToggle.addEventListener('click', () => {
+      menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation(); // Evita que o clique feche na mesma hora
         menuTopo.classList.toggle('active');
       });
       
@@ -804,6 +855,13 @@
         link.addEventListener('click', () => {
           menuTopo.classList.remove('active');
         });
+      });
+
+      // Fecha o menu se clicar fora da caixinha (opcional, melhora a experiência)
+      document.addEventListener('click', (e) => {
+        if (!menuTopo.contains(e.target) && !menuToggle.contains(e.target)) {
+          menuTopo.classList.remove('active');
+        }
       });
     }
 
