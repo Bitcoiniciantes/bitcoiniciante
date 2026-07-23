@@ -25950,9 +25950,15 @@
     "precoBtcBrl": 332960.16
   },
   {
-    "data": "2026-07-22",
-    "precoBtcUsd": 65984.07,
-    "cotacaoUsdBrl": 5.0743,
-    "precoBtcBrl": 334822.96
+    "data": "2026-07-21",
+    "precoBtcUsd": 66505.13,
+    "cotacaoUsdBrl": 5.0875,
+    "precoBtcBrl": 338344.83
+  },
+  {
+    "data": "2026-07-23",
+    "precoBtcUsd": 65705.22,
+    "cotacaoUsdBrl": 5.0542,
+    "precoBtcBrl": 332087.33
   }
 ]
