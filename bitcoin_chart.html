@@ -55,6 +55,7 @@ const traces = [
     name: 'Price',
     mode: 'lines',
     line: { color: '#111111', width: 1.2 },
+    marker: { size: 7, color: '#111111' },
     hovertemplate: '%{x}<br>Price: $%{y:,.0f}<extra></extra>'
   },
   {
@@ -63,6 +64,7 @@ const traces = [
     name: 'Realised Price',
     mode: 'lines',
     line: { color: '#e07b39', width: 1.6 },
+    marker: { size: 7, color: '#e07b39' },
     hovertemplate: '%{x}<br>Realised Price: $%{y:,.0f}<extra></extra>'
   },
   {
@@ -71,6 +73,7 @@ const traces = [
     name: 'LTH Cost Basis',
     mode: 'lines',
     line: { color: '#2e7d5b', width: 1.6 },
+    marker: { size: 7, color: '#2e7d5b' },
     hovertemplate: '%{x}<br>LTH Cost Basis: $%{y:,.0f}<extra></extra>'
   },
   {
@@ -136,7 +139,7 @@ const layout = {
     x: 0.5,
     xanchor: 'center'
   },
-  hovermode: 'x unified'
+  hovermode: 'closest'
 };
 
 const config = {
