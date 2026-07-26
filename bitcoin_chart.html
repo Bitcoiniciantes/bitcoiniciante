@@ -76,7 +76,7 @@ const traces = [
 ];
 
 const layout = {
-  margin: { l: 60, r: 20, t: 10, b: 40 },
+  margin: { l: 60, r: 20, t: 70, b: 40 },
   paper_bgcolor: '#ffffff',
   plot_bgcolor: '#ffffff',
   font: { color: '#333', size: 12 },
@@ -84,7 +84,21 @@ const layout = {
     type: 'date',
     showgrid: false,
     zeroline: false,
-    linecolor: '#ccc'
+    linecolor: '#ccc',
+    rangeselector: {
+      x: 0.5,
+      xanchor: 'center',
+      y: 1.18,
+      bgcolor: '#f5f5f5',
+      bordercolor: '#ddd',
+      borderwidth: 1,
+      font: { size: 12, color: '#333' },
+      buttons: [
+        { count: 1, label: '1A', step: 'year', stepmode: 'backward' },
+        { count: 3, label: '3A', step: 'year', stepmode: 'backward' },
+        { step: 'all', label: 'Máx' }
+      ]
+    }
   },
   yaxis: {
     type: 'log',
@@ -96,7 +110,7 @@ const layout = {
   },
   legend: {
     orientation: 'h',
-    y: 1.08,
+    y: 1.24,
     x: 0.5,
     xanchor: 'center'
   },
